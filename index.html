@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#6366f1"/>
+  <title>Dental Guide</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" href="icon-192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.2"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --transition-speed: 0.5s; }
+    [data-theme="dark"] {
+      --bg-gradient: linear-gradient(135deg, #312e81 0%, #1e1b4b 50%, #4c0519 100%);
+      --glass-bg: rgba(255,255,255,0.08); --glass-border: rgba(255,255,255,0.15);
+      --text-main: #ffffff; --text-muted: rgba(255,255,255,0.7);
+      --btn-hover: rgba(255,255,255,0.15); --pill-bg: rgba(0,0,0,0.3); --pill-color: #ffffff;
+      --sidebar-bg: rgba(0,0,0,0.6); --input-bg: rgba(0,0,0,0.3);
+      --success: #2ad4a5; --danger: #ff647c; --warning: #ffc94a;
+      --nav-active-bg: rgba(129,140,248,0.2); --nav-active-text: #a5b4fc;
+    }
+    [data-theme="light"] {
+      --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
+      --glass-bg: rgba(255,255,255,0.65); --glass-border: rgba(255,255,255,0.8);
+      --text-main: #312e81; --text-muted: #6366f1;
+      --btn-hover: rgba(255,255,255,0.9); --pill-bg: rgba(255,255,255,0.5); --pill-color: #312e81;
+      --sidebar-bg: rgba(255,255,255,0.7); --input-bg: rgba(255,255,255,0.5);
+      --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
+      --nav-active-bg: rgba(79,70,229,0.1); --nav-active-text: #4f46e5;
+    }
+    body { background: var(--bg-gradient); color: var(--text-main); font-family: 'Inter', sans-serif; overflow-x: hidden; transition: background 0.5s ease, color 0.5s ease, opacity 0.3s ease, filter 0.3s ease; min-height: 100vh; }
+    body.switching-lang { opacity: 0; filter: blur(15px); pointer-events: none; }
+    body.switching-lang #sidebar { transition: none !important; }
+    #app { transition: opacity 0.25s ease, transform 0.25s ease; }
+    #app.page-out { opacity: 0; transform: translateY(10px); }
+    .glass { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); transition: all 0.3s ease; }
+    .text-gradient { background-clip: text; -webkit-background-clip: text; color: transparent; background-image: linear-gradient(to right, #818cf8, #c084fc, #f472b6); }
+    [data-theme="light"] .text-gradient { background-image: linear-gradient(to right, #4f46e5, #9333ea, #db2777); }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .lang-container { position: relative; display: flex; background: var(--pill-bg); border-radius: 99px; padding: 4px; border: 1px solid var(--glass-border); height: 48px; width: 100%; direction: ltr; }
+    [data-theme="light"] .lang-container { background: rgba(255,255,255,0.4); }
+    .lang-pill { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(33.33% - 5px); background: var(--pill-color); border-radius: 99px; transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); z-index: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .lang-btn { flex: 1; position: relative; z-index: 1; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); transition: color 0.3s; }
+    [data-theme="dark"] .lang-btn.active { color: #333; font-weight: 800; }
+    [data-theme="light"] .lang-btn.active { color: #fff; font-weight: 800; }
+    .theme-toggle-btn { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; color: var(--text-main); flex-shrink: 0; }
+    .theme-toggle-btn:hover { background: var(--btn-hover); }
+    .theme-toggle-btn i { position: absolute; top: 50%; left: 50%; transition: all 0.5s cubic-bezier(0.23,1,0.32,1); }
+    [data-theme="dark"] .ph-moon { transform: translate(-50%,-50%) scale(1) rotate(0deg); opacity: 1; }
+    [data-theme="dark"] .ph-sun  { transform: translate(-50%,-50%) scale(0.5) rotate(90deg); opacity: 0; }
+    [data-theme="light"] .ph-sun  { transform: translate(-50%,-50%) scale(1) rotate(0deg); opacity: 1; }
+    [data-theme="light"] .ph-moon { transform: translate(-50%,-50%) scale(0.5) rotate(-90deg); opacity: 0; }
+    html[dir="rtl"] #sidebar { right: 0; left: auto; transform: translateX(100%); border-left: 1px solid var(--glass-border); border-right: none; }
+    html[dir="ltr"] #sidebar  { left: 0; right: auto; transform: translateX(-100%); border-right: 1px solid var(--glass-border); border-left: none; }
+    #sidebar.open { transform: translateX(0) !important; }
+    html[dir="rtl"] #menuBtn { right: 2rem; left: auto; }
+    html[dir="ltr"]  #menuBtn { left: 2rem; right: auto; }
+    .nav-link { display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 1rem 1.5rem; border-radius: 1rem; font-weight: 500; text-decoration: none; color: var(--text-main); border: 1px solid transparent; transition: all 0.2s ease; cursor: pointer; background: none; }
+    .nav-link:hover { background: var(--btn-hover); transform: translateX(4px); }
+    html[dir="rtl"] .nav-link:hover { transform: translateX(-4px); }
+    .nav-link.active { background: var(--nav-active-bg); color: var(--nav-active-text); border-color: var(--glass-border); font-weight: 600; }
+    .yearBtn { height: 150px; border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; cursor: pointer; color: var(--text-main); transition: all 0.3s; background: none; width: 100%; }
+    .yearBtn i { transition: transform 0.3s, color 0.3s; color: var(--text-muted); }
+    .yearBtn:hover { transform: translateY(-8px); background: var(--btn-hover); border-color: rgba(255,255,255,0.4); }
+    .yearBtn:hover i { transform: scale(1.1); color: var(--text-main); }
+    .module-card { margin-bottom: 1.5rem; padding: 1.5rem; border-radius: 1.5rem; text-align: left; }
+    .calc-input { width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); border-radius: 0.5rem; padding: 0.5rem 0.75rem; outline: none; transition: border-color 0.3s; }
+    .calc-input:focus { border-color: #818cf8; }
+    .anim-container { overflow: hidden; transition: max-height 0.4s ease-out, opacity 0.3s ease-out; max-height: 500px; opacity: 1; }
+    .anim-container.is-hidden { max-height: 0 !important; opacity: 0; pointer-events: none; margin: 0; }
+    .btn-action { padding: 0.75rem 1.5rem; border-radius: 9999px; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+    .btn-primary { color: var(--text-main); background: linear-gradient(135deg, rgba(129,140,248,0.3), rgba(192,132,252,0.3)); border: 1px solid rgba(255,255,255,0.2); }
+    .btn-primary:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 15px rgba(0,0,0,0.2); }
+    .btn-primary:active { transform: scale(0.98); }
+    /* BREADCRUMB - fin */
+    #breadcrumb { padding: 3px 8px !important; }
+    .breadcrumb-btn { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 500; color: var(--text-muted); transition: all 0.2s ease; cursor: pointer; background: none; border: none; }
+    .breadcrumb-btn:hover { color: var(--text-main); background: var(--btn-hover); }
+    .breadcrumb-sep { color: var(--text-muted); opacity: 0.4; font-size: 0.65rem; }
+  </style>
+</head>
+<body>
+  <div id="sidebar" class="fixed inset-y-0 z-50 w-80 glass transition-transform duration-500 ease-out flex flex-col" style="background: var(--sidebar-bg);">
+    <div class="p-8 pt-24 flex flex-col h-full overflow-y-auto">
+      <h2 class="text-3xl font-bold text-gradient mb-10" data-key="appTitle">Dental Guide</h2>
+      <div class="flex items-center gap-3 mb-10">
+        <div class="lang-container">
+          <div class="lang-pill" id="langPill"></div>
+          <button data-lang="fr" class="lang-btn active">FR</button>
+          <button data-lang="en" class="lang-btn">EN</button>
+          <button data-lang="ar" class="lang-btn">AR</button>
+        </div>
+        <div class="theme-toggle-btn glass" id="themeBtn">
+          <i class="ph-fill ph-moon text-xl"></i>
+          <i class="ph-fill ph-sun text-xl"></i>
+        </div>
+      </div>
+      <div class="space-y-3" id="sidebarNav"></div>
+    </div>
+  </div>
+  <div id="overlay" class="fixed inset-0 bg-black/40 z-40 hidden backdrop-blur-sm transition-opacity" onclick="closeMenu()"></div>
+  <button id="menuBtn" class="fixed top-8 z-50 p-3 rounded-2xl glass hover:bg-white/20 transition active:scale-95 shadow-lg" style="color: var(--text-main);">
+    <i class="ph-bold ph-list text-3xl"></i>
+  </button>
+  <div id="breadcrumb" class="fixed top-8 z-40 left-1/2 -translate-x-1/2 flex items-center gap-1 glass rounded-full" style="max-width:90vw;display:none;"></div>
+  <div id="app"></div>
+  <a href="mailto:dentaireoranmoy@gmail.com" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 group w-max max-w-[90vw]">
+    <div class="px-6 py-3 rounded-full glass shadow-2xl flex items-center justify-center gap-3 font-semibold transition hover:scale-105 active:scale-95 border border-white/20 backdrop-blur-xl whitespace-nowrap" style="color: var(--text-main);">
+      <i class="ph-fill ph-paper-plane-right text-lg group-hover:-rotate-12 transition-transform"></i>
+      <span data-key="contact">Nous contacter</span>
+    </div>
+  </a>
+  <div id="toastContainer" class="fixed bottom-28 left-1/2 -translate-x-1/2 flex flex-col-reverse gap-3 z-50 pointer-events-none w-max max-w-[90vw]"></div>
+<script>
+var T = {
+  fr: {
+    appTitle:"Dental Guide", home:"Accueil", install:"Telecharger l'app",
+    contact:"Nous contacter", toast:"Bientot disponible !", toastInstall:"Installation impossible",
+    subtitle:"Le guide ultime pour tes etudes dentaires",
+    year1:"1ere Annee", year2:"2eme Annee", year3:"3eme Annee",
+    year4:"4eme Annee", year5:"5eme Annee", year6:"6eme Annee",
+    cours:"Cours", qcm:"QCM", calc:"Calcul de moyenne", pageCalc:"Calcul de Moyenne",
+    simulFor:function(y){return "Simulateur pour la "+y;},
+    infoText:"Saisissez seulement les notes qui vous concernent. Les champs vides sont ignores.",
+    btnCalc:"Calculer", btnSave:"Enregistrer", btnLoad:"Charger", manualMode:"Entrer moyenne",
+    noNotes:"Veuillez entrer au moins une note.", validated:"Annee validee !",
+    insufficient:"Moyenne insuffisante", eliminatory:"Note eliminatoire (< 5) :",
+    compensate:"A compenser :", genAvg:"Moyenne Generale",
+    saved:"Donnees sauvegardees !", loaded:"Donnees chargees !", noData:"Aucune sauvegarde trouvee."
+  },
+  en: {
+    appTitle:"Dental Guide", home:"Home", install:"Install App",
+    contact:"Contact Us", toast:"Coming soon!", toastInstall:"Install not available",
+    subtitle:"Your ultimate dental studies companion",
+    year1:"1st Year", year2:"2nd Year", year3:"3rd Year",
+    year4:"4th Year", year5:"5th Year", year6:"6th Year",
+    cours:"Courses", qcm:"Quizzes", calc:"GPA Calculator", pageCalc:"GPA Calculator",
+    simulFor:function(y){return "Simulator for "+y;},
+    infoText:"Enter only the grades that apply to you. Empty fields are ignored.",
+    btnCalc:"Calculate", btnSave:"Save", btnLoad:"Load", manualMode:"Enter Average",
+    noNotes:"Please enter at least one grade.", validated:"Year validated!",
+    insufficient:"Insufficient average", eliminatory:"Eliminatory grade (< 5):",
+    compensate:"To compensate:", genAvg:"General Average",
+    saved:"Data saved!", loaded:"Data loaded!", noData:"No saved data found."
+  },
+  ar: {
+    appTitle:"\u062f\u0644\u064a\u0644 \u0637\u0628 \u0627\u0644\u0623\u0633\u0646\u0627\u0646", home:"\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629", install:"\u062a\u062b\u0628\u064a\u062a \u0627\u0644\u062a\u0637\u0628\u064a\u0642",
+    contact:"\u0627\u062a\u0635\u0644 \u0628\u0646\u0627", toast:"\u0642\u0631\u064a\u0628\u0627!", toastInstall:"\u0627\u0644\u062a\u062b\u0628\u064a\u062a \u063a\u064a\u0631 \u0645\u062a\u0627\u062d",
+    subtitle:"\u0631\u0641\u064a\u0642\u0643 \u0627\u0644\u0646\u0647\u0627\u0626\u064a \u0644\u062f\u0631\u0627\u0633\u0629 \u0637\u0628 \u0627\u0644\u0623\u0633\u0646\u0627\u0646",
+    year1:"\u0627\u0644\u0633\u0646\u0629 \u0627\u0644\u0623\u0648\u0644\u0649", year2:"\u0627\u0644\u0633\u0646\u0629 \u0627\u0644\u062b\u0627\u0646\u064a\u0629", year3:"\u0627\u0644\u0633\u0646\u0629 \u0627\u0644\u062b\u0627\u0644\u062b\u0629",
+    year4:"\u0627\u0644\u0633\u0646\u0629 \u0627\u0644\u0631\u0627\u0628\u0639\u0629", year5:"\u0627\u0644\u0633\u0646\u0629 \u0627\u0644\u062e\u0627\u0645\u0633\u0629", year6:"\u0627\u0644\u0633\u0646\u0629 \u0627\u0644\u0633\u0627\u062f\u0633\u0629",
+    cours:"\u062f\u0631\u0648\u0633", qcm:"\u0623\u0633\u0626\u0644\u0629 \u0645\u062a\u0639\u062f\u062f\u0629", calc:"\u062d\u0633\u0627\u0628 \u0627\u0644\u0645\u0639\u062f\u0644", pageCalc:"\u062d\u0633\u0627\u0628 \u0627\u0644\u0645\u0639\u062f\u0644",
+    simulFor:function(y){return "\u0645\u062d\u0627\u0643\u064a \u0644\u0640"+y;},
+    infoText:"\u0623\u062f\u062e\u0644 \u0627\u0644\u0646\u0642\u0627\u0637 \u0627\u0644\u062a\u064a \u062a\u0647\u0645\u0643 \u0641\u0642\u0637.",
+    btnCalc:"\u062d\u0633\u0627\u0628", btnSave:"\u062d\u0641\u0638", btnLoad:"\u062a\u062d\u0645\u064a\u0644", manualMode:"\u0625\u062f\u062e\u0627\u0644 \u0627\u0644\u0645\u0639\u062f\u0644",
+    noNotes:"\u0627\u0644\u0631\u062c\u0627\u0621 \u0625\u062f\u062e\u0627\u0644 \u062f\u0631\u062c\u0629 \u0648\u0627\u062d\u062f\u0629.", validated:"\u062a\u0645 \u0627\u0644\u062a\u062d\u0642\u0642!",
+    insufficient:"\u0627\u0644\u0645\u0639\u062f\u0644 \u063a\u064a\u0631 \u0643\u0627\u0641", eliminatory:"\u0639\u0644\u0627\u0645\u0629 \u0645\u0642\u0635\u064a\u0629:",
+    compensate:"\u0644\u0644\u062a\u0639\u0648\u064a\u0636:", genAvg:"\u0627\u0644\u0645\u0639\u062f\u0644 \u0627\u0644\u0639\u0627\u0645",
+    saved:"\u062a\u0645 \u0627\u0644\u062d\u0641\u0638!", loaded:"\u062a\u0645 \u0627\u0644\u062a\u062d\u0645\u064a\u0644!", noData:"\u0644\u0627 \u062a\u0648\u062c\u062f \u0628\u064a\u0627\u0646\u0627\u062a."
+  }
+};
+function getLang(){return localStorage.getItem('lang')||'fr';}
+function t(key,arg){var l=getLang();var v=T[l][key];if(!v)return key;return typeof v==='function'?v(arg):v;}
+
+var MODULES={
+  1:[
+    {nom:"Anatomie",coef:4,icon:"bone",type:"6fields"},
+    {nom:"Histo-Embryo",coef:4,icon:"microscope",type:"6fields"},
+    {nom:"Biochimie",coef:3,icon:"test-tube",type:"6fields",tdLight:true},
+    {nom:"Biophysique",coef:3,icon:"atom",type:"6fields"},
+    {nom:"Biostatistiques",coef:3,icon:"chart-bar",type:"6fields"},
+    {nom:"Chimie",coef:3,icon:"flask",type:"6fields"},
+    {nom:"Physiologie",coef:2,icon:"heartbeat",type:"6fields"},
+    {nom:"Genetique",coef:2,icon:"dna",type:"6fields",tdLight:true},
+    {nom:"Physique",coef:2,icon:"lightning",type:"6fields"},
+    {nom:"SSH",coef:1,icon:"users-three",type:"6fields"},
+    {nom:"Francais",coef:1,icon:"translate",type:"6fields"},
+    {nom:"Anglais",coef:1,icon:"chat-circle-dots",type:"6fields"}
+  ],
+  2:[
+    {nom:"OCE",coef:5,icon:"tooth",type:"4fields"},
+    {nom:"Prothese",coef:5,icon:"cube",type:"4fields"},
+    {nom:"AH",coef:4,icon:"bone",type:"4fields"},
+    {nom:"AD",coef:3,icon:"tooth",type:"4fields"},
+    {nom:"ODF",coef:3,icon:"align-center-horizontal-simple",type:"4fields"},
+    {nom:"Patho",coef:3,icon:"first-aid-kit",type:"4fields"},
+    {nom:"Paro",coef:3,icon:"microscope",type:"4fields"},
+    {nom:"Biomat",coef:2,icon:"flask",type:"4fields"},
+    {nom:"Histo",coef:2,icon:"microscope",type:"4fields"},
+    {nom:"Microbio",coef:2,icon:"virus",type:"4fields"},
+    {nom:"Hygiene",coef:1,icon:"hand-soap",type:"4fields"},
+    {nom:"Immuno",coef:1,icon:"shield-check",type:"4fields"},
+    {nom:"Info",coef:1,icon:"desktop",type:"4fields"},
+    {nom:"Physio",coef:1,icon:"heartbeat",type:"4fields"},
+    {nom:"Anglais",coef:1,icon:"translate",type:"4fields"}
+  ],
+  3:[
+    {nom:"OCE",coef:5,icon:"tooth",type:"4fields"},
+    {nom:"ODF",coef:5,icon:"align-center-horizontal-simple",type:"4fields"},
+    {nom:"Parodontologie",coef:5,icon:"microscope",type:"4fields"},
+    {nom:"Pathologie",coef:5,icon:"first-aid-kit",type:"4fields"},
+    {nom:"Prothese",coef:5,icon:"cube",type:"4fields"},
+    {nom:"Imagerie Medicale",coef:3,icon:"x-ray",type:"4fields"},
+    {nom:"Anatomie Pathologique",coef:1,icon:"brain",type:"4fields"},
+    {nom:"Anesthesiologie",coef:1,icon:"syringe",type:"4fields"},
+    {nom:"Pharmacologie",coef:1,icon:"pills",type:"4fields"},
+    {nom:"Occlusodontie",coef:1,icon:"tooth",type:"4fields"},
+    {nom:"Oxyologie",coef:1,icon:"lungs",type:"4fields"}
+  ]
+};
+var YEAR_DRIVE={
+  1:{cours:"https://drive.google.com/drive/folders/14d-U2KcHVJKbq28vrL8QnuOFV4XVYzoG",qcm:null},
+  2:{cours:"https://drive.google.com/drive/folders/1-LkLRmXcpJ5K-QR1tRurObSdl5uvTKZj",qcm:"https://drive.google.com/drive/folders/1uazWsTDjGArcZ4TU81CQI6Ozn5qUMQ1g"},
+  3:{cours:"https://drive.google.com/drive/folders/1zfhMqLO9W8HawEOgK6-WYJbpoMbPQQHY",qcm:null}
+};
+
+var state={page:'home',year:null};
+
+function hashFromState(page,year){
+  if(page==='home') return '#home';
+  if(page==='year') return '#year-'+year;
+  if(page==='calc') return '#calc-'+year;
+  return '#home';
+}
+
+function stateFromHash(hash){
+  if(!hash||hash==='#home'||hash==='#') return {page:'home',year:null};
+  var m;
+  m=hash.match(/^#year-(\d+)$/); if(m) return {page:'year',year:parseInt(m[1])};
+  m=hash.match(/^#calc-(\d+)$/); if(m) return {page:'calc',year:parseInt(m[1])};
+  return {page:'home',year:null};
+}
+
+function navigate(page,year){
+  year=year||null;
+  var newHash=hashFromState(page,year);
+  if(window.location.hash!==newHash) window.location.hash=newHash;
+  var app=document.getElementById('app');
+  app.classList.add('page-out');
+  setTimeout(function(){
+    state.page=page; state.year=year;
+    render(); app.classList.remove('page-out');
+    updateSidebarNav(); updateBreadcrumb();
+    window.scrollTo({top:0,behavior:'smooth'});
+  },200);
+}
+
+function navigateSilent(page,year){
+  year=year||null;
+  state.page=page; state.year=year;
+  render(); updateSidebarNav(); updateBreadcrumb();
+}
+
+window.addEventListener('hashchange',function(){
+  var s=stateFromHash(window.location.hash);
+  if(s.page!==state.page||s.year!==state.year){
+    navigateSilent(s.page,s.year);
+  }
+});
+function render(){
+  var app=document.getElementById('app');
+  if(state.page==='home') app.innerHTML=renderHome();
+  else if(state.page==='year') app.innerHTML=renderYear(state.year);
+  else if(state.page==='calc'){app.innerHTML=renderCalc(state.year);initCalcPage(state.year);}
+  applyTranslations();
+}
+function renderHome(){
+  var years=[
+    {key:'year1',n:1,icon:'book-open-text',active:true},
+    {key:'year2',n:2,icon:'tooth',active:true},
+    {key:'year3',n:3,icon:'flask',active:true},
+    {key:'year4',n:4,icon:'syringe',active:false},
+    {key:'year5',n:5,icon:'first-aid',active:false},
+    {key:'year6',n:6,icon:'graduation-cap',active:false}
+  ];
+  var btns='';
+  for(var i=0;i<years.length;i++){
+    var y=years[i];
+    var action=y.active?"navigate('year',"+y.n+")":"showToast(t('toast'))";
+    btns+='<button onclick="'+action+'" class="yearBtn glass"><i class="ph-duotone ph-'+y.icon+' text-5xl"></i><span class="text-xl font-bold" data-key="'+y.key+'">'+t(y.key)+'</span></button>';
+  }
+  return '<main class="pt-28 pb-32 px-6 max-w-5xl mx-auto text-center"><h1 class="text-5xl md:text-7xl font-bold text-gradient animate-float mb-4" data-key="appTitle">Dental Guide</h1><p class="text-xl mb-16 font-light" style="color:var(--text-muted);" data-key="subtitle">'+t('subtitle')+'</p><div class="grid grid-cols-2 md:grid-cols-3 gap-6">'+btns+'</div></main>';
+}
+function renderYear(n){
+  var drv=YEAR_DRIVE[n]||{};
+  var ca=drv.cours?"window.open('"+drv.cours+"','_blank')"  :"showToast(t('toast'))";
+  var qa=drv.qcm  ?"window.open('"+drv.qcm  +"','_blank')" :"showToast(t('toast'))";
+  var calc=(n===1||n===2||n===3)?"navigate('calc',"+n+")":"showToast(t('toast'))";
+  var yk='year'+n;
+  return '<main class="pt-28 pb-32 px-6 max-w-5xl mx-auto text-center"><h1 class="text-5xl md:text-7xl font-bold text-gradient animate-float mb-4">'+t(yk)+'</h1><p class="text-xl mb-16 font-light" style="color:var(--text-muted);" data-key="subtitle">'+t('subtitle')+'</p><div class="grid grid-cols-2 md:grid-cols-3 gap-6"><button onclick="'+ca+'" class="yearBtn glass"><i class="ph-duotone ph-book-open-text text-5xl"></i><span class="text-xl font-bold" data-key="cours">'+t('cours')+'</span></button><button onclick="'+qa+'" class="yearBtn glass"><i class="ph-duotone ph-check-square-offset text-5xl"></i><span class="text-xl font-bold" data-key="qcm">'+t('qcm')+'</span></button><button onclick="'+calc+'" class="yearBtn glass col-span-2 md:col-span-1"><i class="ph-duotone ph-calculator text-5xl"></i><span class="text-xl font-bold" data-key="calc">'+t('calc')+'</span></button></div></main>';
+}
+function renderCalc(n){
+  var yk='year'+n;
+  return '<main class="pt-28 pb-32 px-4 sm:px-6 max-w-4xl mx-auto text-center"><h1 class="text-4xl md:text-6xl font-bold text-gradient animate-float mb-4" data-key="pageCalc">'+t('pageCalc')+'</h1><p class="text-xl mb-10 font-light" style="color:var(--text-muted);" id="calcSubtitle">'+t('simulFor',t(yk))+'</p><div class="glass p-4 rounded-xl mb-8 text-sm flex items-start gap-3 text-left" style="color:var(--text-main);"><i class="ph-fill ph-info text-2xl text-blue-400 mt-0.5 flex-shrink-0"></i><p data-key="infoText">'+t('infoText')+'</p></div><form id="calcForm" class="space-y-6"></form><div class="mt-10 flex flex-wrap justify-center gap-4"><button type="button" onclick="calculer()" class="btn-action btn-primary bg-indigo-500/50"><i class="ph-bold ph-calculator"></i> <span data-key="btnCalc">'+t('btnCalc')+'</span></button><button type="button" onclick="saveResults()" class="btn-action btn-primary"><i class="ph-bold ph-floppy-disk"></i> <span data-key="btnSave">'+t('btnSave')+'</span></button><button type="button" onclick="loadResults()" class="btn-action btn-primary"><i class="ph-bold ph-upload-simple"></i> <span data-key="btnLoad">'+t('btnLoad')+'</span></button></div><div id="resultat" class="mt-8 space-y-4"></div></main>';
+}
+
+var currentCalcYear=null;
+function initCalcPage(n){
+  currentCalcYear=n;
+  var mods=MODULES[n];
+  var form=document.getElementById('calcForm');
+  if(!form||!mods)return;
+  form.innerHTML='';
+  for(var i=0;i<mods.length;i++){
+    (function(idx){
+      var mod=mods[idx];
+      var card=document.createElement('div');
+      card.className='glass module-card';
+      var fh='';
+      if(mod.type==='6fields'){
+        fh='<div><label class="block text-xs mb-1 opacity-70">EMD S1</label><input type="number" step="0.01" min="0" max="20" id="'+idx+'_emd1" class="calc-input" oninput="calcModule('+idx+')"></div>'+
+           '<div><label class="block text-xs mb-1 opacity-70">EMD S2</label><input type="number" step="0.01" min="0" max="20" id="'+idx+'_emd2" class="calc-input" oninput="calcModule('+idx+')"></div>'+
+           '<div><label class="block text-xs mb-1 opacity-70">TD S1</label><input type="number" step="0.01" min="0" max="20" id="'+idx+'_td1" class="calc-input" oninput="calcModule('+idx+')"></div>'+
+           '<div><label class="block text-xs mb-1 opacity-70">TD S2</label><input type="number" step="0.01" min="0" max="20" id="'+idx+'_td2" class="calc-input" oninput="calcModule('+idx+')"></div>'+
+           '<div><label class="block text-xs mb-1 opacity-70">TP S1</label><input type="number" step="0.01" min="0" max="20" id="'+idx+'_tp1" class="calc-input" oninput="calcModule('+idx+')"></div>'+
+           '<div><label class="block text-xs mb-1 opacity-70">TP S2</label><input type="number" step="0.01" min="0" max="20" id="'+idx+'_tp2" class="calc-input" oninput="calcModule('+idx+')"></div>';
+      } else {
+        fh='<div><label class="block text-xs mb-1 opacity-70">EMD S1</label><input type="number" step="0.01" min="0" max="20" id="'+idx+'_emd1" class="calc-input" oninput="calcModule('+idx+')"></div>'+
+           '<div><label class="block text-xs mb-1 opacity-70">EMD S2</label><input type="number" step="0.01" min="0" max="20" id="'+idx+'_emd2" class="calc-input" oninput="calcModule('+idx+')"></div>'+
+           '<div><label class="block text-xs mb-1 opacity-70">TD</label><input type="number" step="0.01" min="0" max="20" id="'+idx+'_td" class="calc-input" oninput="calcModule('+idx+')"></div>'+
+           '<div><label class="block text-xs mb-1 opacity-70">TP</label><input type="number" step="0.01" min="0" max="20" id="'+idx+'_tp" class="calc-input" oninput="calcModule('+idx+')"></div>';
+      }
+      card.innerHTML='<div class="flex items-center justify-between mb-4 flex-wrap gap-2"><h3 class="text-xl font-bold flex items-center gap-2" style="color:var(--text-main);"><i class="ph-duotone ph-'+mod.icon+' text-2xl text-indigo-400"></i> '+mod.nom+'<span class="text-xs bg-white/10 px-2 py-1 rounded text-white/70 border border-white/10">Coef '+mod.coef+'</span></h3><label class="flex items-center gap-2 text-sm cursor-pointer" style="color:var(--text-muted);"><input type="checkbox" id="'+idx+'_manual_cb" onchange="toggleManual('+idx+')" class="accent-indigo-500 w-4 h-4"><span data-key="manualMode">'+t('manualMode')+'</span></label></div><div id="'+idx+'_manual_container" class="anim-container is-hidden mb-2"><input type="number" step="0.01" min="0" max="20" id="'+idx+'_manual_val" class="calc-input" placeholder="Moyenne (ex: 12.5)" oninput="calcModule('+idx+')"></div><div id="'+idx+'_notes_fields" class="grid grid-cols-2 gap-4 anim-container">'+fh+'</div><div class="mt-4 pt-4 border-t border-white/10 flex justify-end"><div class="font-bold text-lg transition-colors duration-300" id="'+idx+'_display">-</div></div>';
+      form.appendChild(card);
+    })(i);
+  }
+}
+function gv(id){var el=document.getElementById(id);if(!el||el.value.trim()==='')return NaN;return parseFloat(el.value.replace(',','.'));}
+function getModuleMoy(i){
+  var n=currentCalcYear; var mod=MODULES[n][i];
+  var cb=document.getElementById(i+'_manual_cb');
+  if(cb&&cb.checked){var v=gv(i+'_manual_val');return isNaN(v)?{moy:0,filled:false}:{moy:v,filled:true};}
+  var pts=0,div=0,filled=false;
+  if(mod.type==='6fields'){
+    // 1ere annee: EMD x1, TD x2 (x1 si tdLight), TP x2
+    var e1=gv(i+'_emd1'),e2=gv(i+'_emd2'),t1=gv(i+'_td1'),t2=gv(i+'_td2'),p1=gv(i+'_tp1'),p2=gv(i+'_tp2');
+    var tdW=mod.tdLight?1:2;
+    if(!isNaN(e1)){pts+=e1;div+=1;filled=true;} if(!isNaN(e2)){pts+=e2;div+=1;filled=true;}
+    if(!isNaN(t1)){pts+=t1*tdW;div+=tdW;filled=true;} if(!isNaN(t2)){pts+=t2*tdW;div+=tdW;filled=true;}
+    if(!isNaN(p1)){pts+=p1*2;div+=2;filled=true;} if(!isNaN(p2)){pts+=p2*2;div+=2;filled=true;}
+  } else {
+    // 2eme: EMD moy x1, TD x1, TP x2
+    // 3eme: EMD moy x1, TD x2, TP x2
+    var e1=gv(i+'_emd1'),e2=gv(i+'_emd2'),td=gv(i+'_td'),tp=gv(i+'_tp');
+    var tdW=(n===2)?1:2;
+    var es=0,ec=0;
+    if(!isNaN(e1)){es+=e1;ec++;}  if(!isNaN(e2)){es+=e2;ec++;}
+    if(ec>0){pts+=(es/ec);div+=1;filled=true;}
+    if(!isNaN(td)){pts+=td*tdW;div+=tdW;filled=true;}
+    if(!isNaN(tp)){pts+=tp*2;div+=2;filled=true;}
+  }
+  return{moy:div>0?pts/div:0,filled:filled};
+}
+function toggleManual(i,animate){
+  if(animate===undefined)animate=true;
+  var cb=document.getElementById(i+'_manual_cb');
+  var mc=document.getElementById(i+'_manual_container');
+  var nf=document.getElementById(i+'_notes_fields');
+  if(!cb)return;
+  if(cb.checked){mc.classList.remove('is-hidden');nf.classList.add('is-hidden');}
+  else{nf.classList.remove('is-hidden');mc.classList.add('is-hidden');}
+  if(animate)calcModule(i);
+}
+function calcModule(i){
+  var r=getModuleMoy(i); var el=document.getElementById(i+'_display');
+  if(!el)return;
+  if(r.filled){el.textContent=r.moy.toFixed(2);el.style.color=r.moy<5?'var(--danger)':r.moy<10?'var(--warning)':'var(--success)';}
+  else{el.textContent='-';el.style.color='var(--text-main)';}
+}
+function calculer(){
+  var mods=MODULES[currentCalcYear];
+  var total=0,coefs=0,u5=[],u10=[],has=false;
+  for(var i=0;i<mods.length;i++){
+    var r=getModuleMoy(i); calcModule(i);
+    if(r.filled){has=true;if(r.moy<5)u5.push(mods[i].nom);else if(r.moy<10)u10.push(mods[i].nom);total+=r.moy*mods[i].coef;coefs+=mods[i].coef;}
+  }
+  var res=document.getElementById('resultat');
+  if(!has||coefs===0){res.innerHTML='<div class="glass p-4 border-l-4 border-yellow-500 text-yellow-200 text-left">'+t('noNotes')+'</div>';return;}
+  var avg=(total/coefs).toFixed(2);
+  var pass=parseFloat(avg)>=10&&u5.length===0;
+  var html='<div class="glass p-6 rounded-2xl animate-float border-t-4 '+(pass?'border-green-400':'border-red-400')+'"><p class="text-lg opacity-80">'+t('genAvg')+'</p><h2 class="text-6xl font-bold my-4 text-gradient">'+avg+'</h2>';
+  if(pass){html+='<div class="inline-block px-4 py-2 bg-green-500/20 text-green-300 rounded-full font-bold border border-green-500/30">'+t('validated')+'</div>';}
+  else{
+    if(parseFloat(avg)<10)html+='<div class="mb-3 inline-block px-4 py-2 bg-red-500/20 text-red-300 rounded-full font-bold border border-red-500/30">'+t('insufficient')+'</div>';
+    html+='<div class="mt-4 space-y-2 text-left bg-black/20 p-4 rounded-lg">';
+    if(u5.length) html+='<div class="text-sm text-red-300 flex items-start gap-2"><i class="ph-bold ph-warning-circle mt-1"></i><span><strong>'+t('eliminatory')+'</strong> '+u5.join(', ')+'</span></div>';
+    if(u10.length)html+='<div class="text-sm text-yellow-300 flex items-start gap-2"><i class="ph-bold ph-info mt-1"></i><span><strong>'+t('compensate')+'</strong> '+u10.join(', ')+'</span></div>';
+    html+='</div>';
+  }
+  html+='</div>';
+  res.innerHTML=html; res.scrollIntoView({behavior:'smooth'});
+}
+function saveResults(){
+  var mods=MODULES[currentCalcYear]; var data=[];
+  for(var i=0;i<mods.length;i++){
+    var cb=document.getElementById(i+'_manual_cb');
+    var mv=document.getElementById(i+'_manual_val');
+    var e={manual:cb?cb.checked:false,manualVal:mv?mv.value:''};
+    if(mods[i].type==='6fields'){e.e1=gv(i+'_emd1')||'';e.e2=gv(i+'_emd2')||'';e.t1=gv(i+'_td1')||'';e.t2=gv(i+'_td2')||'';e.p1=gv(i+'_tp1')||'';e.p2=gv(i+'_tp2')||'';}
+    else{e.e1=gv(i+'_emd1')||'';e.e2=gv(i+'_emd2')||'';e.td=gv(i+'_td')||'';e.tp=gv(i+'_tp')||'';}
+    data.push(e);
+  }
+  localStorage.setItem('notes_y'+currentCalcYear,JSON.stringify(data));
+  showToast(t('saved'),true);
+}
+function loadResults(){
+  var raw=localStorage.getItem('notes_y'+currentCalcYear);
+  if(!raw){showToast(t('noData'));return;}
+  try{
+    var data=JSON.parse(raw); var mods=MODULES[currentCalcYear];
+    for(var i=0;i<data.length;i++){
+      if(i>=mods.length)continue;
+      var item=data[i];
+      var cb=document.getElementById(i+'_manual_cb');
+      if(!cb)continue;
+      cb.checked=item.manual; toggleManual(i,false);
+      function sv(id,v){var el=document.getElementById(id);if(el&&v!==undefined)el.value=v;}
+      sv(i+'_manual_val',item.manualVal);
+      sv(i+'_emd1',item.e1); sv(i+'_emd2',item.e2);
+      if(mods[i].type==='6fields'){sv(i+'_td1',item.t1);sv(i+'_td2',item.t2);sv(i+'_tp1',item.p1);sv(i+'_tp2',item.p2);}
+      else{sv(i+'_td',item.td);sv(i+'_tp',item.tp);}
+      calcModule(i);
+    }
+    calculer(); showToast(t('loaded'),true);
+  }catch(e){showToast('Erreur.');}
+}
+function updateSidebarNav(){
+  var nav=document.getElementById('sidebarNav'); if(!nav)return;
+  var isHome=state.page==='home',isYear=state.page==='year',isCalc=state.page==='calc';
+  var yn=state.year; var yk=yn?'year'+yn:null;
+  var h='<button onclick="navigate(\'home\');closeMenu();" class="nav-link glass '+(isHome?'active':'')+'"><i class="ph-bold ph-house text-xl"></i><span data-key="home">'+t('home')+'</span></button>';
+  if(yn){
+    h+='<button onclick="navigate(\'year\','+yn+');closeMenu();" class="nav-link glass '+(isYear?'active':'')+'"><i class="ph-bold ph-graduation-cap text-xl"></i><span>'+t(yk)+'</span></button>';
+    if(isCalc)h+='<button onclick="navigate(\'calc\','+yn+');closeMenu();" class="nav-link glass active"><i class="ph-bold ph-calculator text-xl"></i><span data-key="pageCalc">'+t('pageCalc')+'</span></button>';
+  }
+  h+='<div class="w-full h-px my-2" style="background:var(--glass-border);"></div><button id="installBtn" class="nav-link glass"><i class="ph-bold ph-download-simple text-xl"></i><span data-key="install">'+t('install')+'</span></button><a href="mailto:dentaireoranmoy@gmail.com" class="nav-link glass"><i class="ph-bold ph-envelope text-xl"></i><span data-key="contact">'+t('contact')+'</span></a>';
+  nav.innerHTML=h;
+  var btn=document.getElementById('installBtn');
+  if(btn)btn.addEventListener('click',handleInstall);
+}
+function updateBreadcrumb(){
+  var bc=document.getElementById('breadcrumb');
+  if(state.page==='home'){bc.innerHTML='';bc.style.display='none';return;}
+  bc.style.display='flex';
+  var yk='year'+state.year;
+  var p=['<button class="breadcrumb-btn" onclick="navigate(\'home\')"><i class="ph-bold ph-house" style="font-size:0.65rem;"></i> '+t('home')+'</button>'];
+  if(state.page==='year'){p.push('<span class="breadcrumb-sep">›</span>');p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">'+t(yk)+'</span>');}
+  else if(state.page==='calc'){p.push('<span class="breadcrumb-sep">›</span>');p.push('<button class="breadcrumb-btn" onclick="navigate(\'year\','+state.year+')">'+t(yk)+'</button>');p.push('<span class="breadcrumb-sep">›</span>');p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">'+t('pageCalc')+'</span>');}
+  bc.innerHTML=p.join('');
+}
+function applyTranslations(){
+  var lang=getLang(); var els=document.querySelectorAll('[data-key]');
+  for(var i=0;i<els.length;i++){var k=els[i].getAttribute('data-key');var v=T[lang][k];if(v&&typeof v==='string')els[i].textContent=v;}
+  var sub=document.getElementById('calcSubtitle');
+  if(sub&&state.year)sub.textContent=t('simulFor',t('year'+state.year));
+}
+var langPill=document.getElementById('langPill');
+var langBtns=document.querySelectorAll('.lang-btn');
+function setLangPill(lang){
+  var idx=lang==='fr'?0:lang==='en'?1:2;
+  langPill.style.transform='translateX('+(idx*100)+'%)';
+  for(var i=0;i<langBtns.length;i++)langBtns[i].classList.toggle('active',langBtns[i].getAttribute('data-lang')===lang);
+}
+function updateLanguage(lang){
+  document.body.classList.add('switching-lang'); setLangPill(lang);
+  setTimeout(function(){
+    document.documentElement.setAttribute('lang',lang);
+    document.documentElement.setAttribute('dir',lang==='ar'?'rtl':'ltr');
+    localStorage.setItem('lang',lang);
+    applyTranslations(); updateSidebarNav(); updateBreadcrumb();
+    requestAnimationFrame(function(){document.body.classList.remove('switching-lang');});
+  },300);
+}
+function initLang(){
+  var lang=getLang();
+  document.documentElement.setAttribute('lang',lang);
+  document.documentElement.setAttribute('dir',lang==='ar'?'rtl':'ltr');
+  setLangPill(lang); applyTranslations();
+}
+for(var _i=0;_i<langBtns.length;_i++){
+  (function(btn){btn.addEventListener('click',function(){updateLanguage(btn.getAttribute('data-lang'));});})(langBtns[_i]);
+}
+function initTheme(){var s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);}
+document.getElementById('themeBtn').addEventListener('click',function(){
+  var cur=document.documentElement.getAttribute('data-theme');
+  var next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('theme',next);
+});
+var sidebar=document.getElementById('sidebar');
+var overlay=document.getElementById('overlay');
+var menuBtn=document.getElementById('menuBtn');
+menuBtn.onclick=function(e){
+  e.stopPropagation(); sidebar.classList.toggle('open');
+  overlay.classList.toggle('hidden',!sidebar.classList.contains('open'));
+};
+window.closeMenu=function(){sidebar.classList.remove('open');overlay.classList.add('hidden');};
+window.showToast=function(msg,isSuccess){
+  var c=document.getElementById('toastContainer');
+  var toast=document.createElement('div');
+  toast.className='px-6 py-3 rounded-full glass text-white shadow-2xl flex items-center gap-3 translate-y-10 opacity-0 transition-all duration-500 font-semibold text-sm';
+  toast.style.background='rgba(0,0,0,0.85)';
+  var icon=isSuccess?'ph-check-circle text-green-400':'ph-clock';
+  toast.innerHTML='<i class="ph-bold '+icon+' text-xl"></i><span>'+msg+'</span>';
+  c.appendChild(toast);
+  requestAnimationFrame(function(){toast.classList.remove('translate-y-10','opacity-0');});
+  setTimeout(function(){toast.classList.add('translate-y-10','opacity-0');setTimeout(function(){toast.remove();},500);},2800);
+};
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;});
+function handleInstall(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;closeMenu();}else showToast(t('toastInstall'));}
+initTheme(); initLang();
+var _initState=stateFromHash(window.location.hash);
+navigateSilent(_initState.page,_initState.year);
+updateBreadcrumb();
+</script>
+</body>
+</html>
