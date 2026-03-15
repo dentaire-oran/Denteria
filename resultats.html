@@ -519,7 +519,7 @@ function fsGet(collection, docId) {
 }
 
 function fsList(collection, pageSize) {
-  pageSize = pageSize || 500;
+  pageSize = pageSize || 1000;
   var url = FS_BASE+"/"+collection+"?key="+FIREBASE_API_KEY+"&pageSize="+pageSize;
   return fetch(url).then(function(r){ return r.json(); });
 }
