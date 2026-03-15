@@ -578,7 +578,7 @@ function renderAdminTable(data){
         ?'<span class="badge badge-warning" style="font-size:0.72rem;padding:2px 8px;">Rattrapage</span>'
         :'<span style="color:var(--text-muted);font-size:0.85rem;">'+res+'</span>';
     var actionBtn=isAdminLite
-      ?'<button class="btn-sm btn-ghost-sm" onclick="suggestEdit('+et.numero+')"><i class="ph-bold ph-pencil-simple"></i> Suggérer</button>'
+      ?'<button class="btn-sm btn-ghost-sm" onclick="viewNotes('+et.numero+')"><i class="ph-bold ph-eye"></i> Voir</button>'
       :'<button class="btn-sm btn-success-sm" onclick="openEditNotes('+et.numero+')"><i class="ph-bold ph-pencil"></i> Notes</button>';
     var tr=document.createElement("tr");
     tr.innerHTML=
@@ -662,6 +662,50 @@ function saveEditNotes(num,modal){
     showToast("Notes sauvegardées pour N°"+num,"success");
     renderAdminTable(adminData);
   }).catch(function(){showToast("Erreur sauvegarde.","danger");});
+}
+
+
+function viewNotes(num){
+  var et=adminData.find(function(e){return e.numero===num;});
+  if(!et)return;
+  var d=document.createElement("div");
+  d.id="viewNotesModal";d.className="modal-overlay";
+  var inner=document.createElement("div");inner.className="modal-box";
+  var hdr=document.createElement("div");
+  hdr.style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
+  hdr.innerHTML='<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">'+et.nom+' '+et.prenom+' — Notes</div>';
+  var closeBtn=document.createElement("button");
+  closeBtn.className="btn-ghost";closeBtn.style="padding:0.4rem 0.8rem;";
+  closeBtn.innerHTML='<i class="ph-bold ph-x"></i>';
+  closeBtn.onclick=function(){d.remove();};
+  hdr.appendChild(closeBtn);inner.appendChild(hdr);
+  var tableWrap=document.createElement("div");tableWrap.style="overflow-x:auto;";
+  var table=document.createElement("table");table.className="res-table";
+  var thead=document.createElement("thead");
+  thead.innerHTML='<tr><th>Module</th><th>Coef</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th>Moy Module</th></tr>';
+  table.appendChild(thead);
+  var tbody=document.createElement("tbody");
+  MODULES.forEach(function(mod){
+    var k=mod.key;
+    var tr=document.createElement("tr");
+    var vals=[et[k+"_emd1"],et[k+"_emd2"],et[k+"_td"],et[k+"_tp"],et[k+"_moy_module"]!==undefined?et[k+"_moy_module"]:et["moy_"+k]];
+    var td0=document.createElement("td");td0.style="font-weight:600;";td0.textContent=mod.nom;tr.appendChild(td0);
+    var td1=document.createElement("td");td1.className="mono";td1.textContent=mod.coef;tr.appendChild(td1);
+    vals.forEach(function(v){
+      var cell=document.createElement("td");
+      cell.className="mono "+nc(v);
+      cell.innerHTML=fn(v);
+      tr.appendChild(cell);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);tableWrap.appendChild(table);inner.appendChild(tableWrap);
+  var footer=document.createElement("div");
+  footer.style="margin-top:1.25rem;display:flex;justify-content:flex-end;";
+  var closeBtn2=document.createElement("button");closeBtn2.className="btn-ghost";closeBtn2.textContent="Fermer";
+  closeBtn2.onclick=function(){d.remove();};
+  footer.appendChild(closeBtn2);inner.appendChild(footer);
+  d.appendChild(inner);document.body.appendChild(d);
 }
 
 function suggestEdit(num){
@@ -806,7 +850,7 @@ function renderComptes(data){
       '<td class="mono" style="font-weight:700;">'+et.numero+'</td>'+
       '<td style="font-weight:600;">'+et.nom+'</td><td>'+et.prenom+'</td>'+
       '<td class="mono">'+(et.custom_id||"—")+'</td>'+
-      '<td class="mono">'+(et.custom_mdp?"••••••":"—")+'</td>'+
+      '<td class="mono">'+(et.custom_mdp?et.custom_mdp:"—")+'</td>'+
       '<td>'+(isAdminLite?'—':'<button class="btn-sm btn-danger-sm" onclick="resetCompte('+et.numero+')"><i class="ph-bold ph-arrow-counter-clockwise"></i> Reset</button>')+'</td>'+
       '</tr>';
   });
