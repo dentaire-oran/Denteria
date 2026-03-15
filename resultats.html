@@ -578,7 +578,7 @@ function renderAdminTable(data){
         ?'<span class="badge badge-warning" style="font-size:0.72rem;padding:2px 8px;">Rattrapage</span>'
         :'<span style="color:var(--text-muted);font-size:0.85rem;">'+res+'</span>';
     var actionBtn=isAdminLite
-      ?'<button class="btn-sm btn-ghost-sm" onclick="viewNotes('+et.numero+')"><i class="ph-bold ph-eye"></i> Voir</button>'
+      ?'<button class="btn-sm btn-ghost-sm" onclick="viewNotes('+et.numero+')"><i class="ph-bold ph-eye"></i> Voir</button> <button class="btn-sm btn-ghost-sm" onclick="suggestEdit('+et.numero+')"><i class="ph-bold ph-pencil-simple"></i> Suggérer</button>'
       :'<button class="btn-sm btn-success-sm" onclick="openEditNotes('+et.numero+')"><i class="ph-bold ph-pencil"></i> Notes</button>';
     var tr=document.createElement("tr");
     tr.innerHTML=
@@ -850,7 +850,7 @@ function renderComptes(data){
       '<td class="mono" style="font-weight:700;">'+et.numero+'</td>'+
       '<td style="font-weight:600;">'+et.nom+'</td><td>'+et.prenom+'</td>'+
       '<td class="mono">'+(et.custom_id||"—")+'</td>'+
-      '<td class="mono">'+(et.custom_mdp?et.custom_mdp:"—")+'</td>'+
+      '<td class="mono">'+(isAdminLite?(et.custom_mdp?"••••••":"—"):(et.custom_mdp?et.custom_mdp:"—"))+'</td>'+
       '<td>'+(isAdminLite?'—':'<button class="btn-sm btn-danger-sm" onclick="resetCompte('+et.numero+')"><i class="ph-bold ph-arrow-counter-clockwise"></i> Reset</button>')+'</td>'+
       '</tr>';
   });
