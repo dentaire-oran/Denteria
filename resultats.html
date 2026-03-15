@@ -521,8 +521,8 @@ function findEtudiant(id, mdp) {
     for (var i=0; i<all.length; i++) {
       var et = all[i];
       if (et.custom_id && et.custom_mdp && et.custom_id===id && et.custom_mdp===mdp) return et;
-      var nom = (et.nom+" "+et.prenom).trim().toUpperCase();
-      if (nom===id.trim().toUpperCase() && String(et.numero)===String(mdp)) return et;
+      var nom = (et.nom+" "+et.prenom).trim();
+      if (nom===id.trim() && String(et.numero)===String(mdp)) return et;
     }
     return null;
   });
