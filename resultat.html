@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#6366f1"/>
+  <title>Résultats 3ème Année - Dental Guide</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.2"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    :root { --transition-speed: 0.5s; }
+    [data-theme="dark"] {
+      --bg-gradient: linear-gradient(135deg, #312e81 0%, #1e1b4b 50%, #4c0519 100%);
+      --glass-bg: rgba(255,255,255,0.08); --glass-border: rgba(255,255,255,0.15);
+      --text-main: #ffffff; --text-muted: rgba(255,255,255,0.7);
+      --btn-hover: rgba(255,255,255,0.15); --pill-bg: rgba(0,0,0,0.3); --pill-color: #ffffff;
+      --sidebar-bg: rgba(0,0,0,0.6); --input-bg: rgba(0,0,0,0.3);
+      --success: #2ad4a5; --danger: #ff647c; --warning: #ffc94a;
+      --nav-active-bg: rgba(129,140,248,0.2); --nav-active-text: #a5b4fc;
+      --table-header: rgba(0,0,0,0.3); --table-row-hover: rgba(255,255,255,0.05);
+    }
+    [data-theme="light"] {
+      --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
+      --glass-bg: rgba(255,255,255,0.65); --glass-border: rgba(255,255,255,0.8);
+      --text-main: #312e81; --text-muted: #6366f1;
+      --btn-hover: rgba(255,255,255,0.9); --pill-bg: rgba(255,255,255,0.5); --pill-color: #312e81;
+      --sidebar-bg: rgba(255,255,255,0.7); --input-bg: rgba(255,255,255,0.5);
+      --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
+      --nav-active-bg: rgba(79,70,229,0.1); --nav-active-text: #4f46e5;
+      --table-header: rgba(255,255,255,0.4); --table-row-hover: rgba(255,255,255,0.3);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg-gradient); color: var(--text-main); font-family: 'Inter', sans-serif; overflow-x: hidden; transition: background 0.5s ease, color 0.5s ease, opacity 0.3s ease, filter 0.3s ease; min-height: 100vh; }
+    body.switching-lang { opacity: 0; filter: blur(15px); pointer-events: none; }
+    body.switching-lang #sidebar { transition: none !important; }
+    .glass { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); transition: all 0.3s ease; }
+    .text-gradient { background-clip: text; -webkit-background-clip: text; color: transparent; background-image: linear-gradient(to right, #818cf8, #c084fc, #f472b6); }
+    [data-theme="light"] .text-gradient { background-image: linear-gradient(to right, #4f46e5, #9333ea, #db2777); }
+    @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .lang-container { position:relative; display:flex; background:var(--pill-bg); border-radius:99px; padding:4px; border:1px solid var(--glass-border); height:48px; width:100%; direction:ltr; }
+    [data-theme="light"] .lang-container { background:rgba(255,255,255,0.4); }
+    .lang-pill { position:absolute; top:4px; bottom:4px; left:4px; width:calc(33.33% - 5px); background:var(--pill-color); border-radius:99px; transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); z-index:0; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+    .lang-btn { flex:1; position:relative; z-index:1; font-size:0.9rem; font-weight:600; color:var(--text-muted); transition:color 0.3s; }
+    [data-theme="dark"] .lang-btn.active { color:#333; font-weight:800; }
+    [data-theme="light"] .lang-btn.active { color:#fff; font-weight:800; }
+    .theme-toggle-btn { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; color:var(--text-main); flex-shrink:0; }
+    .theme-toggle-btn:hover { background:var(--btn-hover); }
+    .theme-toggle-btn i { position:absolute; top:50%; left:50%; transition:all 0.5s cubic-bezier(0.23,1,0.32,1); }
+    [data-theme="dark"] .ph-moon { transform:translate(-50%,-50%) scale(1) rotate(0deg); opacity:1; }
+    [data-theme="dark"] .ph-sun  { transform:translate(-50%,-50%) scale(0.5) rotate(90deg); opacity:0; }
+    [data-theme="light"] .ph-sun  { transform:translate(-50%,-50%) scale(1) rotate(0deg); opacity:1; }
+    [data-theme="light"] .ph-moon { transform:translate(-50%,-50%) scale(0.5) rotate(-90deg); opacity:0; }
+    html[dir="rtl"] #sidebar { right:0; left:auto; transform:translateX(100%); border-left:1px solid var(--glass-border); border-right:none; }
+    html[dir="ltr"] #sidebar  { left:0; right:auto; transform:translateX(-100%); border-right:1px solid var(--glass-border); border-left:none; }
+    #sidebar.open { transform:translateX(0) !important; }
+    html[dir="rtl"] #menuBtn { right:2rem; left:auto; }
+    html[dir="ltr"]  #menuBtn { left:2rem; right:auto; }
+    .nav-link { display:flex; align-items:center; gap:0.75rem; width:100%; padding:1rem 1.5rem; border-radius:1rem; font-weight:500; text-decoration:none; color:var(--text-main); border:1px solid transparent; transition:all 0.2s ease; cursor:pointer; background:none; }
+    .nav-link:hover { background:var(--btn-hover); transform:translateX(4px); }
+    html[dir="rtl"] .nav-link:hover { transform:translateX(-4px); }
+    .nav-link.active { background:var(--nav-active-bg); color:var(--nav-active-text); border-color:var(--glass-border); font-weight:600; }
+    .calc-input { width:100%; background:var(--input-bg); border:1px solid var(--glass-border); color:var(--text-main); border-radius:0.75rem; padding:0.75rem 1rem; outline:none; transition:border-color 0.3s; font-family:'Inter',sans-serif; font-size:0.95rem; }
+    .calc-input:focus { border-color:#818cf8; box-shadow:0 0 0 3px rgba(129,140,248,0.15); }
+    .field-label { display:block; font-size:0.8rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem; }
+    .btn-main { width:100%; padding:0.9rem 1.5rem; border-radius:99px; font-weight:700; font-size:0.95rem; cursor:pointer; border:none; display:flex; align-items:center; justify-content:center; gap:0.5rem; transition:all 0.25s; background:linear-gradient(135deg,#818cf8,#9333ea); color:white; box-shadow:0 4px 20px rgba(129,140,248,0.3); }
+    .btn-main:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(129,140,248,0.4); }
+    .btn-main:active { transform:scale(0.98); }
+    .btn-ghost { background:var(--btn-hover); color:var(--text-main); border:1px solid var(--glass-border); padding:0.6rem 1.2rem; border-radius:99px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:0.4rem; font-size:0.88rem; transition:all 0.2s; }
+    .btn-ghost:hover { background:rgba(255,255,255,0.25); }
+    .btn-sm { padding:0.5rem 1rem; border-radius:8px; font-size:0.82rem; font-weight:600; cursor:pointer; border:none; display:flex; align-items:center; gap:0.4rem; transition:all 0.2s; }
+    .btn-success-sm { background:rgba(42,212,165,0.15); color:var(--success); border:1px solid rgba(42,212,165,0.3); }
+    .btn-danger-sm  { background:rgba(255,100,124,0.15); color:var(--danger);  border:1px solid rgba(255,100,124,0.3); }
+    .btn-ghost-sm { background:var(--btn-hover); color:var(--text-muted); border:1px solid var(--glass-border); }
+    .error-msg { background:rgba(255,100,124,0.1); border:1px solid rgba(255,100,124,0.3); color:var(--danger); padding:0.75rem 1rem; border-radius:0.75rem; font-size:0.88rem; margin-bottom:1rem; display:none; align-items:center; gap:0.5rem; }
+    .error-msg.show { display:flex; }
+    .badge { display:inline-flex; align-items:center; gap:0.4rem; padding:0.4rem 0.9rem; border-radius:99px; font-size:0.82rem; font-weight:600; }
+    .badge-success { background:rgba(42,212,165,0.15); color:var(--success); border:1px solid rgba(42,212,165,0.3); }
+    .badge-warning { background:rgba(255,201,74,0.15); color:var(--warning); border:1px solid rgba(255,201,74,0.3); }
+    .badge-danger  { background:rgba(255,100,124,0.15); color:var(--danger);  border:1px solid rgba(255,100,124,0.3); }
+    .stat-card { border-radius:20px; padding:1.25rem; text-align:center; }
+    .stat-val { font-size:1.3rem; font-weight:800; font-family:'JetBrains Mono',monospace; }
+    .stat-lbl { font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-top:0.2rem; }
+    .res-table { width:100%; border-collapse:collapse; font-size:0.88rem; }
+    .res-table th { padding:0.75rem 1rem; text-align:left; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); background:var(--table-header); border-bottom:1px solid var(--glass-border); white-space:nowrap; }
+    .res-table td { padding:0.85rem 1rem; border-bottom:1px solid rgba(255,255,255,0.06); white-space:nowrap; }
+    [data-theme="light"] .res-table td { border-bottom:1px solid rgba(0,0,0,0.06); }
+    .res-table tr:last-child td { border-bottom:none; }
+    .res-table tr:hover td { background:var(--table-row-hover); }
+    .mono { font-family:'JetBrains Mono',monospace; font-size:0.9rem; }
+    .note-good { color:var(--success); font-weight:600; }
+    .note-mid  { color:var(--warning); font-weight:600; }
+    .note-bad  { color:var(--danger);  font-weight:600; }
+    .note-abs  { color:var(--text-muted); font-style:italic; }
+    .coef-badge { display:inline-block; background:rgba(255,255,255,0.1); border:1px solid var(--glass-border); border-radius:6px; padding:1px 6px; font-size:0.72rem; color:var(--text-muted); margin-left:6px; }
+    [data-theme="light"] .coef-badge { background:rgba(0,0,0,0.06); }
+    .tabs { display:flex; gap:0.5rem; background:var(--input-bg); border:1px solid var(--glass-border); border-radius:14px; padding:4px; margin-bottom:1.5rem; }
+    .tab { flex:1; padding:0.6rem; border-radius:10px; font-size:0.85rem; font-weight:600; cursor:pointer; border:none; background:none; color:var(--text-muted); transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:0.4rem; }
+    .tab.active { background:var(--glass-bg); color:var(--text-main); border:1px solid var(--glass-border); box-shadow:0 2px 8px rgba(0,0,0,0.15); }
+    .glass-select { width:100%; padding:0.75rem 1rem; background:var(--input-bg); border:1px solid var(--glass-border); border-radius:0.75rem; color:var(--text-main); font-family:'Inter',sans-serif; font-size:0.9rem; outline:none; cursor:pointer; transition:all 0.2s; }
+    .glass-select:focus { border-color:#818cf8; }
+    .notif-badge { background:var(--danger); color:white; border-radius:99px; font-size:0.7rem; font-weight:700; padding:2px 7px; margin-left:6px; }
+    .notif-card { border-radius:16px; padding:1rem 1.25rem; margin-bottom:0.75rem; }
+    .notif-unread { border:1px solid rgba(129,140,248,0.3); background:rgba(129,140,248,0.07); }
+    .notif-read { border:1px solid var(--glass-border); background:var(--glass-bg); }
+    .spinner { width:20px; height:20px; border:2px solid var(--glass-border); border-top-color:#818cf8; border-radius:50%; animation:spin 0.7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    #toastContainer { position:fixed; bottom:6rem; left:50%; transform:translateX(-50%); z-index:200; display:flex; flex-direction:column; gap:0.5rem; pointer-events:none; }
+    .toast-item { padding:0.75rem 1.25rem; border-radius:99px; font-size:0.88rem; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 8px 32px rgba(0,0,0,0.3); opacity:0; transform:translateY(10px); transition:all 0.3s; }
+    .toast-item.show { opacity:1; transform:translateY(0); }
+    #breadcrumb { padding:3px 8px !important; }
+    .breadcrumb-btn { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:99px; font-size:0.72rem; font-weight:500; color:var(--text-muted); transition:all 0.2s ease; cursor:pointer; background:none; border:none; }
+    .breadcrumb-btn:hover { color:var(--text-main); background:var(--btn-hover); }
+    .breadcrumb-sep { color:var(--text-muted); opacity:0.4; font-size:0.65rem; }
+    .hidden { display:none !important; }
+    .modal-overlay { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(4px); }
+    .modal-box { background:var(--glass-bg); backdrop-filter:blur(20px); border:1px solid var(--glass-border); border-radius:24px; padding:1.75rem; width:100%; max-width:700px; max-height:90vh; overflow-y:auto; }
+    @media(max-width:640px) { .stat-val { font-size:1.1rem; } }
+  </style>
+</head>
+<body>
+
+<div id="sidebar" class="fixed inset-y-0 z-50 w-80 glass transition-transform duration-500 ease-out flex flex-col" style="background:var(--sidebar-bg);">
+  <div class="p-8 pt-24 flex flex-col h-full overflow-y-auto">
+    <h2 class="text-3xl font-bold text-gradient mb-10">Dental Guide</h2>
+    <div class="flex items-center gap-3 mb-10">
+      <div class="lang-container">
+        <div class="lang-pill" id="langPill"></div>
+        <button data-lang="fr" class="lang-btn active">FR</button>
+        <button data-lang="en" class="lang-btn">EN</button>
+        <button data-lang="ar" class="lang-btn">AR</button>
+      </div>
+      <div class="theme-toggle-btn glass" id="themeBtn">
+        <i class="ph-fill ph-moon text-xl"></i>
+        <i class="ph-fill ph-sun text-xl"></i>
+      </div>
+    </div>
+    <div class="space-y-3" id="sidebarNav"></div>
+  </div>
+</div>
+
+<div id="overlay" class="fixed inset-0 bg-black/40 z-40 hidden backdrop-blur-sm" onclick="closeMenu()"></div>
+<button id="menuBtn" class="fixed top-8 z-50 p-3 rounded-2xl glass hover:bg-white/20 transition active:scale-95 shadow-lg" style="color:var(--text-main);">
+  <i class="ph-bold ph-list text-3xl"></i>
+</button>
+<div id="breadcrumb" class="fixed top-8 z-40 left-1/2 -translate-x-1/2 flex items-center gap-1 glass rounded-full" style="max-width:90vw;display:none;"></div>
+<div id="toastContainer"></div>
+
+<!-- LOGIN -->
+<div id="viewLogin" class="pt-28 pb-32 px-6 max-w-lg mx-auto flex flex-col items-center justify-center min-h-screen">
+  <h1 class="text-5xl font-bold text-gradient animate-float mb-4 text-center">Résultats</h1>
+  <p class="text-xl mb-10 font-light text-center" style="color:var(--text-muted);">3ème Année — Dental Guide Oran</p>
+  <div class="glass w-full rounded-3xl p-8">
+    <div class="error-msg" id="loginError">
+      <i class="ph-fill ph-warning-circle"></i>
+      <span id="loginErrorMsg">Identifiants incorrects</span>
+    </div>
+    <div class="mb-5">
+      <label class="field-label">Nom et Prénom</label>
+      <input type="text" class="calc-input" id="inputNom" placeholder="NOM PRENOM" autocomplete="off">
+      <p class="text-xs mt-1" style="color:var(--text-muted);"><i class="ph-fill ph-info"></i> Nom et prénom en MAJUSCULES</p>
+    </div>
+    <div class="mb-6">
+      <label class="field-label">Mot de passe</label>
+      <input type="password" class="calc-input" id="inputMdp" placeholder="Votre numéro de liste">
+    </div>
+    <button class="btn-main" id="loginBtn" onclick="doLogin()">
+      <i class="ph-bold ph-sign-in"></i> Accéder à mes résultats
+    </button>
+  </div>
+</div>
+
+<!-- STUDENT -->
+<div id="viewStudent" class="hidden pt-28 pb-32 px-6 max-w-5xl mx-auto">
+  <div class="glass rounded-3xl p-6 mb-6">
+    <div class="flex items-start justify-between flex-wrap gap-4">
+      <div>
+        <h2 class="text-3xl font-bold text-gradient" id="studentName">—</h2>
+        <p class="mt-1" style="color:var(--text-muted);" id="studentMeta">N° — | 3ème Année</p>
+      </div>
+      <div class="flex flex-col items-end gap-3">
+        <div id="studentBadge"></div>
+        <button class="btn-ghost" onclick="showView('account')">
+          <i class="ph-bold ph-user-circle"></i> Mon Compte
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-cols-3 gap-4 mb-6">
+    <div class="glass stat-card"><div class="stat-val text-gradient" id="statMoy">—</div><div class="stat-lbl">Moyenne</div></div>
+    <div class="glass stat-card"><div class="stat-val text-gradient" id="statRank">—</div><div class="stat-lbl">Classement</div></div>
+    <div class="glass stat-card"><div class="stat-val text-gradient">444</div><div class="stat-lbl">Étudiants</div></div>
+  </div>
+  <div class="glass rounded-3xl overflow-hidden mb-6">
+    <div class="px-6 py-4 flex items-center justify-between" style="border-bottom:1px solid var(--glass-border);">
+      <span class="font-bold text-sm uppercase tracking-widest" style="color:var(--text-muted);">Notes détaillées</span>
+      <span class="text-sm" style="color:var(--text-muted);">11 modules</span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="res-table">
+        <thead><tr><th>Module</th><th>Coef</th><th>EMD 1</th><th>EMD 2</th><th>Moy EMD</th><th>TD</th><th>TP</th><th>Moy Module</th></tr></thead>
+        <tbody id="modulesBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="glass rounded-3xl p-6 mb-6">
+    <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+      <i class="ph-fill ph-flag" style="color:var(--warning);"></i> Signaler une erreur
+    </h3>
+    <div class="mb-4">
+      <label class="field-label">Module concerné</label>
+      <select class="glass-select" id="signalModule"><option value="">— Choisir un module —</option></select>
+    </div>
+    <div class="mb-4">
+      <label class="field-label">Type de signalement</label>
+      <select class="glass-select" id="signalType">
+        <option value="Erreur de note">Erreur de note</option>
+        <option value="Note manquante">Note manquante</option>
+        <option value="Autre">Autre</option>
+      </select>
+    </div>
+    <div class="mb-5">
+      <label class="field-label">Commentaire (optionnel)</label>
+      <textarea class="calc-input" id="signalComment" placeholder="Décrivez le problème..." style="min-height:80px;resize:vertical;"></textarea>
+    </div>
+    <button class="btn-main" onclick="envoyerSignalement()" id="signalBtn">
+      <i class="ph-bold ph-paper-plane-right"></i> Envoyer le signalement
+    </button>
+  </div>
+</div>
+
+<!-- MON COMPTE -->
+<div id="viewAccount" class="hidden pt-28 pb-32 px-6 max-w-lg mx-auto">
+  <button class="flex items-center gap-2 mb-6 font-semibold" style="color:var(--text-muted);background:none;border:none;cursor:pointer;" onclick="showView('student')">
+    <i class="ph-bold ph-arrow-left"></i> Retour
+  </button>
+  <h1 class="text-4xl font-bold text-gradient mb-2">Mon Compte</h1>
+  <p class="mb-8" style="color:var(--text-muted);" id="accountSubtitle"></p>
+  <div class="glass rounded-3xl p-8">
+    <div class="mb-5 p-4 rounded-2xl" style="background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);">
+      <p class="text-sm flex items-center gap-2" style="color:#a5b4fc;">
+        <i class="ph-fill ph-info"></i> Choisissez un identifiant et mot de passe mémorables.
+      </p>
+    </div>
+    <div class="mb-5"><label class="field-label">Nouvel identifiant</label><input type="text" class="calc-input" id="newIdentifiant" placeholder="Votre nouvel identifiant"></div>
+    <div class="mb-5"><label class="field-label">Nouveau mot de passe</label><input type="password" class="calc-input" id="newMdp" placeholder="Nouveau mot de passe"></div>
+    <div class="mb-6"><label class="field-label">Confirmer le mot de passe</label><input type="password" class="calc-input" id="confirmMdp" placeholder="Répétez le mot de passe"></div>
+    <button class="btn-main" onclick="saveAccount()" id="saveAccountBtn">
+      <i class="ph-bold ph-floppy-disk"></i> Sauvegarder les modifications
+    </button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="viewAdmin" class="hidden pt-28 pb-32 px-6 max-w-6xl mx-auto">
+  <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+    <div>
+      <h1 class="text-4xl font-bold text-gradient">Interface Admin <span id="adminLiteBadge" class="hidden" style="font-size:0.75rem;background:rgba(255,201,74,0.15);color:var(--warning);border:1px solid rgba(255,201,74,0.3);padding:3px 10px;border-radius:99px;font-weight:600;vertical-align:middle;">Lecture seule</span></h1>
+      <p style="color:var(--text-muted);">444 étudiants — 3ème Année</p>
+    </div>
+    <div class="flex gap-3 flex-wrap items-center">
+      <div class="glass rounded-xl flex items-center px-3" style="border:1px solid var(--glass-border);">
+        <i class="ph-bold ph-magnifying-glass" style="color:var(--text-muted);"></i>
+        <input type="text" id="adminSearch" placeholder="Rechercher..." oninput="filterAdmin()" style="background:none;border:none;outline:none;padding:0.65rem 0.75rem;color:var(--text-main);width:200px;">
+      </div>
+      <button class="btn-ghost" onclick="logout()"><i class="ph-bold ph-sign-out"></i> Déconnexion</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" id="tabEtudiants" onclick="switchTab('etudiants')"><i class="ph-bold ph-users"></i> Étudiants</button>
+    <button class="tab" id="tabNotifs" onclick="switchTab('notifs')"><i class="ph-bold ph-bell"></i> Signalements <span class="notif-badge hidden" id="notifCount">0</span></button>
+    <button class="tab" id="tabComptes" onclick="switchTab('comptes')"><i class="ph-bold ph-key"></i> Comptes</button>
+  </div>
+  <div id="panelEtudiants">
+    <div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;">
+      <table class="res-table">
+        <thead><tr>
+          <th onclick="sortAdmin('numero')" style="cursor:pointer;">N° ↕</th>
+          <th onclick="sortAdmin('nom')" style="cursor:pointer;">Nom ↕</th>
+          <th>Prénom</th>
+          <th onclick="sortAdmin('moyenne_generale')" style="cursor:pointer;">Moy ↕</th>
+          <th onclick="sortAdmin('classement')" style="cursor:pointer;">Rang ↕</th>
+          <th>Résultat</th>
+          <th>Actions</th>
+        </tr></thead>
+        <tbody id="adminBody"></tbody>
+      </table>
+    </div></div>
+  </div>
+  <div id="panelNotifs" class="hidden"><div id="notifsList"><p class="text-center py-8" style="color:var(--text-muted);">Chargement...</p></div></div>
+  <div id="panelComptes" class="hidden"><div id="comptesList"><p class="text-center py-8" style="color:var(--text-muted);">Chargement...</p></div></div>
+</div>
+
+<a href="mailto:dentaireoranmoy@gmail.com" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 group w-max max-w-[90vw]">
+  <div class="px-6 py-3 rounded-full glass shadow-2xl flex items-center justify-center gap-3 font-semibold transition hover:scale-105 active:scale-95 border border-white/20 backdrop-blur-xl whitespace-nowrap" style="color:var(--text-main);">
+    <i class="ph-fill ph-paper-plane-right text-lg group-hover:-rotate-12 transition-transform"></i>
+    Nous contacter
+  </div>
+</a>
+
+<script>
+var FIREBASE_PROJECT = "denteria-e01d1";
+var FIREBASE_API_KEY = "AIzaSyDTVjkzfU8Upp6LBIroVNfWj5SZZUtRgR0";
+var EMAILJS_SERVICE  = "service_5sgcx6a";
+var EMAILJS_TEMPLATE = "template_74cg8ho";
+var EMAILJS_KEY      = "lxg6X0FF2kADJ5DYR";
+
+// Identifiants admin (hashes SHA-256)
+// admin / 0207
+var ADMIN_ID       = "admin";
+var ADMIN_MDP_HASH = "2e3c969e2e9b367ade00279743f88ea0e32f283152223e3d9aaf1c14669d7cbe";
+// user / azerty00
+var ADMIN_LITE_ID       = "user";
+var ADMIN_LITE_MDP_HASH = "90d06112d5dc4274afd6ba187432cbf203586566e2ffe87b7494e9b1e1268187";
+
+var SESSION_KEY = "dg_session";
+var MODULES = [
+  {key:"oce",nom:"OCE",coef:5},{key:"odf",nom:"ODF",coef:5},
+  {key:"paro",nom:"Parodontologie",coef:5},{key:"patho",nom:"Pathologie",coef:5},
+  {key:"prothese",nom:"Prothese",coef:5},{key:"imagerie",nom:"Imagerie Medicale",coef:3},
+  {key:"anapath",nom:"Anatomie Pathologique",coef:1},{key:"anesthesio",nom:"Anesthesiologie",coef:1},
+  {key:"pharmaco",nom:"Pharmacologie",coef:1},{key:"occluso",nom:"Occlusodontie",coef:1},
+  {key:"oxyo",nom:"Oxyologie",coef:1}
+];
+var currentStudent=null, isAdmin=false, isAdminLite=false;
+var adminData=[], adminSortKey="numero", adminSortAsc=true, currentView="login";
+
+// SHA-256
+async function sha256(msg){
+  var buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,"0");}).join("");
+}
+
+// Calcul moyennes 3eme annee: EMD moy x1, TD x2, TP x2
+function calcMoyModule(emd1, emd2, td, tp){
+  var pts=0, div=0;
+  var emdVals=[];
+  if(emd1!==null&&emd1!==undefined&&emd1!=="Abs")emdVals.push(parseFloat(emd1));
+  if(emd2!==null&&emd2!==undefined&&emd2!=="Abs")emdVals.push(parseFloat(emd2));
+  if(emdVals.length>0){pts+=(emdVals.reduce(function(a,b){return a+b;},0)/emdVals.length)*1;div+=1;}
+  if(td!==null&&td!==undefined&&td!=="Abs"){pts+=parseFloat(td)*2;div+=2;}
+  if(tp!==null&&tp!==undefined&&tp!=="Abs"){pts+=parseFloat(tp)*2;div+=2;}
+  if(div===0)return null;
+  return Math.round((pts/div)*10000)/10000;
+}
+
+function calcMoyGenerale(et){
+  var total=0, coefs=0;
+  MODULES.forEach(function(mod){
+    var moy=et["moy_"+mod.key];
+    if(moy!==null&&moy!==undefined&&moy!=="Abs"){
+      var n=parseFloat(moy);
+      if(!isNaN(n)){total+=n*mod.coef;coefs+=mod.coef;}
+    }
+  });
+  if(coefs===0)return null;
+  return Math.round((total/coefs)*10000)/10000;
+}
+
+var FS_BASE="https://firestore.googleapis.com/v1/projects/"+FIREBASE_PROJECT+"/databases/(default)/documents";
+function fsGet(col,id){return fetch(FS_BASE+"/"+col+"/"+id+"?key="+FIREBASE_API_KEY).then(function(r){return r.json();});}
+function fsList(col){
+  var all=[];
+  function page(tok){
+    var url=FS_BASE+"/"+col+"?key="+FIREBASE_API_KEY+"&pageSize=300";
+    if(tok)url+="&pageToken="+encodeURIComponent(tok);
+    return fetch(url).then(function(r){return r.json();}).then(function(d){
+      if(d.documents)all=all.concat(d.documents);
+      if(d.nextPageToken)return page(d.nextPageToken);
+      return{documents:all};
+    });
+  }
+  return page(null);
+}
+function fsPatch(col,id,fields){
+  var url=FS_BASE+"/"+col+"/"+id+"?key="+FIREBASE_API_KEY;
+  var mask=Object.keys(fields).map(function(k){return "updateMask.fieldPaths="+encodeURIComponent(k);}).join("&");
+  url+="&"+mask;
+  return fetch(url,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:toFs(fields)})}).then(function(r){return r.json();});
+}
+function fsCreate(col,data){
+  return fetch(FS_BASE+"/"+col+"?key="+FIREBASE_API_KEY,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:toFs(data)})}).then(function(r){return r.json();});
+}
+function toFs(obj){
+  var f={};
+  for(var k in obj){
+    var v=obj[k];
+    if(v===null||v===undefined)f[k]={nullValue:null};
+    else if(typeof v==="boolean")f[k]={booleanValue:v};
+    else if(typeof v==="number")f[k]={doubleValue:v};
+    else f[k]={stringValue:String(v)};
+  }
+  return f;
+}
+function fromFs(doc){
+  if(!doc||!doc.fields)return null;
+  var obj={};
+  for(var k in doc.fields){
+    var f=doc.fields[k];
+    if(f.doubleValue!==undefined)obj[k]=f.doubleValue;
+    else if(f.integerValue!==undefined)obj[k]=parseInt(f.integerValue);
+    else if(f.stringValue!==undefined)obj[k]=f.stringValue;
+    else if(f.booleanValue!==undefined)obj[k]=f.booleanValue;
+    else if(f.nullValue!==undefined)obj[k]=null;
+  }
+  if(doc.name)obj._id=doc.name.split("/").pop();
+  return obj;
+}
+
+function saveSession(v){localStorage.setItem(SESSION_KEY,String(v));}
+function clearSession(){localStorage.removeItem(SESSION_KEY);}
+function checkSession(){
+  var s=localStorage.getItem(SESSION_KEY);
+  if(!s)return;
+  if(s==="ADMIN"){isAdmin=true;isAdminLite=false;showView("admin");loadAdmin();logConnection("Admin","N/A","Rafraichissement page");return;}
+  if(s==="ADMINLITE"){isAdmin=true;isAdminLite=true;showView("admin");loadAdmin();return;}
+  var num=parseInt(s);
+  if(!num)return;
+  fsGet("etudiants",String(num)).then(function(doc){
+    var et=fromFs(doc);
+    if(!et){clearSession();return;}
+    currentStudent=et;showView("student");renderStudent(et);
+    logConnection(et.nom+" "+et.prenom,et.numero,"Rafraichissement page");
+  }).catch(function(){clearSession();});
+}
+
+async function doLogin(){
+  var id=document.getElementById("inputNom").value.trim();
+  var mdp=document.getElementById("inputMdp").value.trim();
+  if(!id||!mdp){showLoginError("Veuillez remplir tous les champs.");return;}
+  var inputHash=await sha256(mdp);
+  if(id===ADMIN_ID&&inputHash===ADMIN_MDP_HASH){
+    saveSession("ADMIN");isAdmin=true;isAdminLite=false;showView("admin");loadAdmin();
+    logConnection("Admin","N/A","Admin Login");return;
+  }
+  if(id===ADMIN_LITE_ID&&inputHash===ADMIN_LITE_MDP_HASH){
+    saveSession("ADMINLITE");isAdmin=true;isAdminLite=true;showView("admin");loadAdmin();
+    logConnection("Admin Lite","N/A","Admin Lite Login");return;
+  }
+  setLoginLoading(true);hideLoginError();
+  findEtudiant(id,mdp).then(function(et){
+    setLoginLoading(false);
+    if(!et){showLoginError("Identifiant ou mot de passe incorrect.");return;}
+    currentStudent=et;saveSession(et.numero);showView("student");renderStudent(et);
+    logConnection(et.nom+" "+et.prenom,et.numero,"Etudiant Login");
+  }).catch(function(){setLoginLoading(false);showLoginError("Erreur de connexion. Réessayez.");});
+}
+
+function logConnection(nom,numero,type){
+  var now=new Date().toLocaleString("fr-FR");
+  fsCreate("notifications",{
+    etudiant_nom:nom,etudiant_numero:numero,module:"Système",
+    type:"Connexion",message:type,date:now,lu:false
+  });
+}
+
+function findEtudiant(id,mdp){
+  return fsList("etudiants").then(function(data){
+    if(!data.documents)return null;
+    var all=data.documents.map(fromFs).filter(Boolean);
+    for(var i=0;i<all.length;i++){
+      var et=all[i];
+      if(et.custom_id&&et.custom_mdp&&et.custom_id===id&&et.custom_mdp===mdp)return et;
+      var nom=(et.nom+" "+et.prenom).trim();
+      if(nom===id.trim()&&String(et.numero)===String(mdp))return et;
+    }
+    return null;
+  });
+}
+
+function setLoginLoading(on){
+  var btn=document.getElementById("loginBtn");
+  btn.innerHTML=on?"<div class=\"spinner\"></div> Vérification...":"<i class=\"ph-bold ph-sign-in\"></i> Accéder à mes résultats";
+  btn.disabled=on;
+}
+function showLoginError(msg){document.getElementById("loginErrorMsg").textContent=msg;document.getElementById("loginError").classList.add("show");}
+function hideLoginError(){document.getElementById("loginError").classList.remove("show");}
+
+function renderStudent(et){
+  document.getElementById("studentName").textContent=et.nom+" "+et.prenom;
+  document.getElementById("studentMeta").textContent="N° "+et.numero+" | 3ème Année";
+  var moy=et.moyenne_generale;
+  document.getElementById("statMoy").textContent=moy?parseFloat(moy).toFixed(3):"—";
+  document.getElementById("statRank").textContent=et.classement||"—";
+  var badge=document.getElementById("studentBadge");
+  var res=et.resultat||"";
+  if(res.indexOf("admis")!==-1||res.indexOf("Félicitations")!==-1)
+    badge.innerHTML='<span class="badge badge-success"><i class="ph-fill ph-check-circle"></i> Admis(e)</span>';
+  else if(res.indexOf("Rattrapage")!==-1)
+    badge.innerHTML='<span class="badge badge-warning"><i class="ph-fill ph-warning"></i> '+res+'</span>';
+  else
+    badge.innerHTML='<span class="badge badge-danger"><i class="ph-fill ph-x-circle"></i> '+(res||"—")+'</span>';
+  var tbody=document.getElementById("modulesBody");
+  tbody.innerHTML="";
+  var sel=document.getElementById("signalModule");
+  sel.innerHTML='<option value="">— Choisir un module —</option>';
+  MODULES.forEach(function(mod){
+    var k=mod.key;
+    var e1=et[k+"_emd1"],e2=et[k+"_emd2"],td=et[k+"_td"],tp=et[k+"_tp"];
+    var mm=et[k+"_moy_module"]!==undefined?et[k+"_moy_module"]:et["moy_"+k];
+    var tr=document.createElement("tr");
+    tr.innerHTML=
+      "<td><span style=\"font-weight:600;\">"+mod.nom+"</span><span class=\"coef-badge\">x"+mod.coef+"</span></td>"+
+      "<td class=\"mono\">"+mod.coef+"</td>"+
+      "<td class=\"mono "+nc(e1)+"\">"+fn(e1)+"</td>"+
+      "<td class=\"mono "+nc(e2)+"\">"+fn(e2)+"</td>"+
+      "<td class=\"mono "+nc(et[k+"_moy_emd"])+"\">"+fn(et[k+"_moy_emd"])+"</td>"+
+      "<td class=\"mono "+nc(td)+"\">"+fn(td)+"</td>"+
+      "<td class=\"mono "+nc(tp)+"\">"+fn(tp)+"</td>"+
+      "<td class=\"mono "+nc(mm)+"\" style=\"font-weight:700;\">"+fn(mm)+"</td>";
+    tbody.appendChild(tr);
+    var opt=document.createElement("option");opt.value=mod.nom;opt.textContent=mod.nom;
+    sel.appendChild(opt);
+  });
+}
+
+function fn(v){
+  if(v===null||v===undefined)return '<span class="note-abs">—</span>';
+  if(v==="Abs")return '<span class="note-abs">Abs</span>';
+  var n=parseFloat(v);if(isNaN(n))return v;
+  return n.toFixed(2);
+}
+function nc(v){
+  if(v==="Abs"||v===null||v===undefined)return "note-abs";
+  var n=parseFloat(v);if(isNaN(n))return "";
+  return n<5?"note-bad":n<10?"note-mid":"note-good";
+}
+
+function showAccount(){
+  if(!currentStudent)return;
+  document.getElementById("accountSubtitle").textContent=currentStudent.nom+" "+currentStudent.prenom+" — N° "+currentStudent.numero;
+  document.getElementById("newIdentifiant").value=currentStudent.custom_id||(currentStudent.nom+" "+currentStudent.prenom);
+  document.getElementById("newMdp").value="";
+  document.getElementById("confirmMdp").value="";
+  showView("account");
+}
+
+function saveAccount(){
+  var newId=document.getElementById("newIdentifiant").value.trim();
+  var newMdp=document.getElementById("newMdp").value.trim();
+  var conf=document.getElementById("confirmMdp").value.trim();
+  if(!newId){showToast("L'identifiant ne peut pas être vide.","danger");return;}
+  if(newMdp&&newMdp!==conf){showToast("Les mots de passe ne correspondent pas.","danger");return;}
+  var btn=document.getElementById("saveAccountBtn");
+  btn.innerHTML='<div class="spinner"></div> Sauvegarde...';btn.disabled=true;
+  var fields={custom_id:newId};
+  if(newMdp)fields.custom_mdp=newMdp;
+  var changes="Identifiant: "+newId+(newMdp?" | Mot de passe modifie":"");
+  var now=new Date().toLocaleString("fr-FR");
+  fsPatch("etudiants",String(currentStudent.numero),fields).then(function(){
+    currentStudent.custom_id=newId;
+    if(newMdp)currentStudent.custom_mdp=newMdp;
+    return fsCreate("notifications",{
+      etudiant_nom:currentStudent.nom+" "+currentStudent.prenom,
+      etudiant_numero:currentStudent.numero,module:"—",
+      type:"Modification de compte",message:changes,date:now,lu:false
+    });
+  }).then(function(){
+    emailjs.init(EMAILJS_KEY);
+    return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
+      etudiant_nom:currentStudent.nom+" "+currentStudent.prenom,
+      etudiant_numero:String(currentStudent.numero),
+      module:"Compte",type_signalement:"Modification de compte",
+      message:changes,date:now
+    });
+  }).then(function(){
+    btn.innerHTML='<i class="ph-bold ph-floppy-disk"></i> Sauvegarder les modifications';
+    btn.disabled=false;showToast("Compte mis à jour !","success");showView("student");
+  }).catch(function(){
+    btn.innerHTML='<i class="ph-bold ph-floppy-disk"></i> Sauvegarder les modifications';
+    btn.disabled=false;showToast("Modifications sauvegardées.","success");showView("student");
+  });
+}
+
+function envoyerSignalement(){
+  var module=document.getElementById("signalModule").value;
+  var type=document.getElementById("signalType").value;
+  var comment=document.getElementById("signalComment").value.trim();
+  if(!module){showToast("Choisissez un module.","warning");return;}
+  var btn=document.getElementById("signalBtn");
+  btn.innerHTML='<div class="spinner"></div> Envoi...';btn.disabled=true;
+  var now=new Date().toLocaleString("fr-FR");
+  var nom=currentStudent.nom+" "+currentStudent.prenom;
+  fsCreate("notifications",{
+    etudiant_nom:nom,etudiant_numero:currentStudent.numero,
+    module:module,type:type,message:comment||"(aucun commentaire)",date:now,lu:false
+  }).then(function(){
+    emailjs.init(EMAILJS_KEY);
+    return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
+      etudiant_nom:nom,etudiant_numero:String(currentStudent.numero),
+      module:module,type_signalement:type,message:comment||"(aucun commentaire)",date:now
+    });
+  }).then(function(){
+    btn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> Envoyer le signalement';
+    btn.disabled=false;
+    document.getElementById("signalModule").value="";
+    document.getElementById("signalComment").value="";
+    showToast("Signalement envoyé !","success");
+  }).catch(function(){
+    btn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> Envoyer le signalement';
+    btn.disabled=false;showToast("Signalement enregistré.","warning");
+  });
+}
+
+function loadAdmin(){
+  var badge=document.getElementById("adminLiteBadge");
+  if(isAdminLite)badge.classList.remove("hidden");else badge.classList.add("hidden");
+  document.getElementById("adminBody").innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Chargement...</td></tr>';
+  fsList("etudiants").then(function(data){
+    if(!data.documents){adminData=[];renderAdminTable([]);return;}
+    adminData=data.documents.map(fromFs).filter(Boolean);
+    adminData.sort(function(a,b){return a.numero-b.numero;});
+    renderAdminTable(adminData);
+  });
+  loadNotifs();loadComptes();
+}
+
+function renderAdminTable(data){
+  var tbody=document.getElementById("adminBody");
+  if(!data.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Aucun résultat</td></tr>';return;}
+  tbody.innerHTML="";
+  data.forEach(function(et){
+    var moy=et.moyenne_generale?parseFloat(et.moyenne_generale).toFixed(3):"—";
+    var res=et.resultat||"—";
+    var resBadge=res.indexOf("admis")!==-1||res.indexOf("Félicitations")!==-1
+      ?'<span class="badge badge-success" style="font-size:0.72rem;padding:2px 8px;">Admis</span>'
+      :res.indexOf("Rattrapage")!==-1
+        ?'<span class="badge badge-warning" style="font-size:0.72rem;padding:2px 8px;">Rattrapage</span>'
+        :'<span style="color:var(--text-muted);font-size:0.85rem;">'+res+'</span>';
+    var actionBtn=isAdminLite
+      ?'<button class="btn-sm btn-ghost-sm" onclick="viewNotes('+et.numero+')"><i class="ph-bold ph-eye"></i> Voir</button> <button class="btn-sm btn-ghost-sm" onclick="suggestEdit('+et.numero+')"><i class="ph-bold ph-pencil-simple"></i> Suggérer</button>'
+      :'<button class="btn-sm btn-success-sm" onclick="openEditNotes('+et.numero+')"><i class="ph-bold ph-pencil"></i> Notes</button>';
+    var tr=document.createElement("tr");
+    tr.innerHTML=
+      '<td class="mono" style="font-weight:700;">'+et.numero+'</td>'+
+      '<td style="font-weight:600;">'+et.nom+'</td>'+
+      '<td>'+et.prenom+'</td>'+
+      '<td class="mono '+nc(et.moyenne_generale)+'" style="font-weight:700;">'+moy+'</td>'+
+      '<td class="mono">'+(et.classement||"—")+'</td>'+
+      '<td>'+resBadge+'</td>'+
+      '<td>'+actionBtn+'</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function openEditNotes(num){
+  var et=adminData.find(function(e){return e.numero===num;});
+  if(!et)return;
+  var d=document.createElement("div");
+  d.id="editModal";d.className="modal-overlay";
+  var inner=document.createElement("div");inner.className="modal-box";
+  var hdr=document.createElement("div");
+  hdr.style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
+  hdr.innerHTML='<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">'+et.nom+' '+et.prenom+' — Notes</div>';
+  var closeBtn=document.createElement("button");closeBtn.className="btn-ghost";closeBtn.style="padding:0.4rem 0.8rem;";
+  closeBtn.innerHTML='<i class="ph-bold ph-x"></i>';closeBtn.onclick=function(){d.remove();};
+  hdr.appendChild(closeBtn);inner.appendChild(hdr);
+
+  // Info: moy_module calculee automatiquement
+  var info=document.createElement("div");
+  info.style="background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);border-radius:10px;padding:0.6rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#a5b4fc;";
+  info.innerHTML='<i class="ph-fill ph-info"></i> Les moyennes sont calculées automatiquement lors de la sauvegarde.';
+  inner.appendChild(info);
+
+  var tableWrap=document.createElement("div");tableWrap.style="overflow-x:auto;";
+  var table=document.createElement("table");table.className="res-table";
+  var thead=document.createElement("thead");
+  // Moy Module is read-only, shown but not editable
+  thead.innerHTML='<tr><th>Module</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th style="color:var(--accent2);">Moy Calculée</th></tr>';
+  table.appendChild(thead);
+  var tbody=document.createElement("tbody");
+  MODULES.forEach(function(mod){
+    var k=mod.key;
+    var tr=document.createElement("tr");
+    var td0=document.createElement("td");td0.style="font-weight:600;";td0.textContent=mod.nom;tr.appendChild(td0);
+    ["emd1","emd2","td","tp"].forEach(function(sub){
+      var fk=k+"_"+sub;
+      var v=et[fk];
+      var cell=document.createElement("td");
+      var inp=document.createElement("input");
+      inp.className="calc-input";inp.id="edit_"+fk;
+      inp.value=(v!==null&&v!==undefined)?v:"";
+      inp.placeholder="—";inp.style="padding:0.4rem 0.6rem;width:80px;";
+      // Live preview of moy_module
+      inp.oninput=function(){updateMoyPreview(k,mod);};
+      cell.appendChild(inp);tr.appendChild(cell);
+    });
+    // Moy module preview (read-only)
+    var moyCell=document.createElement("td");
+    moyCell.id="preview_moy_"+k;
+    moyCell.className="mono";
+    moyCell.style="font-weight:700;color:var(--accent2);";
+    var mm=et[k+"_moy_module"]!==undefined?et[k+"_moy_module"]:et["moy_"+k];
+    moyCell.textContent=(mm!==null&&mm!==undefined)?parseFloat(mm).toFixed(2):"—";
+    tr.appendChild(moyCell);
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);tableWrap.appendChild(table);inner.appendChild(tableWrap);
+  var footer=document.createElement("div");
+  footer.style="margin-top:1.25rem;display:flex;gap:0.75rem;justify-content:flex-end;";
+  var cancelBtn=document.createElement("button");cancelBtn.className="btn-ghost";cancelBtn.textContent="Annuler";
+  cancelBtn.onclick=function(){d.remove();};
+  var saveBtn=document.createElement("button");saveBtn.className="btn-main";
+  saveBtn.style="width:auto;padding:0.6rem 1.5rem;";
+  saveBtn.innerHTML='<i class="ph-bold ph-floppy-disk"></i> Sauvegarder';
+  saveBtn.onclick=function(){saveEditNotes(num,d);};
+  footer.appendChild(cancelBtn);footer.appendChild(saveBtn);
+  inner.appendChild(footer);d.appendChild(inner);document.body.appendChild(d);
+}
+
+function updateMoyPreview(key, mod){
+  var getVal=function(sub){
+    var el=document.getElementById("edit_"+key+"_"+sub);
+    if(!el||el.value.trim()==="")return null;
+    if(el.value.trim()==="Abs")return "Abs";
+    return parseFloat(el.value.replace(",","."));
+  };
+  var e1=getVal("emd1"),e2=getVal("emd2"),td=getVal("td"),tp=getVal("tp");
+  var moy=calcMoyModule(e1,e2,td,tp);
+  var preview=document.getElementById("preview_moy_"+key);
+  if(preview){
+    preview.textContent=moy!==null?parseFloat(moy).toFixed(2):"—";
+    preview.style.color=moy===null?"var(--text-muted)":moy<5?"var(--danger)":moy<10?"var(--warning)":"var(--success)";
+  }
+}
+
+function saveEditNotes(num,modal){
+  var et=adminData.find(function(e){return e.numero===num;});
+  if(!et)return;
+  var fields={};
+  var tempEt=Object.assign({},et); // copie pour recalcul
+
+  MODULES.forEach(function(mod){
+    var k=mod.key;
+    ["emd1","emd2","td","tp"].forEach(function(sub){
+      var fk=k+"_"+sub;
+      var el=document.getElementById("edit_"+fk);
+      if(!el)return;
+      var v=el.value.trim();
+      var val;
+      if(v===""){ val=null; }
+      else if(v==="Abs"){ val="Abs"; }
+      else{ var n=parseFloat(v); val=isNaN(n)?null:n; }
+      fields[fk]=val;
+      tempEt[fk]=val;
+    });
+
+    // Recalculer moy_emd
+    var e1=tempEt[k+"_emd1"], e2=tempEt[k+"_emd2"];
+    var emdVals=[];
+    if(e1!==null&&e1!==undefined&&e1!=="Abs")emdVals.push(parseFloat(e1));
+    if(e2!==null&&e2!==undefined&&e2!=="Abs")emdVals.push(parseFloat(e2));
+    var moyEmd=emdVals.length>0?Math.round((emdVals.reduce(function(a,b){return a+b;},0)/emdVals.length)*10000)/10000:null;
+    fields[k+"_moy_emd"]=moyEmd;
+    tempEt[k+"_moy_emd"]=moyEmd;
+
+    // Recalculer moy_module
+    var moyMod=calcMoyModule(tempEt[k+"_emd1"],tempEt[k+"_emd2"],tempEt[k+"_td"],tempEt[k+"_tp"]);
+    fields["moy_"+k]=moyMod;
+    fields[k+"_moy_module"]=moyMod;
+    tempEt["moy_"+k]=moyMod;
+    tempEt[k+"_moy_module"]=moyMod;
+  });
+
+  // Recalculer moyenne generale
+  var moyGen=calcMoyGenerale(tempEt);
+  fields["moyenne_generale"]=moyGen;
+
+  fsPatch("etudiants",String(num),fields).then(function(){
+    for(var k in fields)et[k]=fields[k];
+    if(modal)modal.remove();
+    showToast("Notes sauvegardées et moyennes recalculées !","success");
+    renderAdminTable(adminData);
+  }).catch(function(){showToast("Erreur sauvegarde.","danger");});
+}
+
+function viewNotes(num){
+  var et=adminData.find(function(e){return e.numero===num;});
+  if(!et)return;
+  var d=document.createElement("div");
+  d.id="viewNotesModal";d.className="modal-overlay";
+  var inner=document.createElement("div");inner.className="modal-box";
+  var hdr=document.createElement("div");
+  hdr.style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
+  hdr.innerHTML='<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">'+et.nom+' '+et.prenom+' — Notes</div>';
+  var closeBtn=document.createElement("button");closeBtn.className="btn-ghost";closeBtn.style="padding:0.4rem 0.8rem;";
+  closeBtn.innerHTML='<i class="ph-bold ph-x"></i>';closeBtn.onclick=function(){d.remove();};
+  hdr.appendChild(closeBtn);inner.appendChild(hdr);
+  var tableWrap=document.createElement("div");tableWrap.style="overflow-x:auto;";
+  var table=document.createElement("table");table.className="res-table";
+  var thead=document.createElement("thead");
+  thead.innerHTML='<tr><th>Module</th><th>Coef</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th>Moy Module</th></tr>';
+  table.appendChild(thead);
+  var tbody=document.createElement("tbody");
+  MODULES.forEach(function(mod){
+    var k=mod.key;
+    var tr=document.createElement("tr");
+    var vals=[et[k+"_emd1"],et[k+"_emd2"],et[k+"_td"],et[k+"_tp"],et[k+"_moy_module"]!==undefined?et[k+"_moy_module"]:et["moy_"+k]];
+    var td0=document.createElement("td");td0.style="font-weight:600;";td0.textContent=mod.nom;tr.appendChild(td0);
+    var td1=document.createElement("td");td1.className="mono";td1.textContent=mod.coef;tr.appendChild(td1);
+    vals.forEach(function(v){
+      var cell=document.createElement("td");cell.className="mono "+nc(v);cell.innerHTML=fn(v);tr.appendChild(cell);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);tableWrap.appendChild(table);inner.appendChild(tableWrap);
+  var footer=document.createElement("div");footer.style="margin-top:1.25rem;display:flex;justify-content:flex-end;";
+  var closeBtn2=document.createElement("button");closeBtn2.className="btn-ghost";closeBtn2.textContent="Fermer";
+  closeBtn2.onclick=function(){d.remove();};
+  footer.appendChild(closeBtn2);inner.appendChild(footer);d.appendChild(inner);document.body.appendChild(d);
+}
+
+function suggestEdit(num){
+  var et=adminData.find(function(e){return e.numero===num;});
+  if(!et)return;
+  var d=document.createElement("div");d.id="suggestModal";d.className="modal-overlay";
+  var inner=document.createElement("div");inner.className="modal-box";
+  var hdr=document.createElement("div");hdr.style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
+  hdr.innerHTML='<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">Suggérer — '+et.nom+' '+et.prenom+'</div>';
+  var closeBtn=document.createElement("button");closeBtn.className="btn-ghost";closeBtn.style="padding:0.4rem 0.8rem;";
+  closeBtn.innerHTML='<i class="ph-bold ph-x"></i>';closeBtn.onclick=function(){d.remove();};
+  hdr.appendChild(closeBtn);inner.appendChild(hdr);
+  var modDiv=document.createElement("div");modDiv.className="mb-4";modDiv.innerHTML='<label class="field-label">Module concerné</label>';
+  var modSel=document.createElement("select");modSel.className="glass-select";modSel.id="suggestModule";
+  modSel.innerHTML='<option value="">— Choisir —</option>';
+  MODULES.forEach(function(m){var o=document.createElement("option");o.value=m.nom;o.textContent=m.nom;modSel.appendChild(o);});
+  modDiv.appendChild(modSel);inner.appendChild(modDiv);
+  var fieldDiv=document.createElement("div");fieldDiv.className="mb-4";fieldDiv.innerHTML='<label class="field-label">Champ à modifier</label>';
+  var fieldSel=document.createElement("select");fieldSel.className="glass-select";fieldSel.id="suggestField";
+  fieldSel.innerHTML='<option value="emd1">EMD 1</option><option value="emd2">EMD 2</option><option value="td">TD</option><option value="tp">TP</option><option value="moy_module">Moy Module</option>';
+  fieldDiv.appendChild(fieldSel);inner.appendChild(fieldDiv);
+  var valDiv=document.createElement("div");valDiv.className="mb-4";valDiv.innerHTML='<label class="field-label">Valeur suggérée</label>';
+  var valInp=document.createElement("input");valInp.type="text";valInp.className="calc-input";valInp.id="suggestVal";valInp.placeholder="Ex: 12.5";
+  valDiv.appendChild(valInp);inner.appendChild(valDiv);
+  var reasonDiv=document.createElement("div");reasonDiv.className="mb-5";reasonDiv.innerHTML='<label class="field-label">Justification</label>';
+  var reasonTa=document.createElement("textarea");reasonTa.className="calc-input";reasonTa.id="suggestReason";reasonTa.placeholder="Pourquoi cette modification ?";reasonTa.style="min-height:70px;resize:vertical;";
+  reasonDiv.appendChild(reasonTa);inner.appendChild(reasonDiv);
+  var footer=document.createElement("div");footer.style="display:flex;gap:0.75rem;justify-content:flex-end;";
+  var cancelBtn=document.createElement("button");cancelBtn.className="btn-ghost";cancelBtn.textContent="Annuler";cancelBtn.onclick=function(){d.remove();};
+  var sendBtn=document.createElement("button");sendBtn.className="btn-main";sendBtn.style="width:auto;padding:0.6rem 1.5rem;";
+  sendBtn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> Envoyer';sendBtn.onclick=function(){sendSuggestion(num,d);};
+  footer.appendChild(cancelBtn);footer.appendChild(sendBtn);inner.appendChild(footer);d.appendChild(inner);document.body.appendChild(d);
+}
+
+function sendSuggestion(num,modal){
+  var et=adminData.find(function(e){return e.numero===num;});
+  var module=document.getElementById("suggestModule").value;
+  var field=document.getElementById("suggestField").value;
+  var val=document.getElementById("suggestVal").value.trim();
+  var reason=document.getElementById("suggestReason").value.trim();
+  if(!module||!val){showToast("Remplissez tous les champs.","warning");return;}
+  var now=new Date().toLocaleString("fr-FR");
+  var msg="Suggestion: "+module+" / "+field+" = "+val+(reason?" | Raison: "+reason:"");
+  fsCreate("notifications",{
+    etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:et.numero,
+    module:module,type:"Suggestion de modification (Admin Lite)",message:msg,date:now,lu:false
+  }).then(function(){
+    emailjs.init(EMAILJS_KEY);
+    return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
+      etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:String(et.numero),
+      module:module,type_signalement:"Suggestion Admin Lite",message:msg,date:now
+    });
+  }).then(function(){if(modal)modal.remove();showToast("Suggestion envoyée !","success");})
+  .catch(function(){if(modal)modal.remove();showToast("Suggestion enregistrée.","warning");});
+}
+
+function filterAdmin(){
+  var q=document.getElementById("adminSearch").value.toLowerCase();
+  renderAdminTable(adminData.filter(function(et){
+    return (et.nom||"").toLowerCase().includes(q)||(et.prenom||"").toLowerCase().includes(q)||String(et.numero).includes(q);
+  }));
+}
+function sortAdmin(key){
+  if(adminSortKey===key)adminSortAsc=!adminSortAsc;else{adminSortKey=key;adminSortAsc=true;}
+  adminData.sort(function(a,b){
+    var av=a[key],bv=b[key];
+    if(av===null||av===undefined)av=-Infinity;if(bv===null||bv===undefined)bv=-Infinity;
+    if(typeof av==="string")return adminSortAsc?av.localeCompare(bv):bv.localeCompare(av);
+    return adminSortAsc?av-bv:bv-av;
+  });
+  renderAdminTable(adminData);
+}
+
+function loadNotifs(){
+  fetch(FS_BASE+"/notifications?key="+FIREBASE_API_KEY+"&pageSize=100").then(function(r){return r.json();}).then(function(data){
+    if(!data.documents){renderNotifs([]);return;}
+    var notifs=data.documents.map(fromFs).filter(Boolean);
+    notifs.sort(function(a,b){return (b.date||"").localeCompare(a.date||"");});
+    var unread=notifs.filter(function(n){return !n.lu||n.lu==="false";}).length;
+    if(unread>0){document.getElementById("notifCount").textContent=unread;document.getElementById("notifCount").classList.remove("hidden");}
+    renderNotifs(notifs);
+  });
+}
+function renderNotifs(notifs){
+  var el=document.getElementById("notifsList");
+  if(!notifs.length){el.innerHTML='<p class="text-center py-8" style="color:var(--text-muted);">Aucun signalement reçu.</p>';return;}
+  el.innerHTML="";
+  notifs.forEach(function(n){
+    var isCompte=n.type==="Modification de compte";
+    var isConnexion=n.type==="Connexion";
+    var typeColor=isConnexion||isCompte?"var(--success)":"var(--warning)";
+    var div=document.createElement("div");
+    div.className="notif-card "+(!n.lu||n.lu==="false"?"notif-unread":"notif-read");
+    div.innerHTML=
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;flex-wrap:wrap;">'+
+      '<div><div style="font-weight:700;">'+n.etudiant_nom+' <span style="color:var(--text-muted);font-size:0.85rem;">N°'+n.etudiant_numero+'</span></div>'+
+      '<div style="margin-top:0.3rem;font-size:0.88rem;"><span style="color:#a5b4fc;">'+n.module+'</span> — '+
+      '<span style="color:'+typeColor+';">'+n.type+'</span></div>'+
+      (n.message&&n.message!=="(aucun commentaire)"?'<div style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-muted);font-style:italic;">"'+n.message+'"</div>':'')+
+      '</div><div style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap;">'+n.date+'</div></div>';
+    el.appendChild(div);
+  });
+}
+
+function loadComptes(){
+  fsList("etudiants").then(function(data){
+    if(!data.documents){renderComptes([]);return;}
+    var modifies=data.documents.map(fromFs).filter(Boolean).filter(function(et){return et.custom_id||et.custom_mdp;});
+    renderComptes(modifies);
+  });
+}
+function renderComptes(data){
+  var el=document.getElementById("comptesList");
+  if(!data.length){el.innerHTML='<p class="text-center py-8" style="color:var(--text-muted);">Aucun étudiant n\'a modifié son compte.</p>';return;}
+  var html='<div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;"><table class="res-table"><thead><tr><th>N°</th><th>Nom</th><th>Prénom</th><th>Identifiant perso</th><th>MDP perso</th><th>Action</th></tr></thead><tbody>';
+  data.forEach(function(et){
+    html+='<tr>'+
+      '<td class="mono" style="font-weight:700;">'+et.numero+'</td>'+
+      '<td style="font-weight:600;">'+et.nom+'</td><td>'+et.prenom+'</td>'+
+      '<td class="mono">'+(et.custom_id||"—")+'</td>'+
+      '<td class="mono">'+(isAdminLite?(et.custom_mdp?"••••••":"—"):(et.custom_mdp?et.custom_mdp:"—"))+'</td>'+
+      '<td>'+(isAdminLite?'—':'<button class="btn-sm btn-danger-sm" onclick="resetCompte('+et.numero+')"><i class="ph-bold ph-arrow-counter-clockwise"></i> Reset</button>')+'</td>'+
+      '</tr>';
+  });
+  html+='</tbody></table></div></div>';
+  el.innerHTML=html;
+}
+function resetCompte(num){
+  if(!confirm("Réinitialiser le compte de N°"+num+" ?"))return;
+  fsPatch("etudiants",String(num),{custom_id:null,custom_mdp:null}).then(function(){
+    showToast("Compte réinitialisé pour N°"+num,"success");loadComptes();
+  }).catch(function(){showToast("Erreur.","danger");});
+}
+function switchTab(tab){
+  ["etudiants","notifs","comptes"].forEach(function(t){
+    var T=t.charAt(0).toUpperCase()+t.slice(1);
+    document.getElementById("tab"+T).classList.toggle("active",t===tab);
+    document.getElementById("panel"+T).classList.toggle("hidden",t!==tab);
+  });
+}
+
+function showView(v){
+  ["Login","Student","Account","Admin"].forEach(function(n){
+    document.getElementById("view"+n).classList.add("hidden");
+  });
+  document.getElementById("view"+v.charAt(0).toUpperCase()+v.slice(1)).classList.remove("hidden");
+  currentView=v;updateSidebarNav();updateBreadcrumb();
+}
+function logout(){
+  currentStudent=null;isAdmin=false;isAdminLite=false;adminData=[];
+  clearSession();
+  document.getElementById("inputNom").value="";
+  document.getElementById("inputMdp").value="";
+  hideLoginError();showView("login");
+}
+function goHome(){window.location.href="dental-guide.html#year-3";}
+
+function updateSidebarNav(){
+  var nav=document.getElementById("sidebarNav");if(!nav)return;
+  var h='<button onclick="goHome();closeMenu();" class="nav-link glass"><i class="ph-bold ph-house text-xl"></i><span>Accueil</span></button>';
+  if(currentView==="student"||currentView==="account"){
+    h+='<button onclick="showView(\'student\');closeMenu();" class="nav-link glass '+(currentView==="student"?"active":"")+'"><i class="ph-bold ph-chart-bar text-xl"></i><span>Mes Résultats</span></button>';
+    h+='<button onclick="showAccount();closeMenu();" class="nav-link glass '+(currentView==="account"?"active":"")+'"><i class="ph-bold ph-user-circle text-xl"></i><span>Mon Compte</span></button>';
+  }
+  if(currentView==="admin")
+    h+='<button onclick="showView(\'admin\');closeMenu();" class="nav-link glass active"><i class="ph-bold ph-shield text-xl"></i><span>Admin</span></button>';
+  h+='<div class="w-full h-px my-2" style="background:var(--glass-border);"></div>';
+  if(currentView!=="login")
+    h+='<button onclick="logout();closeMenu();" class="nav-link glass"><i class="ph-bold ph-sign-out text-xl"></i><span>Déconnexion</span></button>';
+  nav.innerHTML=h;
+}
+function updateBreadcrumb(){
+  var bc=document.getElementById("breadcrumb");
+  if(currentView==="login"){bc.style.display="none";bc.innerHTML="";return;}
+  bc.style.display="flex";
+  var p=['<button class="breadcrumb-btn" onclick="goHome()"><i class="ph-bold ph-house" style="font-size:0.65rem;"></i> Accueil</button>'];
+  p.push('<span class="breadcrumb-sep">›</span>');
+  if(currentView==="student")p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">Résultats</span>');
+  else if(currentView==="account"){
+    p.push('<button class="breadcrumb-btn" onclick="showView(\'student\')">Résultats</button>');
+    p.push('<span class="breadcrumb-sep">›</span>');
+    p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">Mon Compte</span>');
+  }
+  else if(currentView==="admin")p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">Admin</span>');
+  bc.innerHTML=p.join('');
+}
+
+var langPill=document.getElementById("langPill");
+var langBtns=document.querySelectorAll(".lang-btn");
+function getLang(){return localStorage.getItem("lang")||"fr";}
+function setLangPill(lang){
+  var idx=lang==="fr"?0:lang==="en"?1:2;
+  langPill.style.transform="translateX("+(idx*100)+"%)";
+  for(var i=0;i<langBtns.length;i++)langBtns[i].classList.toggle("active",langBtns[i].getAttribute("data-lang")===lang);
+}
+function initLang(){
+  var lang=getLang();
+  document.documentElement.setAttribute("lang",lang);
+  document.documentElement.setAttribute("dir",lang==="ar"?"rtl":"ltr");
+  setLangPill(lang);
+}
+for(var _i=0;_i<langBtns.length;_i++){
+  (function(btn){btn.addEventListener("click",function(){
+    var lang=btn.getAttribute("data-lang");
+    document.body.classList.add("switching-lang");
+    setLangPill(lang);
+    setTimeout(function(){
+      document.documentElement.setAttribute("lang",lang);
+      document.documentElement.setAttribute("dir",lang==="ar"?"rtl":"ltr");
+      localStorage.setItem("lang",lang);
+      requestAnimationFrame(function(){document.body.classList.remove("switching-lang");});
+    },300);
+  });})(langBtns[_i]);
+}
+function initTheme(){
+  var t=localStorage.getItem("theme")||"dark";
+  document.documentElement.setAttribute("data-theme",t);
+}
+document.getElementById("themeBtn").addEventListener("click",function(){
+  var cur=document.documentElement.getAttribute("data-theme");
+  var next=cur==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",next);
+  localStorage.setItem("theme",next);
+});
+var sidebar=document.getElementById("sidebar");
+var overlay=document.getElementById("overlay");
+var menuBtn=document.getElementById("menuBtn");
+menuBtn.onclick=function(e){
+  e.stopPropagation();sidebar.classList.toggle("open");
+  overlay.classList.toggle("hidden",!sidebar.classList.contains("open"));
+};
+window.closeMenu=function(){sidebar.classList.remove("open");overlay.classList.add("hidden");};
+window.showToast=function(msg,type){
+  type=type||"info";
+  var colors={success:"var(--success)",danger:"var(--danger)",warning:"var(--warning)",info:"#a5b4fc"};
+  var icons={success:"ph-check-circle",danger:"ph-x-circle",warning:"ph-warning",info:"ph-info"};
+  var c=document.getElementById("toastContainer");
+  var t=document.createElement("div");
+  t.className="toast-item glass";
+  t.innerHTML='<i class="ph-fill '+icons[type]+'" style="color:'+colors[type]+';font-size:1.1rem;"></i> '+msg;
+  c.appendChild(t);
+  requestAnimationFrame(function(){t.classList.add("show");});
+  setTimeout(function(){t.classList.remove("show");setTimeout(function(){t.remove();},400);},3500);
+};
+document.getElementById("inputMdp").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+document.getElementById("inputNom").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+initTheme();initLang();updateSidebarNav();updateBreadcrumb();checkSession();
+</script>
+</body>
+</html>
