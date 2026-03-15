@@ -422,7 +422,7 @@ function checkSession(){
   var s=localStorage.getItem(SESSION_KEY);
   if(!s)return;
   if(s==="ADMIN"){isAdmin=true;isAdminLite=false;showView("admin");loadAdmin();logConnection("Admin","N/A","Rafraichissement page");return;}
-  if(s==="ADMINLITE"){isAdmin=true;isAdminLite=true;showView("admin");loadAdmin();return;}
+  if(s==="ADMINLITE"){isAdmin=true;isAdminLite=true;showView("admin");loadAdmin();logConnection("Admin Lite","N/A","Rafraichissement Admin Lite");return;}
   var num=parseInt(s);
   if(!num)return;
   fsGet("etudiants",String(num)).then(function(et){
@@ -443,7 +443,8 @@ async function doLogin(){
   }
   if(id===ADMIN_LITE_ID&&inputHash===ADMIN_LITE_MDP_HASH){
     saveSession("ADMINLITE");isAdmin=true;isAdminLite=true;showView("admin");loadAdmin();
-    logConnection("Admin Lite","N/A","Admin Lite Login");return;
+    logConnection("Admin Lite","N/A","Connexion Admin Lite");
+    return;
   }
   setLoginLoading(true);hideLoginError();
   findEtudiant(id,mdp).then(function(et){
@@ -456,10 +457,22 @@ async function doLogin(){
 
 function logConnection(nom,numero,type){
   var now=new Date().toLocaleString("fr-FR");
+  var isAdminLiteConn=type.indexOf("Admin Lite")!==-1;
+  // Toutes les connexions: admin_only=true (invisible pour admin lite)
   fsCreate("notifications",{
-    etudiant_nom:nom,etudiant_numero:numero,module:"Système",
-    type:"Connexion",message:type,date:now,lu:false
+    etudiant_nom:nom,etudiant_numero:String(numero),module:"Système",
+    type:"Connexion",message:type,date:now,lu:false,
+    admin_only:true
   });
+  // Email seulement pour admin lite
+  if(isAdminLiteConn){
+    emailjs.init(EMAILJS_KEY);
+    emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
+      etudiant_nom:nom,etudiant_numero:String(numero),
+      module:"Système",type_signalement:type,
+      message:type+" — "+now,date:now
+    });
+  }
 }
 
 function findEtudiant(id,mdp){
@@ -561,7 +574,8 @@ function saveAccount(){
     return fsCreate("notifications",{
       etudiant_nom:currentStudent.nom+" "+currentStudent.prenom,
       etudiant_numero:currentStudent.numero,module:"—",
-      type:"Modification de compte",message:changes,date:now,lu:false
+      type:"Modification de compte",message:changes,date:now,lu:false,
+      admin_only:true
     });
   }).then(function(){
     emailjs.init(EMAILJS_KEY);
@@ -591,7 +605,8 @@ function envoyerSignalement(){
   var nom=currentStudent.nom+" "+currentStudent.prenom;
   fsCreate("notifications",{
     etudiant_nom:nom,etudiant_numero:currentStudent.numero,
-    module:module,type:type,message:comment||"(aucun commentaire)",date:now,lu:false
+    module:module,type:type,message:comment||"(aucun commentaire)",date:now,lu:false,
+    admin_only:false
   }).then(function(){
     emailjs.init(EMAILJS_KEY);
     return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
@@ -605,8 +620,12 @@ function envoyerSignalement(){
     document.getElementById("signalComment").value="";
     showToast("Signalement envoyé !","success");
   }).catch(function(){
+    // Email fail mais Supabase OK
     btn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> Envoyer le signalement';
-    btn.disabled=false;showToast("Signalement enregistré.","warning");
+    btn.disabled=false;
+    document.getElementById("signalModule").value="";
+    document.getElementById("signalComment").value="";
+    showToast("Signalement enregistré.","warning");
   });
 }
 
@@ -882,7 +901,8 @@ function sendSuggestion(num,modal){
   var msg="Suggestion: "+module+" / "+field+" = "+val+(reason?" | Raison: "+reason:"");
   fsCreate("notifications",{
     etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:et.numero,
-    module:module,type:"Suggestion de modification (Admin Lite)",message:msg,date:now,lu:false
+    module:module,type:"Suggestion de modification (Admin Lite)",message:msg,date:now,lu:false,
+    admin_only:false
   }).then(function(){
     emailjs.init(EMAILJS_KEY);
     return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
@@ -914,6 +934,10 @@ function loadNotifs(){
   var url=SUPABASE_URL+"/rest/v1/notifications?select=*&order=created_at.desc&limit=100";
   fetch(url,{headers:SB_HEADERS}).then(function(r){return r.json();}).then(function(notifs){
     if(!Array.isArray(notifs)){renderNotifs([]);return;}
+    // Admin lite ne voit pas les notifications admin_only
+    if(isAdminLite){
+      notifs=notifs.filter(function(n){return !n.admin_only;});
+    }
     var unread=notifs.filter(function(n){return !n.lu;}).length;
     if(unread>0){document.getElementById("notifCount").textContent=unread;document.getElementById("notifCount").classList.remove("hidden");}
     renderNotifs(notifs);
