@@ -94,6 +94,7 @@
     .btn-sm { padding:0.5rem 1rem; border-radius:8px; font-size:0.82rem; font-weight:600; cursor:pointer; border:none; display:flex; align-items:center; gap:0.4rem; transition:all 0.2s; }
     .btn-success-sm { background:rgba(42,212,165,0.15); color:var(--success); border:1px solid rgba(42,212,165,0.3); }
     .btn-danger-sm  { background:rgba(255,100,124,0.15); color:var(--danger);  border:1px solid rgba(255,100,124,0.3); }
+    .btn-ghost-sm { background:var(--btn-hover); color:var(--text-muted); border:1px solid var(--glass-border); }
 
     /* ERROR */
     .error-msg { background:rgba(255,100,124,0.1); border:1px solid rgba(255,100,124,0.3); color:var(--danger); padding:0.75rem 1rem; border-radius:0.75rem; font-size:0.88rem; margin-bottom:1rem; display:none; align-items:center; gap:0.5rem; }
@@ -399,6 +400,9 @@ var EMAILJS_TEMPLATE = "template_74cg8ho";
 var EMAILJS_KEY      = "lxg6X0FF2kADJ5DYR";
 var ADMIN_ID  = "amel bmd";
 var ADMIN_MDP = "0207";
+var ADMIN_LITE_ID  = "user";
+var ADMIN_LITE_MDP = "azerty00";
+var isAdminLite = false;
 var SESSION_KEY = "dg_session";
 
 var MODULES = [
@@ -481,7 +485,8 @@ function clearSession() { localStorage.removeItem(SESSION_KEY); }
 function checkSession() {
   var s = localStorage.getItem(SESSION_KEY);
   if (!s) return;
-  if (s === "ADMIN") { isAdmin=true; showView("admin"); loadAdmin(); return; }
+  if (s === "ADMIN") { isAdmin=true; isAdminLite=false; showView("admin"); loadAdmin(); return; }
+  if (s === "ADMINLITE") { isAdmin=true; isAdminLite=true; showView("admin"); loadAdmin(); return; }
   var num = parseInt(s);
   if (!num) return;
   fsGet("etudiants", String(num)).then(function(doc){
@@ -501,7 +506,10 @@ function doLogin() {
   var mdp = document.getElementById("inputMdp").value.trim();
   if (!id||!mdp) { showLoginError("Veuillez remplir tous les champs."); return; }
   if (id===ADMIN_ID && mdp===ADMIN_MDP) {
-    saveSession("ADMIN"); isAdmin=true; showView("admin"); loadAdmin(); return;
+    saveSession("ADMIN"); isAdmin=true; isAdminLite=false; showView("admin"); loadAdmin(); return;
+  }
+  if (id===ADMIN_LITE_ID && mdp===ADMIN_LITE_MDP) {
+    saveSession("ADMINLITE"); isAdmin=true; isAdminLite=true; showView("admin"); loadAdmin(); return;
   }
   setLoginLoading(true); hideLoginError();
   findEtudiant(id, mdp).then(function(et){
@@ -685,6 +693,8 @@ function envoyerSignalement() {
 // ADMIN
 // ============================================================
 function loadAdmin() {
+  if (isAdminLite) document.getElementById("adminLiteBadge").classList.remove("hidden");
+  else document.getElementById("adminLiteBadge").classList.add("hidden");
   document.getElementById("adminBody").innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Chargement...</td></tr>';
   fsList("etudiants").then(function(data){
     if(!data.documents){adminData=[];renderAdminTable([]);return;}
@@ -715,7 +725,7 @@ function renderAdminTable(data) {
       '<td class="mono '+nc(et.moyenne_generale)+'" style="font-weight:700;">'+moy+'</td>'+
       '<td class="mono">'+(et.classement||"—")+'</td>'+
       '<td>'+resBadge+'</td>'+
-      '<td><button class="btn-sm btn-success-sm" onclick="openEditNotes('+et.numero+')"><i class="ph-bold ph-pencil"></i> Notes</button></td>';
+      '<td>'+(isAdminLite?'<button class="btn-sm btn-ghost-sm" onclick="suggestEdit('+et.numero+')"><i class="ph-bold ph-pencil-simple"></i> Suggérer</button>':'<button class="btn-sm btn-success-sm" onclick="openEditNotes('+et.numero+')"><i class="ph-bold ph-pencil"></i> Notes</button>')+'</td>';
     tbody.appendChild(tr);
   });
 }
@@ -767,6 +777,63 @@ function saveEditNotes(num) {
     showToast("Notes sauvegardées pour N°"+num,"success");
     renderAdminTable(adminData);
   }).catch(function(){showToast("Erreur sauvegarde.","danger");});
+}
+
+
+function suggestEdit(num) {
+  var et = adminData.find(function(e){return e.numero===num;});
+  if (!et) return;
+  var html = '<div class="modal-overlay" id="suggestModal"><div class="modal-box">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">';
+  html += '<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">Suggérer une modification — '+et.nom+' '+et.prenom+'</div>';
+  html += '<button onclick="document.getElementById('suggestModal').remove()" class="btn-ghost" style="padding:0.4rem 0.8rem;"><i class="ph-bold ph-x"></i></button></div>';
+  html += '<div class="mb-4"><label class="field-label">Module concerné</label><select class="glass-select" id="suggestModule"><option value="">— Choisir —</option>';
+  MODULES.forEach(function(m){ html += '<option value="'+m.nom+'">'+m.nom+'</option>'; });
+  html += '</select></div>';
+  html += '<div class="mb-4"><label class="field-label">Champ à modifier</label><select class="glass-select" id="suggestField"><option value="emd1">EMD 1</option><option value="emd2">EMD 2</option><option value="td">TD</option><option value="tp">TP</option><option value="moy_module">Moy Module</option></select></div>';
+  html += '<div class="mb-4"><label class="field-label">Valeur suggérée</label><input type="text" class="calc-input" id="suggestVal" placeholder="Ex: 12.5"></div>';
+  html += '<div class="mb-5"><label class="field-label">Justification</label><textarea class="calc-input" id="suggestReason" placeholder="Pourquoi cette modification ?" style="min-height:70px;resize:vertical;"></textarea></div>';
+  html += '<div style="display:flex;gap:0.75rem;justify-content:flex-end;">';
+  html += '<button class="btn-ghost" onclick="document.getElementById('suggestModal').remove()">Annuler</button>';
+  html += '<button class="btn-main" style="width:auto;padding:0.6rem 1.5rem;" onclick="sendSuggestion('+num+')"><i class="ph-bold ph-paper-plane-right"></i> Envoyer</button>';
+  html += '</div></div></div>';
+  document.body.insertAdjacentHTML("beforeend", html);
+}
+
+function sendSuggestion(num) {
+  var et = adminData.find(function(e){return e.numero===num;});
+  var module  = document.getElementById("suggestModule").value;
+  var field   = document.getElementById("suggestField").value;
+  var val     = document.getElementById("suggestVal").value.trim();
+  var reason  = document.getElementById("suggestReason").value.trim();
+  if (!module||!val) { showToast("Remplissez tous les champs.", "warning"); return; }
+  var now = new Date().toLocaleString("fr-FR");
+  var msg = "Suggestion: "+module+" / "+field+" = "+val+(reason?" | Raison: "+reason:"");
+  fsCreate("notifications",{
+    etudiant_nom: et.nom+" "+et.prenom,
+    etudiant_numero: et.numero,
+    module: module,
+    type: "Suggestion de modification (Admin Lite)",
+    message: msg,
+    date: now,
+    lu: false
+  }).then(function(){
+    emailjs.init(EMAILJS_KEY);
+    return emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE,{
+      etudiant_nom: et.nom+" "+et.prenom,
+      etudiant_numero: String(et.numero),
+      module: module,
+      type_signalement: "Suggestion Admin Lite",
+      message: msg,
+      date: now
+    });
+  }).then(function(){
+    document.getElementById("suggestModal").remove();
+    showToast("Suggestion envoyée à l'admin !", "success");
+  }).catch(function(){
+    document.getElementById("suggestModal").remove();
+    showToast("Suggestion enregistrée.", "warning");
+  });
 }
 
 function filterAdmin() {
@@ -846,7 +913,7 @@ function renderComptes(data) {
       '<td style="font-weight:600;">'+et.nom+'</td><td>'+et.prenom+'</td>'+
       '<td class="mono">'+(et.custom_id||"—")+'</td>'+
       '<td class="mono">'+(et.custom_mdp?"••••••":"—")+'</td>'+
-      '<td><button class="btn-sm btn-danger-sm" onclick="resetCompte('+et.numero+')"><i class="ph-bold ph-arrow-counter-clockwise"></i> Reset</button></td>'+
+      '<td>'+(isAdminLite?'—':'<button class="btn-sm btn-danger-sm" onclick="resetCompte('+et.numero+')"><i class="ph-bold ph-arrow-counter-clockwise"></i> Reset</button>')+'</td>'+
       '</tr>';
   });
   html+='</tbody></table></div></div>';
@@ -882,7 +949,7 @@ function showView(v) {
 }
 
 function logout() {
-  currentStudent=null; isAdmin=false; adminData=[];
+  currentStudent=null; isAdmin=false; isAdminLite=false; adminData=[];
   clearSession();
   document.getElementById("inputNom").value="";
   document.getElementById("inputMdp").value="";
