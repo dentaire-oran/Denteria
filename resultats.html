@@ -546,7 +546,7 @@ function renderStudent(et) {
   document.getElementById("studentName").textContent = et.nom+" "+et.prenom;
   document.getElementById("studentMeta").textContent = "N° "+et.numero+" | 3ème Année";
   var moy = et.moyenne_generale;
-  document.getElementById("statMoy").textContent  = moy ? parseFloat(moy).toFixed(2) : "—";
+  document.getElementById("statMoy").textContent  = moy ? parseFloat(moy).toFixed(4) : "—";
   document.getElementById("statRank").textContent = et.classement || "—";
   var badge = document.getElementById("studentBadge");
   var res = et.resultat || "";
@@ -700,7 +700,7 @@ function renderAdminTable(data) {
   if(!data.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Aucun résultat</td></tr>';return;}
   tbody.innerHTML="";
   data.forEach(function(et){
-    var moy=et.moyenne_generale?parseFloat(et.moyenne_generale).toFixed(2):"—";
+    var moy=et.moyenne_generale?parseFloat(et.moyenne_generale).toFixed(4):"—";
     var res=et.resultat||"—";
     var resBadge=res.indexOf("admis")!==-1||res.indexOf("Félicitations")!==-1
       ?'<span class="badge badge-success" style="font-size:0.72rem;padding:2px 8px;">Admis</span>'
