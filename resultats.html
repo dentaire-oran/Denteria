@@ -518,10 +518,18 @@ function fsGet(collection, docId) {
   return fetch(url).then(function(r){ return r.json(); });
 }
 
-function fsList(collection, pageSize) {
-  pageSize = pageSize || 1000;
-  var url = FS_BASE+"/"+collection+"?key="+FIREBASE_API_KEY+"&pageSize="+pageSize;
-  return fetch(url).then(function(r){ return r.json(); });
+function fsList(collection) {
+  var allDocs = [];
+  function fetchPage(pageToken) {
+    var url = FS_BASE+"/"+collection+"?key="+FIREBASE_API_KEY+"&pageSize=300";
+    if (pageToken) url += "&pageToken=" + encodeURIComponent(pageToken);
+    return fetch(url).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.documents) allDocs = allDocs.concat(data.documents);
+      if (data.nextPageToken) return fetchPage(data.nextPageToken);
+      return { documents: allDocs };
+    });
+  }
+  return fetchPage(null);
 }
 
 function fsPatch(collection, docId, fields) {
@@ -754,7 +762,7 @@ function loadAdmin() {
   document.getElementById("adminBody").innerHTML =
     '<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);">Chargement...</td></tr>';
 
-  fsList("etudiants", 500).then(function(data) {
+  fsList("etudiants").then(function(data) {
     if (!data.documents) { adminData = []; renderAdminTable([]); return; }
     adminData = data.documents.map(fromFsDoc).filter(Boolean);
     adminData.sort(function(a,b){ return a.numero - b.numero; });
