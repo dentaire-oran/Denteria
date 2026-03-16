@@ -106,6 +106,10 @@
     .notif-card { border-radius:16px; padding:1rem 1.25rem; margin-bottom:0.75rem; }
     .notif-unread { border:1px solid rgba(129,140,248,0.3); background:rgba(129,140,248,0.07); }
     .notif-read { border:1px solid var(--glass-border); background:var(--glass-bg); }
+    .device-badge { display:inline-flex; align-items:center; gap:0.3rem; padding:0.25rem 0.6rem; border-radius:6px; font-size:0.72rem; font-weight:600; margin-top:0.3rem; }
+    .device-pc { background:rgba(99,102,241,0.15); color:#a5b4fc; border:1px solid rgba(99,102,241,0.3); }
+    .device-mobile { background:rgba(42,212,165,0.15); color:var(--success); border:1px solid rgba(42,212,165,0.3); }
+    .device-tablet { background:rgba(255,201,74,0.15); color:var(--warning); border:1px solid rgba(255,201,74,0.3); }
     .spinner { width:20px; height:20px; border:2px solid var(--glass-border); border-top-color:#818cf8; border-radius:50%; animation:spin 0.7s linear infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
     #toastContainer { position:fixed; bottom:6rem; left:50%; transform:translateX(-50%); z-index:200; display:flex; flex-direction:column; gap:0.5rem; pointer-events:none; }
@@ -328,6 +332,424 @@ var MODULES = [
 var currentStudent=null, isAdmin=false, isAdminLite=false;
 var adminData=[], adminSortKey="numero", adminSortAsc=true, currentView="login";
 
+// ============================================
+// DEVICE DETECTION FUNCTIONS
+// ============================================
+
+function getDeviceType() {
+  var ua = navigator.userAgent;
+  var platform = navigator.platform || "";
+  var maxTouchPoints = navigator.maxTouchPoints || 0;
+  
+  // Check for tablets first (larger touch devices)
+  if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && maxTouchPoints > 1)) {
+    return "tablet";
+  }
+  
+  // Check for mobile phones
+  if (/Mobi|Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|webOS|Windows Phone/i.test(ua)) {
+    return "mobile";
+  }
+  
+  // Default to desktop
+  return "pc";
+}
+
+function getDeviceModel() {
+  var ua = navigator.userAgent;
+  var platform = navigator.platform || "";
+  var maxTouchPoints = navigator.maxTouchPoints || 0;
+  
+  // ============ IPHONE DETECTION ============
+  // iPhone model detection based on screen dimensions and pixel ratio
+  if (/iPhone/i.test(ua)) {
+    var screenWidth = window.screen.width;
+    var screenHeight = window.screen.height;
+    var dpr = window.devicePixelRatio || 1;
+    
+    // Get actual screen dimensions in points (not pixels)
+    var widthPoints = screenWidth;
+    var heightPoints = screenHeight;
+    
+    // iPhone 14 Pro Max / 15 Plus / 15 Pro Max / 16 Plus / 16 Pro Max
+    if ((widthPoints === 430 && heightPoints === 932) || (widthPoints === 932 && heightPoints === 430)) {
+      if (/iPhone1[56]/.test(ua)) return "iPhone 16 Pro Max";
+      if (/iPhone1[45]/.test(ua)) return "iPhone 15 Pro Max";
+      return "iPhone 14 Pro Max";
+    }
+    
+    // iPhone 14 Pro / 15 / 15 Pro / 16 / 16 Pro
+    if ((widthPoints === 393 && heightPoints === 852) || (widthPoints === 852 && heightPoints === 393)) {
+      if (/iPhone1[56]/.test(ua)) return "iPhone 16 Pro";
+      if (/iPhone1[45]/.test(ua)) return "iPhone 15 Pro";
+      return "iPhone 14 Pro";
+    }
+    
+    // iPhone 14 / 15 / 16 (standard models)
+    if ((widthPoints === 390 && heightPoints === 844) || (widthPoints === 844 && heightPoints === 390)) {
+      return "iPhone 14 / 15 / 16";
+    }
+    
+    // iPhone 13 mini / 12 mini
+    if ((widthPoints === 360 && heightPoints === 780) || (widthPoints === 780 && heightPoints === 360)) {
+      return "iPhone 13 mini / 12 mini";
+    }
+    
+    // iPhone 13 Pro / 13 / 12 Pro / 12
+    if ((widthPoints === 390 && heightPoints === 844) || (widthPoints === 844 && heightPoints === 390)) {
+      return "iPhone 13 Pro / 13 / 12 Pro / 12";
+    }
+    
+    // iPhone 13 Pro Max / 12 Pro Max
+    if ((widthPoints === 428 && heightPoints === 926) || (widthPoints === 926 && heightPoints === 428)) {
+      return "iPhone 13 Pro Max / 12 Pro Max";
+    }
+    
+    // iPhone 11 Pro Max / XS Max
+    if ((widthPoints === 414 && heightPoints === 896) || (widthPoints === 896 && heightPoints === 414)) {
+      return "iPhone 11 Pro Max / XS Max";
+    }
+    
+    // iPhone 11 Pro / XS
+    if ((widthPoints === 375 && heightPoints === 812) || (widthPoints === 812 && heightPoints === 375)) {
+      return "iPhone 11 Pro / XS";
+    }
+    
+    // iPhone 11 / XR
+    if ((widthPoints === 414 && heightPoints === 896) || (widthPoints === 896 && heightPoints === 414)) {
+      return "iPhone 11 / XR";
+    }
+    
+    // iPhone SE 3rd / 2nd gen, iPhone 8, 7, 6s, 6
+    if ((widthPoints === 375 && heightPoints === 667) || (widthPoints === 667 && heightPoints === 375)) {
+      return "iPhone SE (3rd/2nd) / 8 / 7";
+    }
+    
+    // iPhone SE 1st gen, 5s, 5c, 5
+    if ((widthPoints === 320 && heightPoints === 568) || (widthPoints === 568 && heightPoints === 320)) {
+      return "iPhone SE (1st) / 5s";
+    }
+    
+    return "iPhone (Model Unknown)";
+  }
+  
+  // ============ IPAD DETECTION ============
+  if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && maxTouchPoints > 1)) {
+    var screenWidth = window.screen.width;
+    var screenHeight = window.screen.height;
+    
+    // iPad Pro 12.9-inch (5th/6th gen)
+    if ((screenWidth === 1024 && screenHeight === 1366) || (screenWidth === 1366 && screenHeight === 1024)) {
+      return "iPad Pro 12.9\"";
+    }
+    
+    // iPad Pro 11-inch (3rd/4th gen)
+    if ((screenWidth === 834 && screenHeight === 1194) || (screenWidth === 1194 && screenHeight === 834)) {
+      return "iPad Pro 11\"";
+    }
+    
+    // iPad Pro 10.5-inch / iPad Air 3
+    if ((screenWidth === 834 && screenHeight === 1112) || (screenWidth === 1112 && screenHeight === 834)) {
+      return "iPad Pro 10.5\" / Air 3";
+    }
+    
+    // iPad Air 4th/5th gen, iPad 10th gen
+    if ((screenWidth === 820 && screenHeight === 1180) || (screenWidth === 1180 && screenHeight === 820)) {
+      return "iPad Air 4/5 / iPad 10";
+    }
+    
+    // iPad Mini 6
+    if ((screenWidth === 744 && screenHeight === 1133) || (screenWidth === 1133 && screenHeight === 744)) {
+      return "iPad Mini 6";
+    }
+    
+    // Standard iPad 9th gen and earlier
+    if ((screenWidth === 768 && screenHeight === 1024) || (screenWidth === 1024 && screenHeight === 768)) {
+      return "iPad (Standard)";
+    }
+    
+    return "iPad (Model Unknown)";
+  }
+  
+  // ============ SAMSUNG DETECTION ============
+  if (/Samsung|SM-|GT-|SCH-|SGH-/i.test(ua)) {
+    // Extract model number
+    var samsungModel = ua.match(/(SM-[A-Z][0-9]{3,4}[A-Z]?|GT-[A-Z][0-9]{4}|SCH-[A-Z][0-9]{4}|SGH-[A-Z][0-9]{4})/i);
+    if (samsungModel) {
+      var modelNum = samsungModel[1].toUpperCase();
+      
+      // Galaxy S series
+      if (modelNum === "S911B" || modelNum === "S911U" || modelNum === "S911W") return "Samsung Galaxy S23";
+      if (modelNum === "S918B" || modelNum === "S918U") return "Samsung Galaxy S23 Ultra";
+      if (modelNum === "S906B" || modelNum === "S906U" || modelNum === "S901B") return "Samsung Galaxy S22";
+      if (modelNum === "S908B" || modelNum === "S908U") return "Samsung Galaxy S22 Ultra";
+      if (modelNum === "S926B" || modelNum === "S926U" || modelNum === "S928B") return "Samsung Galaxy S24 Ultra";
+      if (modelNum === "S921B" || modelNum === "S926B") return "Samsung Galaxy S24";
+      if (modelNum === "S938B") return "Samsung Galaxy S25 Ultra";
+      if (modelNum === "S936B") return "Samsung Galaxy S25+";
+      if (modelNum === "S931B") return "Samsung Galaxy S25";
+      
+      // Galaxy Note series
+      if (modelNum.indexOf("N970") !== -1) return "Samsung Galaxy Note 9";
+      if (modelNum.indexOf("N980") !== -1 || modelNum.indexOf("N981") !== -1) return "Samsung Galaxy Note 20";
+      if (modelNum.indexOf("N986") !== -1 || modelNum.indexOf("N981B") !== -1) return "Samsung Galaxy Note 20 Ultra";
+      
+      // Galaxy A series
+      if (modelNum.indexOf("A536") !== -1) return "Samsung Galaxy A54";
+      if (modelNum.indexOf("A546") !== -1) return "Samsung Galaxy A54 5G";
+      if (modelNum.indexOf("A715") !== -1) return "Samsung Galaxy A71";
+      if (modelNum.indexOf("A525") !== -1) return "Samsung Galaxy A52";
+      if (modelNum.indexOf("A515") !== -1) return "Samsung Galaxy A51";
+      
+      // Galaxy Z Fold/Flip
+      if (modelNum.indexOf("F936") !== -1) return "Samsung Galaxy Z Fold 4";
+      if (modelNum.indexOf("F721") !== -1) return "Samsung Galaxy Z Flip 4";
+      if (modelNum.indexOf("F946") !== -1) return "Samsung Galaxy Z Fold 5";
+      if (modelNum.indexOf("F731") !== -1) return "Samsung Galaxy Z Flip 5";
+      if (modelNum.indexOf("F956") !== -1) return "Samsung Galaxy Z Fold 6";
+      if (modelNum.indexOf("F741") !== -1) return "Samsung Galaxy Z Flip 6";
+      
+      return "Samsung " + modelNum;
+    }
+    return "Samsung Device";
+  }
+  
+  // ============ GOOGLE PIXEL DETECTION ============
+  if (/Pixel/i.test(ua)) {
+    var pixelModel = ua.match(/Pixel ([0-9]+(?:a|Pro|XL)?)/i);
+    if (pixelModel) return "Google Pixel " + pixelModel[1];
+    return "Google Pixel";
+  }
+  
+  // ============ ONEPLUS DETECTION ============
+  if (/OnePlus|ONEPLUS/i.test(ua)) {
+    var oneplusModel = ua.match(/(OnePlus\s*[A-Z0-9]+)/i);
+    if (oneplusModel) return oneplusModel[1];
+    if (/CPH/i.test(ua)) {
+      var cphModel = ua.match(/CPH[0-9]{4}/i);
+      if (cphModel) return "OnePlus " + cphModel[0];
+    }
+    return "OnePlus Device";
+  }
+  
+  // ============ XIAOMI / REDMI DETECTION ============
+  if (/Xiaomi|Redmi|POCO|MI [0-9]/i.test(ua)) {
+    var xiaomiModel = ua.match(/(Redmi\s*[A-Z0-9 ]+|POCO\s*[A-Z0-9 ]+|Mi [0-9]+(?: Pro| Ultra)?)/i);
+    if (xiaomiModel) return xiaomiModel[1].trim();
+    if (/M[0-9]{4}/.test(ua)) {
+      var mModel = ua.match(/M[0-9]{4}/);
+      if (mModel) return "Xiaomi " + mModel[0];
+    }
+    return "Xiaomi Device";
+  }
+  
+  // ============ HUAWEI DETECTION ============
+  if (/Huawei|HUAWEI|HONOR/i.test(ua)) {
+    var huaweiModel = ua.match(/(Huawei\s*[A-Z0-9]+|Honor\s*[A-Z0-9]+)/i);
+    if (huaweiModel) return huaweiModel[1];
+    return "Huawei Device";
+  }
+  
+  // ============ LG DETECTION ============
+  if (/LG/i.test(ua)) {
+    var lgModel = ua.match(/LG[- ]([A-Z0-9]+)/i);
+    if (lgModel) return "LG " + lgModel[1];
+    return "LG Device";
+  }
+  
+  // ============ MOTOROLA DETECTION ============
+  if (/Moto|Motorola/i.test(ua)) {
+    var motoModel = ua.match(/(Moto\s*[A-Z0-9 ]+)/i);
+    if (motoModel) return motoModel[1].trim();
+    return "Motorola Device";
+  }
+  
+  // ============ NOKIA DETECTION ============
+  if (/Nokia/i.test(ua)) {
+    var nokiaModel = ua.match(/Nokia\s*([A-Z0-9]+)/i);
+    if (nokiaModel) return "Nokia " + nokiaModel[1];
+    return "Nokia Device";
+  }
+  
+  // ============ SONY DETECTION ============
+  if (/Sony|Xperia/i.test(ua)) {
+    var sonyModel = ua.match(/(Xperia\s*[A-Z0-9 ]+)/i);
+    if (sonyModel) return sonyModel[1].trim();
+    return "Sony Xperia";
+  }
+  
+  // ============ OPPO / REALME DETECTION ============
+  if (/OPPO|Realme|CPH|RMX/i.test(ua)) {
+    var oppoModel = ua.match(/(OPPO\s*[A-Z0-9]+|Realme\s*[A-Z0-9]+|CPH[0-9]+|RMX[0-9]+)/i);
+    if (oppoModel) return oppoModel[1];
+    return "OPPO / Realme Device";
+  }
+  
+  // ============ VIVO DETECTION ============
+  if (/vivo|VIVO/i.test(ua)) {
+    var vivoModel = ua.match(/vivo\s*([A-Z0-9]+)/i);
+    if (vivoModel) return "Vivo " + vivoModel[1];
+    return "Vivo Device";
+  }
+  
+  // ============ ANDROID GENERIC ============
+  if (/Android/i.test(ua)) {
+    var androidModel = ua.match(/Android[^;]*;\s*([^)]+)\s*Build/i);
+    if (androidModel) return androidModel[1].trim();
+    return "Android Device";
+  }
+  
+  // ============ WINDOWS PC DETECTION ============
+  if (/Windows NT/i.test(ua)) {
+    var winVersion = ua.match(/Windows NT ([0-9.]+)/);
+    var version = winVersion ? winVersion[1] : "";
+    
+    // Try to detect specific manufacturer
+    if (/Surface/i.test(ua)) return "Microsoft Surface";
+    if (/HP/i.test(ua) || /Hewlett-Packard/i.test(ua)) return "HP PC (Windows)";
+    if (/Dell/i.test(ua)) return "Dell PC (Windows)";
+    if (/Lenovo/i.test(ua)) return "Lenovo PC (Windows)";
+    if (/ASUS/i.test(ua)) return "ASUS PC (Windows)";
+    if (/Acer/i.test(ua)) return "Acer PC (Windows)";
+    
+    return "Windows PC";
+  }
+  
+  // ============ MAC DETECTION ============
+  if (/Macintosh|MacIntel|MacPPC|Mac68K/i.test(ua)) {
+    // Check for Apple Silicon
+    if (/Apple\s*M[12]/i.test(ua)) {
+      // Try to detect specific Mac model based on screen
+      var screenWidth = window.screen.width;
+      var screenHeight = window.screen.height;
+      
+      // MacBook Pro detection by screen
+      if (screenWidth === 1728 && screenHeight === 1117) return "MacBook Pro 16\" (M3)";
+      if (screenWidth === 1512 && screenHeight === 982) return "MacBook Pro 14\" (M3)";
+      if (screenWidth === 1440 && screenHeight === 900) return "MacBook Air 13\" (M2/M3)";
+      if (screenWidth === 2560 && screenHeight === 1600) return "MacBook Pro 13\" (Retina)";
+      if (screenWidth === 1680 && screenHeight === 1050) return "MacBook Pro 15\"";
+      
+      return "Mac (Apple Silicon)";
+    }
+    
+    return "Mac (Intel)";
+  }
+  
+  // ============ LINUX DETECTION ============
+  if (/Linux/i.test(ua) && !/Android/i.test(ua)) {
+    if (/Ubuntu/i.test(ua)) return "Linux (Ubuntu)";
+    if (/Fedora/i.test(ua)) return "Linux (Fedora)";
+    if (/Debian/i.test(ua)) return "Linux (Debian)";
+    if (/Arch/i.test(ua)) return "Linux (Arch)";
+    return "Linux PC";
+  }
+  
+  // ============ CHROMEBOOK DETECTION ============
+  if (/CrOS/i.test(ua)) {
+    return "Chromebook";
+  }
+  
+  // ============ FALLBACK ============
+  return "Unknown Device";
+}
+
+function getBrowserInfo() {
+  var ua = navigator.userAgent;
+  
+  if (/Edg\//i.test(ua)) {
+    var version = ua.match(/Edg\/([0-9]+)/);
+    return "Edge" + (version ? " " + version[1] : "");
+  }
+  if (/Chrome\//i.test(ua) && !/Edg/i.test(ua)) {
+    var version = ua.match(/Chrome\/([0-9]+)/);
+    return "Chrome" + (version ? " " + version[1] : "");
+  }
+  if (/Firefox/i.test(ua)) {
+    var version = ua.match(/Firefox\/([0-9]+)/);
+    return "Firefox" + (version ? " " + version[1] : "");
+  }
+  if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) {
+    var version = ua.match(/Version\/([0-9]+)/);
+    return "Safari" + (version ? " " + version[1] : "");
+  }
+  if (/Opera|OPR\//i.test(ua)) {
+    var version = ua.match(/(?:Opera|OPR)\/([0-9]+)/);
+    return "Opera" + (version ? " " + version[1] : "");
+  }
+  
+  return "Unknown Browser";
+}
+
+function getDeviceInfo() {
+  var deviceType = getDeviceType();
+  var deviceModel = getDeviceModel();
+  var browser = getBrowserInfo();
+  var os = getOSInfo();
+  
+  return {
+    type: deviceType,           // "pc", "mobile", or "tablet"
+    model: deviceModel,          // e.g., "iPhone 13 Pro", "Samsung Galaxy S23 Ultra", "Windows PC"
+    browser: browser,            // e.g., "Chrome 120", "Safari 17"
+    os: os                       // e.g., "iOS 17.2", "Windows 11", "Android 14"
+  };
+}
+
+function getOSInfo() {
+  var ua = navigator.userAgent;
+  
+  // iOS
+  var iOS = ua.match(/iPhone OS ([0-9_]+)|iPad.*OS ([0-9_]+)/i);
+  if (iOS) {
+    var version = (iOS[1] || iOS[2]).replace(/_/g, ".");
+    return "iOS " + version;
+  }
+  
+  // Android
+  var android = ua.match(/Android ([0-9.]+)/);
+  if (android) return "Android " + android[1];
+  
+  // Windows
+  var windows = ua.match(/Windows NT ([0-9.]+)/);
+  if (windows) {
+    var winVersions = {"10.0": "10/11", "6.3": "8.1", "6.2": "8", "6.1": "7"};
+    return "Windows " + (winVersions[windows[1]] || windows[1]);
+  }
+  
+  // macOS
+  var macOS = ua.match(/Mac OS X ([0-9_]+)/);
+  if (macOS) return "macOS " + macOS[1].replace(/_/g, ".");
+  
+  // Linux
+  if (/Linux/i.test(ua) && !/Android/i.test(ua)) {
+    if (/Ubuntu/i.test(ua)) return "Ubuntu Linux";
+    if (/Fedora/i.test(ua)) return "Fedora Linux";
+    return "Linux";
+  }
+  
+  // ChromeOS
+  if (/CrOS/i.test(ua)) return "Chrome OS";
+  
+  return "Unknown OS";
+}
+
+// Get device display string for notifications
+function getDeviceDisplayString() {
+  var info = getDeviceInfo();
+  var icon = info.type === "mobile" ? "📱" : info.type === "tablet" ? "📲" : "💻";
+  return icon + " " + info.model + " (" + info.os + ", " + info.browser + ")";
+}
+
+// Get short device string for database
+function getDeviceShortString() {
+  var info = getDeviceInfo();
+  return info.type + ": " + info.model;
+}
+
+// ============================================
+// END DEVICE DETECTION
+// ============================================
+
 // SHA-256
 async function sha256(msg){
   var buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));
@@ -458,11 +880,16 @@ async function doLogin(){
 function logConnection(nom,numero,type){
   var now=new Date().toLocaleString("fr-FR");
   var isAdminLiteConn=type.indexOf("Admin Lite")!==-1;
+  var deviceInfo = getDeviceShortString();
+  var deviceFull = getDeviceDisplayString();
+  
   // Toutes les connexions: admin_only=true (invisible pour admin lite)
   fsCreate("notifications",{
     etudiant_nom:nom,etudiant_numero:String(numero),module:"Système",
     type:"Connexion",message:type,date:now,lu:false,
-    admin_only:true
+    admin_only:true,
+    device_info: deviceInfo,
+    device_full: deviceFull
   });
   // Email seulement pour admin lite
   if(isAdminLiteConn){
@@ -470,7 +897,7 @@ function logConnection(nom,numero,type){
     emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
       etudiant_nom:nom,etudiant_numero:String(numero),
       module:"Système",type_signalement:type,
-      message:type+" — "+now,date:now
+      message:type+" — "+now+" | Appareil: "+deviceFull,date:now
     });
   }
 }
@@ -568,6 +995,9 @@ function saveAccount(){
   if(newMdp)fields.custom_mdp=newMdp;
   var changes="Identifiant: "+newId+(newMdp?" | Mot de passe modifie":"");
   var now=new Date().toLocaleString("fr-FR");
+  var deviceInfo = getDeviceShortString();
+  var deviceFull = getDeviceDisplayString();
+  
   fsPatch("etudiants",String(currentStudent.numero),fields).then(function(){
     currentStudent.custom_id=newId;
     if(newMdp)currentStudent.custom_mdp=newMdp;
@@ -575,7 +1005,9 @@ function saveAccount(){
       etudiant_nom:currentStudent.nom+" "+currentStudent.prenom,
       etudiant_numero:currentStudent.numero,module:"—",
       type:"Modification de compte",message:changes,date:now,lu:false,
-      admin_only:true
+      admin_only:true,
+      device_info: deviceInfo,
+      device_full: deviceFull
     });
   }).then(function(){
     emailjs.init(EMAILJS_KEY);
@@ -583,7 +1015,7 @@ function saveAccount(){
       etudiant_nom:currentStudent.nom+" "+currentStudent.prenom,
       etudiant_numero:String(currentStudent.numero),
       module:"Compte",type_signalement:"Modification de compte",
-      message:changes,date:now
+      message:changes+" | Appareil: "+deviceFull,date:now
     });
   }).then(function(){
     btn.innerHTML='<i class="ph-bold ph-floppy-disk"></i> Sauvegarder les modifications';
@@ -603,15 +1035,20 @@ function envoyerSignalement(){
   btn.innerHTML='<div class="spinner"></div> Envoi...';btn.disabled=true;
   var now=new Date().toLocaleString("fr-FR");
   var nom=currentStudent.nom+" "+currentStudent.prenom;
+  var deviceInfo = getDeviceShortString();
+  var deviceFull = getDeviceDisplayString();
+  
   fsCreate("notifications",{
     etudiant_nom:nom,etudiant_numero:currentStudent.numero,
     module:module,type:type,message:comment||"(aucun commentaire)",date:now,lu:false,
-    admin_only:false
+    admin_only:false,
+    device_info: deviceInfo,
+    device_full: deviceFull
   }).then(function(){
     emailjs.init(EMAILJS_KEY);
     return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
       etudiant_nom:nom,etudiant_numero:String(currentStudent.numero),
-      module:module,type_signalement:type,message:comment||"(aucun commentaire)",date:now
+      module:module,type_signalement:type,message:(comment||"(aucun commentaire)")+" | Appareil: "+deviceFull,date:now
     });
   }).then(function(){
     btn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> Envoyer le signalement';
@@ -899,15 +1336,20 @@ function sendSuggestion(num,modal){
   if(!module||!val){showToast("Remplissez tous les champs.","warning");return;}
   var now=new Date().toLocaleString("fr-FR");
   var msg="Suggestion: "+module+" / "+field+" = "+val+(reason?" | Raison: "+reason:"");
+  var deviceInfo = getDeviceShortString();
+  var deviceFull = getDeviceDisplayString();
+  
   fsCreate("notifications",{
     etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:et.numero,
     module:module,type:"Suggestion de modification (Admin Lite)",message:msg,date:now,lu:false,
-    admin_only:false
+    admin_only:false,
+    device_info: deviceInfo,
+    device_full: deviceFull
   }).then(function(){
     emailjs.init(EMAILJS_KEY);
     return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
       etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:String(et.numero),
-      module:module,type_signalement:"Suggestion Admin Lite",message:msg,date:now
+      module:module,type_signalement:"Suggestion Admin Lite",message:msg+" | Appareil: "+deviceFull,date:now
     });
   }).then(function(){if(modal)modal.remove();showToast("Suggestion envoyée !","success");})
   .catch(function(){if(modal)modal.remove();showToast("Suggestion enregistrée.","warning");});
@@ -943,6 +1385,7 @@ function loadNotifs(){
     renderNotifs(notifs);
   });
 }
+
 function renderNotifs(notifs){
   var el=document.getElementById("notifsList");
   if(!notifs.length){el.innerHTML='<p class="text-center py-8" style="color:var(--text-muted);">Aucun signalement reçu.</p>';return;}
@@ -951,6 +1394,16 @@ function renderNotifs(notifs){
     var isCompte=n.type==="Modification de compte";
     var isConnexion=n.type==="Connexion";
     var typeColor=isConnexion||isCompte?"var(--success)":"var(--warning)";
+    
+    // Device badge styling
+    var deviceBadge = "";
+    if(n.device_info) {
+      var deviceType = n.device_info.split(":")[0].trim();
+      var deviceClass = deviceType === "mobile" ? "device-mobile" : deviceType === "tablet" ? "device-tablet" : "device-pc";
+      var deviceIcon = deviceType === "mobile" ? "ph-device-mobile" : deviceType === "tablet" ? "ph-device-tablet" : "ph-desktop";
+      deviceBadge = '<div class="device-badge '+deviceClass+'"><i class="ph-bold '+deviceIcon+'"></i> '+n.device_info+'</div>';
+    }
+    
     var div=document.createElement("div");
     div.className="notif-card "+(n.lu?"notif-read":"notif-unread");
     div.innerHTML=
@@ -959,6 +1412,7 @@ function renderNotifs(notifs){
       '<div style="margin-top:0.3rem;font-size:0.88rem;"><span style="color:#a5b4fc;">'+n.module+'</span> — '+
       '<span style="color:'+typeColor+';">'+n.type+'</span></div>'+
       (n.message&&n.message!=="(aucun commentaire)"?'<div style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-muted);font-style:italic;">"'+n.message+'"</div>':'')+
+      deviceBadge+
       '</div><div style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap;">'+n.date+'</div></div>';
     el.appendChild(div);
   });
