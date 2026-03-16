@@ -333,12 +333,11 @@ var currentStudent=null, isAdmin=false, isAdminLite=false;
 var adminData=[], adminSortKey="numero", adminSortAsc=true, currentView="login";
 
 // ============================================
-// DEVICE DETECTION FUNCTIONS
+// DEVICE DETECTION FUNCTIONS (IMPROVED)
 // ============================================
 
 function getDeviceType() {
   var ua = navigator.userAgent;
-  var platform = navigator.platform || "";
   var maxTouchPoints = navigator.maxTouchPoints || 0;
   
   // Check for tablets first (larger touch devices)
@@ -359,277 +358,401 @@ function getDeviceModel() {
   var ua = navigator.userAgent;
   var platform = navigator.platform || "";
   var maxTouchPoints = navigator.maxTouchPoints || 0;
+  var screenWidth = window.screen.width;
+  var screenHeight = window.screen.height;
+  var dpr = window.devicePixelRatio || 1;
   
   // ============ IPHONE DETECTION ============
-  // iPhone model detection based on screen dimensions and pixel ratio
   if (/iPhone/i.test(ua)) {
-    var screenWidth = window.screen.width;
-    var screenHeight = window.screen.height;
-    var dpr = window.devicePixelRatio || 1;
+    // Get actual screen dimensions
+    var w = screenWidth;
+    var h = screenHeight;
     
-    // Get actual screen dimensions in points (not pixels)
-    var widthPoints = screenWidth;
-    var heightPoints = screenHeight;
-    
-    // iPhone 14 Pro Max / 15 Plus / 15 Pro Max / 16 Plus / 16 Pro Max
-    if ((widthPoints === 430 && heightPoints === 932) || (widthPoints === 932 && heightPoints === 430)) {
-      if (/iPhone1[56]/.test(ua)) return "iPhone 16 Pro Max";
+    // iPhone 16 Pro Max / 15 Pro Max / 14 Pro Max (430x932)
+    if ((w === 430 && h === 932) || (w === 932 && h === 430)) {
+      if (/iPhone1[67]/.test(ua)) return "iPhone 16 Pro Max";
       if (/iPhone1[45]/.test(ua)) return "iPhone 15 Pro Max";
       return "iPhone 14 Pro Max";
     }
     
-    // iPhone 14 Pro / 15 / 15 Pro / 16 / 16 Pro
-    if ((widthPoints === 393 && heightPoints === 852) || (widthPoints === 852 && heightPoints === 393)) {
-      if (/iPhone1[56]/.test(ua)) return "iPhone 16 Pro";
+    // iPhone 16 Pro / 15 Pro / 14 Pro (393x852)
+    if ((w === 393 && h === 852) || (w === 852 && h === 393)) {
+      if (/iPhone1[67]/.test(ua)) return "iPhone 16 Pro";
       if (/iPhone1[45]/.test(ua)) return "iPhone 15 Pro";
       return "iPhone 14 Pro";
     }
     
-    // iPhone 14 / 15 / 16 (standard models)
-    if ((widthPoints === 390 && heightPoints === 844) || (widthPoints === 844 && heightPoints === 390)) {
-      return "iPhone 14 / 15 / 16";
+    // iPhone 16 Plus / 15 Plus / 14 Plus (430x932 standard)
+    if ((w === 430 && h === 932) || (w === 932 && h === 430)) {
+      return "iPhone 14 Plus / 15 Plus / 16 Plus";
     }
     
-    // iPhone 13 mini / 12 mini
-    if ((widthPoints === 360 && heightPoints === 780) || (widthPoints === 780 && heightPoints === 360)) {
-      return "iPhone 13 mini / 12 mini";
+    // iPhone 16 / 15 / 14 / 13 Pro / 13 / 12 Pro / 12 (390x844)
+    if ((w === 390 && h === 844) || (w === 844 && h === 390)) {
+      return "iPhone 14 / 15 / 16 / 13 Pro / 12 Pro";
     }
     
-    // iPhone 13 Pro / 13 / 12 Pro / 12
-    if ((widthPoints === 390 && heightPoints === 844) || (widthPoints === 844 && heightPoints === 390)) {
-      return "iPhone 13 Pro / 13 / 12 Pro / 12";
-    }
-    
-    // iPhone 13 Pro Max / 12 Pro Max
-    if ((widthPoints === 428 && heightPoints === 926) || (widthPoints === 926 && heightPoints === 428)) {
+    // iPhone 13 Pro Max / 12 Pro Max (428x926)
+    if ((w === 428 && h === 926) || (w === 926 && h === 428)) {
       return "iPhone 13 Pro Max / 12 Pro Max";
     }
     
-    // iPhone 11 Pro Max / XS Max
-    if ((widthPoints === 414 && heightPoints === 896) || (widthPoints === 896 && heightPoints === 414)) {
-      return "iPhone 11 Pro Max / XS Max";
+    // iPhone 13 mini / 12 mini (360x780)
+    if ((w === 360 && h === 780) || (w === 780 && h === 360)) {
+      return "iPhone 13 mini / 12 mini";
     }
     
-    // iPhone 11 Pro / XS
-    if ((widthPoints === 375 && heightPoints === 812) || (widthPoints === 812 && heightPoints === 375)) {
-      return "iPhone 11 Pro / XS";
-    }
-    
-    // iPhone 11 / XR
-    if ((widthPoints === 414 && heightPoints === 896) || (widthPoints === 896 && heightPoints === 414)) {
+    // iPhone 11 Pro Max / XS Max (414x896 @3x)
+    if ((w === 414 && h === 896) || (w === 896 && h === 414)) {
+      if (dpr >= 3) return "iPhone 11 Pro Max / XS Max";
       return "iPhone 11 / XR";
     }
     
-    // iPhone SE 3rd / 2nd gen, iPhone 8, 7, 6s, 6
-    if ((widthPoints === 375 && heightPoints === 667) || (widthPoints === 667 && heightPoints === 375)) {
+    // iPhone 11 Pro / XS (375x812 @3x)
+    if ((w === 375 && h === 812) || (w === 812 && h === 375)) {
+      return "iPhone 11 Pro / XS";
+    }
+    
+    // iPhone SE 3rd/2nd gen, 8, 7, 6s, 6 (375x667)
+    if ((w === 375 && h === 667) || (w === 667 && h === 375)) {
       return "iPhone SE (3rd/2nd) / 8 / 7";
     }
     
-    // iPhone SE 1st gen, 5s, 5c, 5
-    if ((widthPoints === 320 && heightPoints === 568) || (widthPoints === 568 && heightPoints === 320)) {
-      return "iPhone SE (1st) / 5s";
+    // iPhone SE 1st gen, 5s, 5c, 5 (320x568)
+    if ((w === 320 && h === 568) || (w === 568 && h === 320)) {
+      return "iPhone SE (1st) / 5s / 5c";
     }
     
-    return "iPhone (Model Unknown)";
+    // iPhone 4/4s (320x480)
+    if ((w === 320 && h === 480) || (w === 480 && h === 320)) {
+      return "iPhone 4 / 4s";
+    }
+    
+    return "iPhone";
+  }
+  
+  // ============ SAMSUNG / ANDROID DETECTION ============
+  if (/Android/i.test(ua)) {
+    // Try to find Samsung model number in UA
+    // Samsung models are usually: SM-Sxxx, SM-Gxxx, SM-Nxxx, SM-Fxxx, etc.
+    
+    // Check for specific Samsung model patterns
+    var samsungPatterns = [
+      // Galaxy S25 series (2025)
+      {pattern: /SM-S938|SM-S936|SM-S937|S25 Ultra/i, name: "Samsung Galaxy S25 Ultra"},
+      {pattern: /SM-S936|SM-S93[0-9]/i, name: "Samsung Galaxy S25+"},
+      {pattern: /SM-S931|SM-S93[0-9]B/i, name: "Samsung Galaxy S25"},
+      
+      // Galaxy S24 series (2024)
+      {pattern: /SM-S928|SM-S926|SM-S927|S24 Ultra/i, name: "Samsung Galaxy S24 Ultra"},
+      {pattern: /SM-S926|SM-S92[0-9]/i, name: "Samsung Galaxy S24+"},
+      {pattern: /SM-S921|SM-S92[0-9]B/i, name: "Samsung Galaxy S24"},
+      
+      // Galaxy S23 series (2023)
+      {pattern: /SM-S918|SM-S916|SM-S917|S23 Ultra/i, name: "Samsung Galaxy S23 Ultra"},
+      {pattern: /SM-S916/i, name: "Samsung Galaxy S23+"},
+      {pattern: /SM-S911|SM-S91[0-9]B/i, name: "Samsung Galaxy S23"},
+      
+      // Galaxy S22 series (2022)
+      {pattern: /SM-S908|S22 Ultra/i, name: "Samsung Galaxy S22 Ultra"},
+      {pattern: /SM-S906/i, name: "Samsung Galaxy S22+"},
+      {pattern: /SM-S901/i, name: "Samsung Galaxy S22"},
+      
+      // Galaxy S21 series (2021)
+      {pattern: /SM-G998|S21 Ultra/i, name: "Samsung Galaxy S21 Ultra"},
+      {pattern: /SM-G996/i, name: "Samsung Galaxy S21+"},
+      {pattern: /SM-G991/i, name: "Samsung Galaxy S21"},
+      
+      // Galaxy S20 series (2020)
+      {pattern: /SM-G988|S20 Ultra/i, name: "Samsung Galaxy S20 Ultra"},
+      {pattern: /SM-G986/i, name: "Samsung Galaxy S20+"},
+      {pattern: /SM-G981/i, name: "Samsung Galaxy S20"},
+      
+      // Galaxy Note series
+      {pattern: /SM-N976|Note 10\+|Note10\+/i, name: "Samsung Galaxy Note 10+"},
+      {pattern: /SM-N970|Note 10|Note10/i, name: "Samsung Galaxy Note 10"},
+      {pattern: /SM-N986|Note 20 Ultra|Note20 Ultra/i, name: "Samsung Galaxy Note 20 Ultra"},
+      {pattern: /SM-N981|Note 20|Note20/i, name: "Samsung Galaxy Note 20"},
+      
+      // Galaxy Z Fold series
+      {pattern: /SM-F946|Z Fold6|Fold 6|Fold6/i, name: "Samsung Galaxy Z Fold 6"},
+      {pattern: /SM-F936|Z Fold5|Fold 5|Fold5/i, name: "Samsung Galaxy Z Fold 5"},
+      {pattern: /SM-F926|Z Fold4|Fold 4|Fold4/i, name: "Samsung Galaxy Z Fold 4"},
+      {pattern: /SM-F716|Z Fold3|Fold 3|Fold3/i, name: "Samsung Galaxy Z Fold 3"},
+      
+      // Galaxy Z Flip series
+      {pattern: /SM-F741|Z Flip6|Flip 6|Flip6/i, name: "Samsung Galaxy Z Flip 6"},
+      {pattern: /SM-F731|Z Flip5|Flip 5|Flip5/i, name: "Samsung Galaxy Z Flip 5"},
+      {pattern: /SM-F721|Z Flip4|Flip 4|Flip4/i, name: "Samsung Galaxy Z Flip 4"},
+      {pattern: /SM-F711|Z Flip3|Flip 3|Flip3/i, name: "Samsung Galaxy Z Flip 3"},
+      
+      // Galaxy A series (popular models)
+      {pattern: /SM-A556|A55/i, name: "Samsung Galaxy A55"},
+      {pattern: /SM-A546|A54/i, name: "Samsung Galaxy A54"},
+      {pattern: /SM-A536|A53/i, name: "Samsung Galaxy A53"},
+      {pattern: /SM-A526|A52/i, name: "Samsung Galaxy A52"},
+      {pattern: /SM-A736|A73/i, name: "Samsung Galaxy A73"},
+      {pattern: /SM-A726|A72/i, name: "Samsung Galaxy A72"},
+      {pattern: /SM-A715|A71/i, name: "Samsung Galaxy A71"},
+      {pattern: /SM-A515|A51/i, name: "Samsung Galaxy A51"},
+      {pattern: /SM-A356|A35/i, name: "Samsung Galaxy A35"},
+      {pattern: /SM-A346|A34/i, name: "Samsung Galaxy A34"},
+      {pattern: /SM-A336|A33/i, name: "Samsung Galaxy A33"},
+      {pattern: /SM-A156|A15/i, name: "Samsung Galaxy A15"},
+      {pattern: /SM-A146|A14/i, name: "Samsung Galaxy A14"},
+      
+      // Galaxy M series
+      {pattern: /SM-M556|M55/i, name: "Samsung Galaxy M55"},
+      {pattern: /SM-M546|M54/i, name: "Samsung Galaxy M54"},
+      {pattern: /SM-M536|M53/i, name: "Samsung Galaxy M53"},
+      {pattern: /SM-M526|M52/i, name: "Samsung Galaxy M52"},
+      
+      // Generic Samsung fallback - try to extract model
+      {pattern: /Samsung.*SM-([A-Z][0-9]{3,4}[A-Z]?)/i, name: "Samsung SM-$1"},
+    ];
+    
+    // Check each pattern
+    for (var i = 0; i < samsungPatterns.length; i++) {
+      var p = samsungPatterns[i];
+      if (p.pattern.test(ua)) {
+        var match = ua.match(p.pattern);
+        if (match) {
+          // Replace $1 placeholder if present
+          var name = p.name;
+          if (match[1] && name.indexOf("$1") !== -1) {
+            name = name.replace("$1", match[1]);
+          }
+          return name;
+        }
+      }
+    }
+    
+    // Try to find ANY SM-XXXX pattern
+    var genericSamsung = ua.match(/SM-([A-Z][0-9]{3,4}[A-Z]?)/i);
+    if (genericSamsung) {
+      return "Samsung Galaxy (SM-" + genericSamsung[1] + ")";
+    }
+    
+    // ============ GOOGLE PIXEL DETECTION ============
+    if (/Pixel/i.test(ua)) {
+      var pixelMatch = ua.match(/Pixel\s?([0-9]+(?:\s?(?:a|Pro|Pro XL|XL))?)/i);
+      if (pixelMatch) {
+        return "Google Pixel " + pixelMatch[1].trim();
+      }
+      return "Google Pixel";
+    }
+    
+    // ============ ONEPLUS DETECTION ============
+    if (/OnePlus|ONEPLUS/i.test(ua)) {
+      // Try to get model number like CPH2449, LE2121, etc.
+      var oneplusModel = ua.match(/(?:OnePlus\s?)?(CPH[0-9]{4}|LE[0-9]{4}|AC[0-9]{4}|KB[0-9]{4}|IN[0-9]{4})/i);
+      if (oneplusModel) {
+        // Map known model numbers
+        var opModels = {
+          "CPH2663": "OnePlus 12",
+          "CPH2581": "OnePlus 12R",
+          "CPH2449": "OnePlus 11",
+          "CPH2487": "OnePlus 11R",
+          "LE2121": "OnePlus 9 Pro",
+          "LE2101": "OnePlus 9",
+          "LE2123": "OnePlus 9 Pro",
+          "CPH2399": "OnePlus 10 Pro",
+          "CPH2411": "OnePlus 10T",
+          "CPH2583": "OnePlus Nord 3",
+          "AC2003": "OnePlus Nord",
+          "IV2201": "OnePlus Nord 2",
+        };
+        return opModels[oneplusModel[1].toUpperCase()] || "OnePlus " + oneplusModel[1];
+      }
+      // Check for OnePlus in build info
+      var opBuild = ua.match(/OnePlus[\/\s]([A-Z0-9]+)/i);
+      if (opBuild) {
+        return "OnePlus " + opBuild[1];
+      }
+      return "OnePlus Device";
+    }
+    
+    // ============ XIAOMI / REDMI / POCO DETECTION ============
+    if (/Xiaomi|Redmi|POCO|Mi\s?[0-9]/i.test(ua)) {
+      // Try to get model
+      var xiaomiMatch = ua.match(/(?:Xiaomi|Redmi|POCO)[\s\-\/]?([A-Za-z0-9\s]+)/i);
+      if (xiaomiMatch) {
+        return "Xiaomi " + xiaomiMatch[1].trim();
+      }
+      // Model numbers like M2010J19SG
+      var miModel = ua.match(/M[0-9]{4}[A-Z][0-9]{2}[A-Z]{0,2}/);
+      if (miModel) {
+        return "Xiaomi Device (" + miModel[0] + ")";
+      }
+      return "Xiaomi Device";
+    }
+    
+    // ============ OPPO DETECTION ============
+    if (/OPPO|CPH[0-9]{4}/i.test(ua)) {
+      var oppoMatch = ua.match(/CPH[0-9]{4}/i);
+      if (oppoMatch) {
+        // Map known OPPO models
+        var oppoModels = {
+          "CPH2613": "OPPO Find X7 Ultra",
+          "CPH2581": "OPPO Find X6 Pro",
+          "CPH2505": "OPPO Reno 10 Pro+",
+          "CPH2521": "OPPO Reno 10 Pro",
+          "CPH2461": "OPPO Reno 8 Pro",
+          "CPH2371": "OPPO Find X5 Pro",
+          "CPH2269": "OPPO Find X3 Pro",
+        };
+        return oppoModels[oppoMatch[0].toUpperCase()] || "OPPO " + oppoMatch[0];
+      }
+      return "OPPO Device";
+    }
+    
+    // ============ REALME DETECTION ============
+    if (/Realme|RMX[0-9]{4}/i.test(ua)) {
+      var realmeMatch = ua.match(/RMX[0-9]{4}/i);
+      if (realmeMatch) {
+        return "Realme " + realmeMatch[0];
+      }
+      return "Realme Device";
+    }
+    
+    // ============ VIVO DETECTION ============
+    if (/vivo/i.test(ua)) {
+      var vivoMatch = ua.match(/vivo\s?([A-Z0-9]+)/i);
+      if (vivoMatch) {
+        return "Vivo " + vivoMatch[1];
+      }
+      return "Vivo Device";
+    }
+    
+    // ============ HUAWEI / HONOR DETECTION ============
+    if (/Huawei|HUAWEI|HONOR/i.test(ua)) {
+      var huaweiMatch = ua.match(/(?:Huawei|HONOR)[\s\-\/]?([A-Za-z0-9\s]+)/i);
+      if (huaweiMatch) {
+        return "Huawei " + huaweiMatch[1].trim();
+      }
+      return "Huawei Device";
+    }
+    
+    // ============ MOTOROLA DETECTION ============
+    if (/Moto|Motorola/i.test(ua)) {
+      var motoMatch = ua.match(/(?:Moto\s?)?([A-Za-z]+\s?[0-9]+(?:\s?(?:Plus|Pro|5G))?)/i);
+      if (motoMatch) {
+        return "Motorola " + motoMatch[1].trim();
+      }
+      return "Motorola Device";
+    }
+    
+    // ============ GENERIC ANDROID - Try to extract device name ============
+    // Pattern: Android X.X; DeviceName Build/...
+    var androidDevice = ua.match(/Android\s[0-9.]+;\s?([^;)]+?)\s?(?:Build|;|\))/i);
+    if (androidDevice && androidDevice[1]) {
+      var deviceName = androidDevice[1].trim();
+      // Clean up common issues
+      deviceName = deviceName.replace(/\s+/g, " ");
+      // Only return if it looks like a device name (not generic)
+      if (deviceName.length > 2 && deviceName.length < 40 && !/^(Linux|Android|Mobile)/i.test(deviceName)) {
+        return deviceName;
+      }
+    }
+    
+    // Fallback with screen size hint
+    var screenDiagonal = Math.sqrt(screenWidth*screenWidth + screenHeight*screenHeight) / (160 * dpr);
+    if (screenDiagonal > 6.5) {
+      return "Android (Large Phone)";
+    } else if (screenDiagonal > 5.5) {
+      return "Android Phone";
+    }
+    return "Android Device";
   }
   
   // ============ IPAD DETECTION ============
   if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && maxTouchPoints > 1)) {
-    var screenWidth = window.screen.width;
-    var screenHeight = window.screen.height;
+    var w = screenWidth;
+    var h = screenHeight;
     
-    // iPad Pro 12.9-inch (5th/6th gen)
-    if ((screenWidth === 1024 && screenHeight === 1366) || (screenWidth === 1366 && screenHeight === 1024)) {
+    // iPad Pro 13-inch (M4)
+    if ((w === 1024 && h === 1366) || (w === 1366 && h === 1024)) {
+      return "iPad Pro 13\" (M4)";
+    }
+    
+    // iPad Pro 12.9-inch
+    if ((w === 1024 && h === 1366) || (w === 1366 && h === 1024)) {
       return "iPad Pro 12.9\"";
     }
     
-    // iPad Pro 11-inch (3rd/4th gen)
-    if ((screenWidth === 834 && screenHeight === 1194) || (screenWidth === 1194 && screenHeight === 834)) {
+    // iPad Pro 11-inch
+    if ((w === 834 && h === 1194) || (w === 1194 && h === 834)) {
       return "iPad Pro 11\"";
     }
     
-    // iPad Pro 10.5-inch / iPad Air 3
-    if ((screenWidth === 834 && screenHeight === 1112) || (screenWidth === 1112 && screenHeight === 834)) {
-      return "iPad Pro 10.5\" / Air 3";
-    }
-    
-    // iPad Air 4th/5th gen, iPad 10th gen
-    if ((screenWidth === 820 && screenHeight === 1180) || (screenWidth === 1180 && screenHeight === 820)) {
-      return "iPad Air 4/5 / iPad 10";
+    // iPad Air / iPad 10th gen
+    if ((w === 820 && h === 1180) || (w === 1180 && h === 820)) {
+      return "iPad Air / iPad 10";
     }
     
     // iPad Mini 6
-    if ((screenWidth === 744 && screenHeight === 1133) || (screenWidth === 1133 && screenHeight === 744)) {
+    if ((w === 744 && h === 1133) || (w === 1133 && h === 744)) {
       return "iPad Mini 6";
     }
     
-    // Standard iPad 9th gen and earlier
-    if ((screenWidth === 768 && screenHeight === 1024) || (screenWidth === 1024 && screenHeight === 768)) {
+    // Standard iPad
+    if ((w === 768 && h === 1024) || (w === 1024 && h === 768)) {
       return "iPad (Standard)";
     }
     
-    return "iPad (Model Unknown)";
-  }
-  
-  // ============ SAMSUNG DETECTION ============
-  if (/Samsung|SM-|GT-|SCH-|SGH-/i.test(ua)) {
-    // Extract model number
-    var samsungModel = ua.match(/(SM-[A-Z][0-9]{3,4}[A-Z]?|GT-[A-Z][0-9]{4}|SCH-[A-Z][0-9]{4}|SGH-[A-Z][0-9]{4})/i);
-    if (samsungModel) {
-      var modelNum = samsungModel[1].toUpperCase();
-      
-      // Galaxy S series
-      if (modelNum === "S911B" || modelNum === "S911U" || modelNum === "S911W") return "Samsung Galaxy S23";
-      if (modelNum === "S918B" || modelNum === "S918U") return "Samsung Galaxy S23 Ultra";
-      if (modelNum === "S906B" || modelNum === "S906U" || modelNum === "S901B") return "Samsung Galaxy S22";
-      if (modelNum === "S908B" || modelNum === "S908U") return "Samsung Galaxy S22 Ultra";
-      if (modelNum === "S926B" || modelNum === "S926U" || modelNum === "S928B") return "Samsung Galaxy S24 Ultra";
-      if (modelNum === "S921B" || modelNum === "S926B") return "Samsung Galaxy S24";
-      if (modelNum === "S938B") return "Samsung Galaxy S25 Ultra";
-      if (modelNum === "S936B") return "Samsung Galaxy S25+";
-      if (modelNum === "S931B") return "Samsung Galaxy S25";
-      
-      // Galaxy Note series
-      if (modelNum.indexOf("N970") !== -1) return "Samsung Galaxy Note 9";
-      if (modelNum.indexOf("N980") !== -1 || modelNum.indexOf("N981") !== -1) return "Samsung Galaxy Note 20";
-      if (modelNum.indexOf("N986") !== -1 || modelNum.indexOf("N981B") !== -1) return "Samsung Galaxy Note 20 Ultra";
-      
-      // Galaxy A series
-      if (modelNum.indexOf("A536") !== -1) return "Samsung Galaxy A54";
-      if (modelNum.indexOf("A546") !== -1) return "Samsung Galaxy A54 5G";
-      if (modelNum.indexOf("A715") !== -1) return "Samsung Galaxy A71";
-      if (modelNum.indexOf("A525") !== -1) return "Samsung Galaxy A52";
-      if (modelNum.indexOf("A515") !== -1) return "Samsung Galaxy A51";
-      
-      // Galaxy Z Fold/Flip
-      if (modelNum.indexOf("F936") !== -1) return "Samsung Galaxy Z Fold 4";
-      if (modelNum.indexOf("F721") !== -1) return "Samsung Galaxy Z Flip 4";
-      if (modelNum.indexOf("F946") !== -1) return "Samsung Galaxy Z Fold 5";
-      if (modelNum.indexOf("F731") !== -1) return "Samsung Galaxy Z Flip 5";
-      if (modelNum.indexOf("F956") !== -1) return "Samsung Galaxy Z Fold 6";
-      if (modelNum.indexOf("F741") !== -1) return "Samsung Galaxy Z Flip 6";
-      
-      return "Samsung " + modelNum;
-    }
-    return "Samsung Device";
-  }
-  
-  // ============ GOOGLE PIXEL DETECTION ============
-  if (/Pixel/i.test(ua)) {
-    var pixelModel = ua.match(/Pixel ([0-9]+(?:a|Pro|XL)?)/i);
-    if (pixelModel) return "Google Pixel " + pixelModel[1];
-    return "Google Pixel";
-  }
-  
-  // ============ ONEPLUS DETECTION ============
-  if (/OnePlus|ONEPLUS/i.test(ua)) {
-    var oneplusModel = ua.match(/(OnePlus\s*[A-Z0-9]+)/i);
-    if (oneplusModel) return oneplusModel[1];
-    if (/CPH/i.test(ua)) {
-      var cphModel = ua.match(/CPH[0-9]{4}/i);
-      if (cphModel) return "OnePlus " + cphModel[0];
-    }
-    return "OnePlus Device";
-  }
-  
-  // ============ XIAOMI / REDMI DETECTION ============
-  if (/Xiaomi|Redmi|POCO|MI [0-9]/i.test(ua)) {
-    var xiaomiModel = ua.match(/(Redmi\s*[A-Z0-9 ]+|POCO\s*[A-Z0-9 ]+|Mi [0-9]+(?: Pro| Ultra)?)/i);
-    if (xiaomiModel) return xiaomiModel[1].trim();
-    if (/M[0-9]{4}/.test(ua)) {
-      var mModel = ua.match(/M[0-9]{4}/);
-      if (mModel) return "Xiaomi " + mModel[0];
-    }
-    return "Xiaomi Device";
-  }
-  
-  // ============ HUAWEI DETECTION ============
-  if (/Huawei|HUAWEI|HONOR/i.test(ua)) {
-    var huaweiModel = ua.match(/(Huawei\s*[A-Z0-9]+|Honor\s*[A-Z0-9]+)/i);
-    if (huaweiModel) return huaweiModel[1];
-    return "Huawei Device";
-  }
-  
-  // ============ LG DETECTION ============
-  if (/LG/i.test(ua)) {
-    var lgModel = ua.match(/LG[- ]([A-Z0-9]+)/i);
-    if (lgModel) return "LG " + lgModel[1];
-    return "LG Device";
-  }
-  
-  // ============ MOTOROLA DETECTION ============
-  if (/Moto|Motorola/i.test(ua)) {
-    var motoModel = ua.match(/(Moto\s*[A-Z0-9 ]+)/i);
-    if (motoModel) return motoModel[1].trim();
-    return "Motorola Device";
-  }
-  
-  // ============ NOKIA DETECTION ============
-  if (/Nokia/i.test(ua)) {
-    var nokiaModel = ua.match(/Nokia\s*([A-Z0-9]+)/i);
-    if (nokiaModel) return "Nokia " + nokiaModel[1];
-    return "Nokia Device";
-  }
-  
-  // ============ SONY DETECTION ============
-  if (/Sony|Xperia/i.test(ua)) {
-    var sonyModel = ua.match(/(Xperia\s*[A-Z0-9 ]+)/i);
-    if (sonyModel) return sonyModel[1].trim();
-    return "Sony Xperia";
-  }
-  
-  // ============ OPPO / REALME DETECTION ============
-  if (/OPPO|Realme|CPH|RMX/i.test(ua)) {
-    var oppoModel = ua.match(/(OPPO\s*[A-Z0-9]+|Realme\s*[A-Z0-9]+|CPH[0-9]+|RMX[0-9]+)/i);
-    if (oppoModel) return oppoModel[1];
-    return "OPPO / Realme Device";
-  }
-  
-  // ============ VIVO DETECTION ============
-  if (/vivo|VIVO/i.test(ua)) {
-    var vivoModel = ua.match(/vivo\s*([A-Z0-9]+)/i);
-    if (vivoModel) return "Vivo " + vivoModel[1];
-    return "Vivo Device";
-  }
-  
-  // ============ ANDROID GENERIC ============
-  if (/Android/i.test(ua)) {
-    var androidModel = ua.match(/Android[^;]*;\s*([^)]+)\s*Build/i);
-    if (androidModel) return androidModel[1].trim();
-    return "Android Device";
+    return "iPad";
   }
   
   // ============ WINDOWS PC DETECTION ============
   if (/Windows NT/i.test(ua)) {
-    var winVersion = ua.match(/Windows NT ([0-9.]+)/);
-    var version = winVersion ? winVersion[1] : "";
-    
-    // Try to detect specific manufacturer
     if (/Surface/i.test(ua)) return "Microsoft Surface";
     if (/HP/i.test(ua) || /Hewlett-Packard/i.test(ua)) return "HP PC (Windows)";
     if (/Dell/i.test(ua)) return "Dell PC (Windows)";
     if (/Lenovo/i.test(ua)) return "Lenovo PC (Windows)";
     if (/ASUS/i.test(ua)) return "ASUS PC (Windows)";
     if (/Acer/i.test(ua)) return "Acer PC (Windows)";
+    if (/MSI/i.test(ua)) return "MSI PC (Windows)";
+    if (/Razer/i.test(ua)) return "Razer PC (Windows)";
+    if (/Samsung.*Windows/i.test(ua)) return "Samsung PC (Windows)";
     
     return "Windows PC";
   }
   
   // ============ MAC DETECTION ============
   if (/Macintosh|MacIntel|MacPPC|Mac68K/i.test(ua)) {
+    var w = screenWidth;
+    var h = screenHeight;
+    
+    // Try to detect Mac model based on screen resolution
+    // MacBook Pro 16"
+    if (w === 1728 && h === 1117) return "MacBook Pro 16\" (M3)";
+    if (w === 1920 && h === 1080) return "MacBook Pro 16\"";
+    if (w === 2560 && h === 1600) return "MacBook Pro 16\" (Retina)";
+    
+    // MacBook Pro 14"
+    if (w === 1512 && h === 982) return "MacBook Pro 14\" (M3)";
+    if (w === 3024 && h === 1964) return "MacBook Pro 14\"";
+    
+    // MacBook Air 15"
+    if (w === 1440 && h === 900) return "MacBook Air 15\" (M3)";
+    
+    // MacBook Air 13"
+    if (w === 1440 && h === 900) return "MacBook Air 13\" (M2/M3)";
+    if (w === 2560 && h === 1600) return "MacBook Air 13\" (Retina)";
+    if (w === 1280 && h === 800) return "MacBook Air 13\"";
+    
+    // MacBook Pro 13"
+    if (w === 2560 && h === 1600) return "MacBook Pro 13\" (Retina)";
+    
+    // iMac
+    if (w === 2560 && h === 1440) return "iMac 27\"";
+    if (w === 1920 && h === 1080) return "iMac 21.5\"";
+    if (w === 4096 && h === 2304) return "iMac 27\" (5K)";
+    if (w === 4480 && h === 2520) return "iMac 24\" (4.5K)";
+    
+    // Mac mini / Mac Studio / Mac Pro (can't detect screen)
     // Check for Apple Silicon
     if (/Apple\s*M[12]/i.test(ua)) {
-      // Try to detect specific Mac model based on screen
-      var screenWidth = window.screen.width;
-      var screenHeight = window.screen.height;
-      
-      // MacBook Pro detection by screen
-      if (screenWidth === 1728 && screenHeight === 1117) return "MacBook Pro 16\" (M3)";
-      if (screenWidth === 1512 && screenHeight === 982) return "MacBook Pro 14\" (M3)";
-      if (screenWidth === 1440 && screenHeight === 900) return "MacBook Air 13\" (M2/M3)";
-      if (screenWidth === 2560 && screenHeight === 1600) return "MacBook Pro 13\" (Retina)";
-      if (screenWidth === 1680 && screenHeight === 1050) return "MacBook Pro 15\"";
-      
       return "Mac (Apple Silicon)";
     }
     
@@ -642,6 +765,7 @@ function getDeviceModel() {
     if (/Fedora/i.test(ua)) return "Linux (Fedora)";
     if (/Debian/i.test(ua)) return "Linux (Debian)";
     if (/Arch/i.test(ua)) return "Linux (Arch)";
+    if (/Mint/i.test(ua)) return "Linux (Mint)";
     return "Linux PC";
   }
   
@@ -657,42 +781,43 @@ function getDeviceModel() {
 function getBrowserInfo() {
   var ua = navigator.userAgent;
   
+  // Edge (Chromium)
   if (/Edg\//i.test(ua)) {
     var version = ua.match(/Edg\/([0-9]+)/);
-    return "Edge" + (version ? " " + version[1] : "");
+    return "Edge " + (version ? version[1] : "");
   }
+  
+  // Chrome (must check before Safari)
   if (/Chrome\//i.test(ua) && !/Edg/i.test(ua)) {
     var version = ua.match(/Chrome\/([0-9]+)/);
-    return "Chrome" + (version ? " " + version[1] : "");
+    return "Chrome " + (version ? version[1] : "");
   }
+  
+  // Firefox
   if (/Firefox/i.test(ua)) {
     var version = ua.match(/Firefox\/([0-9]+)/);
-    return "Firefox" + (version ? " " + version[1] : "");
+    return "Firefox " + (version ? version[1] : "");
   }
+  
+  // Safari (only if not Chrome)
   if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) {
     var version = ua.match(/Version\/([0-9]+)/);
-    return "Safari" + (version ? " " + version[1] : "");
+    return "Safari " + (version ? version[1] : "");
   }
+  
+  // Opera
   if (/Opera|OPR\//i.test(ua)) {
     var version = ua.match(/(?:Opera|OPR)\/([0-9]+)/);
-    return "Opera" + (version ? " " + version[1] : "");
+    return "Opera " + (version ? version[1] : "");
   }
   
-  return "Unknown Browser";
-}
-
-function getDeviceInfo() {
-  var deviceType = getDeviceType();
-  var deviceModel = getDeviceModel();
-  var browser = getBrowserInfo();
-  var os = getOSInfo();
+  // Samsung Internet
+  if (/SamsungBrowser/i.test(ua)) {
+    var version = ua.match(/SamsungBrowser\/([0-9]+)/);
+    return "Samsung Internet " + (version ? version[1] : "");
+  }
   
-  return {
-    type: deviceType,           // "pc", "mobile", or "tablet"
-    model: deviceModel,          // e.g., "iPhone 13 Pro", "Samsung Galaxy S23 Ultra", "Windows PC"
-    browser: browser,            // e.g., "Chrome 120", "Safari 17"
-    os: os                       // e.g., "iOS 17.2", "Windows 11", "Android 14"
-  };
+  return "Browser";
 }
 
 function getOSInfo() {
@@ -707,23 +832,41 @@ function getOSInfo() {
   
   // Android
   var android = ua.match(/Android ([0-9.]+)/);
-  if (android) return "Android " + android[1];
+  if (android) {
+    var version = android[1];
+    // Android version names
+    var names = {
+      "14": "14", "13": "13", "12": "12", "12.1": "12L", "11": "11",
+      "10": "10", "9": "9 (Pie)", "8": "8 (Oreo)", "7": "7 (Nougat)"
+    };
+    return "Android " + (names[version] || version);
+  }
   
   // Windows
   var windows = ua.match(/Windows NT ([0-9.]+)/);
   if (windows) {
-    var winVersions = {"10.0": "10/11", "6.3": "8.1", "6.2": "8", "6.1": "7"};
+    var winVersions = {
+      "10.0": "10/11",
+      "6.3": "8.1",
+      "6.2": "8",
+      "6.1": "7",
+      "6.0": "Vista"
+    };
     return "Windows " + (winVersions[windows[1]] || windows[1]);
   }
   
   // macOS
   var macOS = ua.match(/Mac OS X ([0-9_]+)/);
-  if (macOS) return "macOS " + macOS[1].replace(/_/g, ".");
+  if (macOS) {
+    var version = macOS[1].replace(/_/g, ".");
+    return "macOS " + version;
+  }
   
   // Linux
   if (/Linux/i.test(ua) && !/Android/i.test(ua)) {
-    if (/Ubuntu/i.test(ua)) return "Ubuntu Linux";
-    if (/Fedora/i.test(ua)) return "Fedora Linux";
+    if (/Ubuntu/i.test(ua)) return "Ubuntu";
+    if (/Fedora/i.test(ua)) return "Fedora";
+    if (/Debian/i.test(ua)) return "Debian";
     return "Linux";
   }
   
@@ -733,14 +876,21 @@ function getOSInfo() {
   return "Unknown OS";
 }
 
-// Get device display string for notifications
+function getDeviceInfo() {
+  return {
+    type: getDeviceType(),
+    model: getDeviceModel(),
+    browser: getBrowserInfo(),
+    os: getOSInfo()
+  };
+}
+
 function getDeviceDisplayString() {
   var info = getDeviceInfo();
   var icon = info.type === "mobile" ? "📱" : info.type === "tablet" ? "📲" : "💻";
   return icon + " " + info.model + " (" + info.os + ", " + info.browser + ")";
 }
 
-// Get short device string for database
 function getDeviceShortString() {
   var info = getDeviceInfo();
   return info.type + ": " + info.model;
@@ -832,7 +982,6 @@ function fsCreate(col,data){
   }).then(function(r){return r.json();});
 }
 
-// Supabase returns plain objects - no conversion needed
 function fromFs(doc){
   if(!doc)return null;
   return doc;
@@ -883,7 +1032,6 @@ function logConnection(nom,numero,type){
   var deviceInfo = getDeviceShortString();
   var deviceFull = getDeviceDisplayString();
   
-  // Toutes les connexions: admin_only=true (invisible pour admin lite)
   fsCreate("notifications",{
     etudiant_nom:nom,etudiant_numero:String(numero),module:"Système",
     type:"Connexion",message:type,date:now,lu:false,
@@ -891,7 +1039,6 @@ function logConnection(nom,numero,type){
     device_info: deviceInfo,
     device_full: deviceFull
   });
-  // Email seulement pour admin lite
   if(isAdminLiteConn){
     emailjs.init(EMAILJS_KEY);
     emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
@@ -1057,7 +1204,6 @@ function envoyerSignalement(){
     document.getElementById("signalComment").value="";
     showToast("Signalement envoyé !","success");
   }).catch(function(){
-    // Email fail mais Supabase OK
     btn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> Envoyer le signalement';
     btn.disabled=false;
     document.getElementById("signalModule").value="";
@@ -1120,7 +1266,6 @@ function openEditNotes(num){
   closeBtn.innerHTML='<i class="ph-bold ph-x"></i>';closeBtn.onclick=function(){d.remove();};
   hdr.appendChild(closeBtn);inner.appendChild(hdr);
 
-  // Info: moy_module calculee automatiquement
   var info=document.createElement("div");
   info.style="background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);border-radius:10px;padding:0.6rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#a5b4fc;";
   info.innerHTML='<i class="ph-fill ph-info"></i> Les moyennes sont calculées automatiquement lors de la sauvegarde.';
@@ -1129,7 +1274,6 @@ function openEditNotes(num){
   var tableWrap=document.createElement("div");tableWrap.style="overflow-x:auto;";
   var table=document.createElement("table");table.className="res-table";
   var thead=document.createElement("thead");
-  // Moy Module is read-only, shown but not editable
   thead.innerHTML='<tr><th>Module</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th style="color:var(--accent2);">Moy Calculée</th></tr>';
   table.appendChild(thead);
   var tbody=document.createElement("tbody");
@@ -1145,11 +1289,9 @@ function openEditNotes(num){
       inp.className="calc-input";inp.id="edit_"+fk;
       inp.value=(v!==null&&v!==undefined)?v:"";
       inp.placeholder="—";inp.style="padding:0.4rem 0.6rem;width:80px;";
-      // Live preview of moy_module
       inp.oninput=function(){updateMoyPreview(k,mod);};
       cell.appendChild(inp);tr.appendChild(cell);
     });
-    // Moy module preview (read-only)
     var moyCell=document.createElement("td");
     moyCell.id="preview_moy_"+k;
     moyCell.className="mono";
@@ -1204,16 +1346,14 @@ function saveEditNotes(num,modal){
       if(!el)return;
       var v=el.value.trim();
       var val;
-      // Champ vide = garder l'ancienne valeur, ne pas ecraser
       if(v===""){
-        val=et[fk]; // ancienne valeur
+        val=et[fk];
       } else if(v==="Abs"){
         val="Abs";
       } else {
         var n=parseFloat(v);
-        val=isNaN(n)?et[fk]:n; // si invalide, garder ancienne valeur
+        val=isNaN(n)?et[fk]:n;
       }
-      // N'ajouter au patch que si la valeur a change
       var oldVal=et[fk];
       if(String(val)!==String(oldVal)){
         fields[fk]=val;
@@ -1223,7 +1363,6 @@ function saveEditNotes(num,modal){
       tempEt[fk]=val;
     });
 
-    // Recalculer moy_emd et moy_module si ce module a change
     if(modChanged){
       var e1=tempEt[k+"_emd1"], e2=tempEt[k+"_emd2"];
       var emdVals=[];
@@ -1247,7 +1386,6 @@ function saveEditNotes(num,modal){
     return;
   }
 
-  // Recalculer moyenne generale
   var moyGen=calcMoyGenerale(tempEt);
   fields["moyenne_generale"]=moyGen;
 
@@ -1376,7 +1514,6 @@ function loadNotifs(){
   var url=SUPABASE_URL+"/rest/v1/notifications?select=*&order=created_at.desc&limit=100";
   fetch(url,{headers:SB_HEADERS}).then(function(r){return r.json();}).then(function(notifs){
     if(!Array.isArray(notifs)){renderNotifs([]);return;}
-    // Admin lite ne voit pas les notifications admin_only
     if(isAdminLite){
       notifs=notifs.filter(function(n){return !n.admin_only;});
     }
@@ -1395,7 +1532,6 @@ function renderNotifs(notifs){
     var isConnexion=n.type==="Connexion";
     var typeColor=isConnexion||isCompte?"var(--success)":"var(--warning)";
     
-    // Device badge styling
     var deviceBadge = "";
     if(n.device_info) {
       var deviceType = n.device_info.split(":")[0].trim();
