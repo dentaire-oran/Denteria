@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#6366f1"/>
   <title>Résultats 3ème Année - Dental Guide</title>
   <link rel="manifest" href="manifest.json"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web@2.1.2"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -33,7 +33,8 @@
       --table-header: rgba(255,255,255,0.4); --table-row-hover: rgba(255,255,255,0.3);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg-gradient); color: var(--text-main); font-family: 'Inter', sans-serif; overflow-x: hidden; transition: background 0.5s ease, color 0.5s ease, opacity 0.3s ease, filter 0.3s ease; min-height: 100vh; }
+    body { background: var(--bg-gradient); color: var(--text-main); font-family: 'Inter', 'Noto Sans Arabic', sans-serif; overflow-x: hidden; transition: background 0.5s ease, color 0.5s ease, opacity 0.3s ease, filter 0.3s ease; min-height: 100vh; }
+    [lang="ar"] body { font-family: 'Noto Sans Arabic', 'Inter', sans-serif; }
     body.switching-lang { opacity: 0; filter: blur(15px); pointer-events: none; }
     body.switching-lang #sidebar { transition: none !important; }
     .glass { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); transition: all 0.3s ease; }
@@ -44,10 +45,10 @@
     .lang-container { position:relative; display:flex; background:var(--pill-bg); border-radius:99px; padding:4px; border:1px solid var(--glass-border); height:48px; width:100%; direction:ltr; }
     [data-theme="light"] .lang-container { background:rgba(255,255,255,0.4); }
     .lang-pill { position:absolute; top:4px; bottom:4px; left:4px; width:calc(33.33% - 5px); background:var(--pill-color); border-radius:99px; transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); z-index:0; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
-    .lang-btn { flex:1; position:relative; z-index:1; font-size:0.9rem; font-weight:600; color:var(--text-muted); transition:color 0.3s; }
+    .lang-btn { flex:1; position:relative; z-index:1; font-size:0.9rem; font-weight:600; color:var(--text-muted); transition:color 0.3s; cursor:pointer; background:none; border:none; }
     [data-theme="dark"] .lang-btn.active { color:#333; font-weight:800; }
     [data-theme="light"] .lang-btn.active { color:#fff; font-weight:800; }
-    .theme-toggle-btn { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; color:var(--text-main); flex-shrink:0; }
+    .theme-toggle-btn { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; color:var(--text-main); flex-shrink:0; background:none; border:none; }
     .theme-toggle-btn:hover { background:var(--btn-hover); }
     .theme-toggle-btn i { position:absolute; top:50%; left:50%; transition:all 0.5s cubic-bezier(0.23,1,0.32,1); }
     [data-theme="dark"] .ph-moon { transform:translate(-50%,-50%) scale(1) rotate(0deg); opacity:1; }
@@ -63,9 +64,11 @@
     .nav-link:hover { background:var(--btn-hover); transform:translateX(4px); }
     html[dir="rtl"] .nav-link:hover { transform:translateX(-4px); }
     .nav-link.active { background:var(--nav-active-bg); color:var(--nav-active-text); border-color:var(--glass-border); font-weight:600; }
-    .calc-input { width:100%; background:var(--input-bg); border:1px solid var(--glass-border); color:var(--text-main); border-radius:0.75rem; padding:0.75rem 1rem; outline:none; transition:border-color 0.3s; font-family:'Inter',sans-serif; font-size:0.95rem; }
+    .calc-input { width:100%; background:var(--input-bg); border:1px solid var(--glass-border); color:var(--text-main); border-radius:0.75rem; padding:0.75rem 1rem; outline:none; transition:border-color 0.3s; font-family:'Inter', 'Noto Sans Arabic', sans-serif; font-size:0.95rem; }
+    [lang="ar"] .calc-input { font-family: 'Noto Sans Arabic', 'Inter', sans-serif; }
     .calc-input:focus { border-color:#818cf8; box-shadow:0 0 0 3px rgba(129,140,248,0.15); }
     .field-label { display:block; font-size:0.8rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem; }
+    [lang="ar"] .field-label { text-transform: none; letter-spacing: 0; }
     .btn-main { width:100%; padding:0.9rem 1.5rem; border-radius:99px; font-weight:700; font-size:0.95rem; cursor:pointer; border:none; display:flex; align-items:center; justify-content:center; gap:0.5rem; transition:all 0.25s; background:linear-gradient(135deg,#818cf8,#9333ea); color:white; box-shadow:0 4px 20px rgba(129,140,248,0.3); }
     .btn-main:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(129,140,248,0.4); }
     .btn-main:active { transform:scale(0.98); }
@@ -84,8 +87,10 @@
     .stat-card { border-radius:20px; padding:1.25rem; text-align:center; }
     .stat-val { font-size:1.3rem; font-weight:800; font-family:'JetBrains Mono',monospace; }
     .stat-lbl { font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-top:0.2rem; }
+    [lang="ar"] .stat-lbl { text-transform: none; letter-spacing: 0; }
     .res-table { width:100%; border-collapse:collapse; font-size:0.88rem; }
     .res-table th { padding:0.75rem 1rem; text-align:left; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); background:var(--table-header); border-bottom:1px solid var(--glass-border); white-space:nowrap; }
+    [lang="ar"] .res-table th { text-transform: none; letter-spacing: 0; text-align: right; }
     .res-table td { padding:0.85rem 1rem; border-bottom:1px solid rgba(255,255,255,0.06); white-space:nowrap; }
     [data-theme="light"] .res-table td { border-bottom:1px solid rgba(0,0,0,0.06); }
     .res-table tr:last-child td { border-bottom:none; }
@@ -96,13 +101,16 @@
     .note-bad  { color:var(--danger);  font-weight:600; }
     .note-abs  { color:var(--text-muted); font-style:italic; }
     .coef-badge { display:inline-block; background:rgba(255,255,255,0.1); border:1px solid var(--glass-border); border-radius:6px; padding:1px 6px; font-size:0.72rem; color:var(--text-muted); margin-left:6px; }
+    [dir="rtl"] .coef-badge { margin-left:0; margin-right:6px; }
     [data-theme="light"] .coef-badge { background:rgba(0,0,0,0.06); }
     .tabs { display:flex; gap:0.5rem; background:var(--input-bg); border:1px solid var(--glass-border); border-radius:14px; padding:4px; margin-bottom:1.5rem; }
     .tab { flex:1; padding:0.6rem; border-radius:10px; font-size:0.85rem; font-weight:600; cursor:pointer; border:none; background:none; color:var(--text-muted); transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:0.4rem; }
     .tab.active { background:var(--glass-bg); color:var(--text-main); border:1px solid var(--glass-border); box-shadow:0 2px 8px rgba(0,0,0,0.15); }
-    .glass-select { width:100%; padding:0.75rem 1rem; background:var(--input-bg); border:1px solid var(--glass-border); border-radius:0.75rem; color:var(--text-main); font-family:'Inter',sans-serif; font-size:0.9rem; outline:none; cursor:pointer; transition:all 0.2s; }
+    .glass-select { width:100%; padding:0.75rem 1rem; background:var(--input-bg); border:1px solid var(--glass-border); border-radius:0.75rem; color:var(--text-main); font-family:'Inter', 'Noto Sans Arabic', sans-serif; font-size:0.9rem; outline:none; cursor:pointer; transition:all 0.2s; }
+    [lang="ar"] .glass-select { font-family: 'Noto Sans Arabic', 'Inter', sans-serif; }
     .glass-select:focus { border-color:#818cf8; }
     .notif-badge { background:var(--danger); color:white; border-radius:99px; font-size:0.7rem; font-weight:700; padding:2px 7px; margin-left:6px; }
+    [dir="rtl"] .notif-badge { margin-left:0; margin-right:6px; }
     .notif-card { border-radius:16px; padding:1rem 1.25rem; margin-bottom:0.75rem; }
     .notif-unread { border:1px solid rgba(129,140,248,0.3); background:rgba(129,140,248,0.07); }
     .notif-read { border:1px solid var(--glass-border); background:var(--glass-bg); }
@@ -155,24 +163,24 @@
 
 <!-- LOGIN -->
 <div id="viewLogin" class="pt-28 pb-32 px-6 max-w-lg mx-auto flex flex-col items-center justify-center min-h-screen">
-  <h1 class="text-5xl font-bold text-gradient animate-float mb-4 text-center">Résultats</h1>
-  <p class="text-xl mb-10 font-light text-center" style="color:var(--text-muted);">3ème Année — Dental Guide Oran</p>
+  <h1 class="text-5xl font-bold text-gradient animate-float mb-4 text-center" data-i18n="results">Résultats</h1>
+  <p class="text-xl mb-10 font-light text-center" style="color:var(--text-muted);" data-i18n="year3Subtitle">3ème Année — Dental Guide Oran</p>
   <div class="glass w-full rounded-3xl p-8">
     <div class="error-msg" id="loginError">
       <i class="ph-fill ph-warning-circle"></i>
-      <span id="loginErrorMsg">Identifiants incorrects</span>
+      <span id="loginErrorMsg" data-i18n="invalidCredentials">Identifiants incorrects</span>
     </div>
     <div class="mb-5">
-      <label class="field-label">Nom et Prénom</label>
-      <input type="text" class="calc-input" id="inputNom" placeholder="NOM PRENOM" autocomplete="off">
-      <p class="text-xs mt-1" style="color:var(--text-muted);"><i class="ph-fill ph-info"></i> Nom et prénom en MAJUSCULES</p>
+      <label class="field-label" data-i18n="fullName">Nom et Prénom</label>
+      <input type="text" class="calc-input" id="inputNom" data-i18n-placeholder="namePlaceholder" placeholder="NOM PRENOM" autocomplete="off">
+      <p class="text-xs mt-1" style="color:var(--text-muted);"><i class="ph-fill ph-info"></i> <span data-i18n="nameHint">Nom et prénom en MAJUSCULES</span></p>
     </div>
     <div class="mb-6">
-      <label class="field-label">Mot de passe</label>
-      <input type="password" class="calc-input" id="inputMdp" placeholder="Votre numéro de liste">
+      <label class="field-label" data-i18n="password">Mot de passe</label>
+      <input type="password" class="calc-input" id="inputMdp" data-i18n-placeholder="passwordPlaceholder" placeholder="Votre numéro de liste">
     </div>
     <button class="btn-main" id="loginBtn" onclick="doLogin()">
-      <i class="ph-bold ph-sign-in"></i> Accéder à mes résultats
+      <i class="ph-bold ph-sign-in"></i> <span data-i18n="accessResults">Accéder à mes résultats</span>
     </button>
   </div>
 </div>
@@ -188,50 +196,59 @@
       <div class="flex flex-col items-end gap-3">
         <div id="studentBadge"></div>
         <button class="btn-ghost" onclick="showView('account')">
-          <i class="ph-bold ph-user-circle"></i> Mon Compte
+          <i class="ph-bold ph-user-circle"></i> <span data-i18n="myAccount">Mon Compte</span>
         </button>
       </div>
     </div>
   </div>
   <div class="grid grid-cols-3 gap-4 mb-6">
-    <div class="glass stat-card"><div class="stat-val text-gradient" id="statMoy">—</div><div class="stat-lbl">Moyenne</div></div>
-    <div class="glass stat-card"><div class="stat-val text-gradient" id="statRank">—</div><div class="stat-lbl">Classement</div></div>
-    <div class="glass stat-card"><div class="stat-val text-gradient">444</div><div class="stat-lbl">Étudiants</div></div>
+    <div class="glass stat-card"><div class="stat-val text-gradient" id="statMoy">—</div><div class="stat-lbl" data-i18n="average">Moyenne</div></div>
+    <div class="glass stat-card"><div class="stat-val text-gradient" id="statRank">—</div><div class="stat-lbl" data-i18n="ranking">Classement</div></div>
+    <div class="glass stat-card"><div class="stat-val text-gradient">444</div><div class="stat-lbl" data-i18n="students">Étudiants</div></div>
   </div>
   <div class="glass rounded-3xl overflow-hidden mb-6">
     <div class="px-6 py-4 flex items-center justify-between" style="border-bottom:1px solid var(--glass-border);">
-      <span class="font-bold text-sm uppercase tracking-widest" style="color:var(--text-muted);">Notes détaillées</span>
-      <span class="text-sm" style="color:var(--text-muted);">11 modules</span>
+      <span class="font-bold text-sm uppercase tracking-widest" style="color:var(--text-muted);" data-i18n="detailedGrades">Notes détaillées</span>
+      <span class="text-sm" style="color:var(--text-muted);"><span data-i18n="modules">11 modules</span></span>
     </div>
     <div style="overflow-x:auto;">
       <table class="res-table">
-        <thead><tr><th>Module</th><th>Coef</th><th>EMD 1</th><th>EMD 2</th><th>Moy EMD</th><th>TD</th><th>TP</th><th>Moy Module</th></tr></thead>
+        <thead><tr>
+          <th data-i18n="module">Module</th>
+          <th data-i18n="coef">Coef</th>
+          <th>EMD 1</th>
+          <th>EMD 2</th>
+          <th data-i18n="moyEMD">Moy EMD</th>
+          <th>TD</th>
+          <th>TP</th>
+          <th data-i18n="moyModule">Moy Module</th>
+        </tr></thead>
         <tbody id="modulesBody"></tbody>
       </table>
     </div>
   </div>
   <div class="glass rounded-3xl p-6 mb-6">
     <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-      <i class="ph-fill ph-flag" style="color:var(--warning);"></i> Signaler une erreur
+      <i class="ph-fill ph-flag" style="color:var(--warning);"></i> <span data-i18n="reportError">Signaler une erreur</span>
     </h3>
     <div class="mb-4">
-      <label class="field-label">Module concerné</label>
-      <select class="glass-select" id="signalModule"><option value="">— Choisir un module —</option></select>
+      <label class="field-label" data-i18n="concernedModule">Module concerné</label>
+      <select class="glass-select" id="signalModule"><option value="" data-i18n="chooseModule">— Choisir un module —</option></select>
     </div>
     <div class="mb-4">
-      <label class="field-label">Type de signalement</label>
+      <label class="field-label" data-i18n="reportType">Type de signalement</label>
       <select class="glass-select" id="signalType">
-        <option value="Erreur de note">Erreur de note</option>
-        <option value="Note manquante">Note manquante</option>
-        <option value="Autre">Autre</option>
+        <option value="Erreur de note" data-i18n="gradeError">Erreur de note</option>
+        <option value="Note manquante" data-i18n="missingGrade">Note manquante</option>
+        <option value="Autre" data-i18n="other">Autre</option>
       </select>
     </div>
     <div class="mb-5">
-      <label class="field-label">Commentaire (optionnel)</label>
-      <textarea class="calc-input" id="signalComment" placeholder="Décrivez le problème..." style="min-height:80px;resize:vertical;"></textarea>
+      <label class="field-label" data-i18n="commentOptional">Commentaire (optionnel)</label>
+      <textarea class="calc-input" id="signalComment" data-i18n-placeholder="describeProblem" placeholder="Décrivez le problème..." style="min-height:80px;resize:vertical;"></textarea>
     </div>
     <button class="btn-main" onclick="envoyerSignalement()" id="signalBtn">
-      <i class="ph-bold ph-paper-plane-right"></i> Envoyer le signalement
+      <i class="ph-bold ph-paper-plane-right"></i> <span data-i18n="sendReport">Envoyer le signalement</span>
     </button>
   </div>
 </div>
@@ -239,21 +256,21 @@
 <!-- MON COMPTE -->
 <div id="viewAccount" class="hidden pt-28 pb-32 px-6 max-w-lg mx-auto">
   <button class="flex items-center gap-2 mb-6 font-semibold" style="color:var(--text-muted);background:none;border:none;cursor:pointer;" onclick="showView('student')">
-    <i class="ph-bold ph-arrow-left"></i> Retour
+    <i class="ph-bold ph-arrow-left"></i> <span data-i18n="back">Retour</span>
   </button>
-  <h1 class="text-4xl font-bold text-gradient mb-2">Mon Compte</h1>
+  <h1 class="text-4xl font-bold text-gradient mb-2" data-i18n="myAccount">Mon Compte</h1>
   <p class="mb-8" style="color:var(--text-muted);" id="accountSubtitle"></p>
   <div class="glass rounded-3xl p-8">
     <div class="mb-5 p-4 rounded-2xl" style="background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);">
       <p class="text-sm flex items-center gap-2" style="color:#a5b4fc;">
-        <i class="ph-fill ph-info"></i> Choisissez un identifiant et mot de passe mémorables.
+        <i class="ph-fill ph-info"></i> <span data-i18n="accountHint">Choisissez un identifiant et mot de passe mémorables.</span>
       </p>
     </div>
-    <div class="mb-5"><label class="field-label">Nouvel identifiant</label><input type="text" class="calc-input" id="newIdentifiant" placeholder="Votre nouvel identifiant"></div>
-    <div class="mb-5"><label class="field-label">Nouveau mot de passe</label><input type="password" class="calc-input" id="newMdp" placeholder="Nouveau mot de passe"></div>
-    <div class="mb-6"><label class="field-label">Confirmer le mot de passe</label><input type="password" class="calc-input" id="confirmMdp" placeholder="Répétez le mot de passe"></div>
+    <div class="mb-5"><label class="field-label" data-i18n="newIdentifier">Nouvel identifiant</label><input type="text" class="calc-input" id="newIdentifiant" data-i18n-placeholder="newIdentifierPlaceholder" placeholder="Votre nouvel identifiant"></div>
+    <div class="mb-5"><label class="field-label" data-i18n="newPassword">Nouveau mot de passe</label><input type="password" class="calc-input" id="newMdp" data-i18n-placeholder="newPasswordPlaceholder" placeholder="Nouveau mot de passe"></div>
+    <div class="mb-6"><label class="field-label" data-i18n="confirmPassword">Confirmer le mot de passe</label><input type="password" class="calc-input" id="confirmMdp" data-i18n-placeholder="confirmPasswordPlaceholder" placeholder="Répétez le mot de passe"></div>
     <button class="btn-main" onclick="saveAccount()" id="saveAccountBtn">
-      <i class="ph-bold ph-floppy-disk"></i> Sauvegarder les modifications
+      <i class="ph-bold ph-floppy-disk"></i> <span data-i18n="saveChanges">Sauvegarder les modifications</span>
     </button>
   </div>
 </div>
@@ -262,46 +279,46 @@
 <div id="viewAdmin" class="hidden pt-28 pb-32 px-6 max-w-6xl mx-auto">
   <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
     <div>
-      <h1 class="text-4xl font-bold text-gradient">Interface Admin <span id="adminLiteBadge" class="hidden" style="font-size:0.75rem;background:rgba(255,201,74,0.15);color:var(--warning);border:1px solid rgba(255,201,74,0.3);padding:3px 10px;border-radius:99px;font-weight:600;vertical-align:middle;">Lecture seule</span></h1>
-      <p style="color:var(--text-muted);">444 étudiants — 3ème Année</p>
+      <h1 class="text-4xl font-bold text-gradient"><span data-i18n="adminInterface">Interface Admin</span> <span id="adminLiteBadge" class="hidden" style="font-size:0.75rem;background:rgba(255,201,74,0.15);color:var(--warning);border:1px solid rgba(255,201,74,0.3);padding:3px 10px;border-radius:99px;font-weight:600;vertical-align:middle;" data-i18n="readOnly">Lecture seule</span></h1>
+      <p style="color:var(--text-muted);">444 <span data-i18n="students">étudiants</span> — 3<sup>ème</sup> <span data-i18n="year">Année</span></p>
     </div>
     <div class="flex gap-3 flex-wrap items-center">
       <div class="glass rounded-xl flex items-center px-3" style="border:1px solid var(--glass-border);">
         <i class="ph-bold ph-magnifying-glass" style="color:var(--text-muted);"></i>
-        <input type="text" id="adminSearch" placeholder="Rechercher..." oninput="filterAdmin()" style="background:none;border:none;outline:none;padding:0.65rem 0.75rem;color:var(--text-main);width:200px;">
+        <input type="text" id="adminSearch" data-i18n-placeholder="search" placeholder="Rechercher..." oninput="filterAdmin()" style="background:none;border:none;outline:none;padding:0.65rem 0.75rem;color:var(--text-main);width:200px;">
       </div>
-      <button class="btn-ghost" onclick="logout()"><i class="ph-bold ph-sign-out"></i> Déconnexion</button>
+      <button class="btn-ghost" onclick="logout()"><i class="ph-bold ph-sign-out"></i> <span data-i18n="logout">Déconnexion</span></button>
     </div>
   </div>
   <div class="tabs">
-    <button class="tab active" id="tabEtudiants" onclick="switchTab('etudiants')"><i class="ph-bold ph-users"></i> Étudiants</button>
-    <button class="tab" id="tabNotifs" onclick="switchTab('notifs')"><i class="ph-bold ph-bell"></i> Signalements <span class="notif-badge hidden" id="notifCount">0</span></button>
-    <button class="tab" id="tabComptes" onclick="switchTab('comptes')"><i class="ph-bold ph-key"></i> Comptes</button>
+    <button class="tab active" id="tabEtudiants" onclick="switchTab('etudiants')"><i class="ph-bold ph-users"></i> <span data-i18n="studentsTab">Étudiants</span></button>
+    <button class="tab" id="tabNotifs" onclick="switchTab('notifs')"><i class="ph-bold ph-bell"></i> <span data-i18n="reports">Signalements</span> <span class="notif-badge hidden" id="notifCount">0</span></button>
+    <button class="tab" id="tabComptes" onclick="switchTab('comptes')"><i class="ph-bold ph-key"></i> <span data-i18n="accounts">Comptes</span></button>
   </div>
   <div id="panelEtudiants">
     <div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;">
       <table class="res-table">
         <thead><tr>
-          <th onclick="sortAdmin('numero')" style="cursor:pointer;">N° ↕</th>
-          <th onclick="sortAdmin('nom')" style="cursor:pointer;">Nom ↕</th>
-          <th>Prénom</th>
-          <th onclick="sortAdmin('moyenne_generale')" style="cursor:pointer;">Moy ↕</th>
-          <th onclick="sortAdmin('classement')" style="cursor:pointer;">Rang ↕</th>
-          <th>Résultat</th>
-          <th>Actions</th>
+          <th onclick="sortAdmin('numero')" style="cursor:pointer;" data-i18n="number">N° ↕</th>
+          <th onclick="sortAdmin('nom')" style="cursor:pointer;" data-i18n="lastName">Nom ↕</th>
+          <th data-i18n="firstName">Prénom</th>
+          <th onclick="sortAdmin('moyenne_generale')" style="cursor:pointer;" data-i18n="avg">Moy ↕</th>
+          <th onclick="sortAdmin('classement')" style="cursor:pointer;" data-i18n="rank">Rang ↕</th>
+          <th data-i18n="result">Résultat</th>
+          <th data-i18n="actions">Actions</th>
         </tr></thead>
         <tbody id="adminBody"></tbody>
       </table>
     </div></div>
   </div>
-  <div id="panelNotifs" class="hidden"><div id="notifsList"><p class="text-center py-8" style="color:var(--text-muted);">Chargement...</p></div></div>
-  <div id="panelComptes" class="hidden"><div id="comptesList"><p class="text-center py-8" style="color:var(--text-muted);">Chargement...</p></div></div>
+  <div id="panelNotifs" class="hidden"><div id="notifsList"><p class="text-center py-8" style="color:var(--text-muted);" data-i18n="loading">Chargement...</p></div></div>
+  <div id="panelComptes" class="hidden"><div id="comptesList"><p class="text-center py-8" style="color:var(--text-muted);" data-i18n="loading">Chargement...</p></div></div>
 </div>
 
 <a href="mailto:dentaireoranmoy@gmail.com" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 group w-max max-w-[90vw]">
   <div class="px-6 py-3 rounded-full glass shadow-2xl flex items-center justify-center gap-3 font-semibold transition hover:scale-105 active:scale-95 border border-white/20 backdrop-blur-xl whitespace-nowrap" style="color:var(--text-main);">
     <i class="ph-fill ph-paper-plane-right text-lg group-hover:-rotate-12 transition-transform"></i>
-    Nous contacter
+    <span data-i18n="contactUs">Nous contacter</span>
   </div>
 </a>
 
@@ -313,10 +330,8 @@ var EMAILJS_TEMPLATE = "template_74cg8ho";
 var EMAILJS_KEY      = "lxg6X0FF2kADJ5DYR";
 
 // Identifiants admin (hashes SHA-256)
-// admin / 0207
 var ADMIN_ID       = "admin";
 var ADMIN_MDP_HASH = "2e3c969e2e9b367ade00279743f88ea0e32f283152223e3d9aaf1c14669d7cbe";
-// user / azerty00
 var ADMIN_LITE_ID       = "user";
 var ADMIN_LITE_MDP_HASH = "90d06112d5dc4274afd6ba187432cbf203586566e2ffe87b7494e9b1e1268187";
 
@@ -331,1236 +346,1515 @@ var MODULES = [
 ];
 var currentStudent=null, isAdmin=false, isAdminLite=false;
 var adminData=[], adminSortKey="numero", adminSortAsc=true, currentView="login";
+var currentLang = "fr";
 
 // ============================================
-// DEVICE DETECTION FUNCTIONS
+// TRANSLATIONS
 // ============================================
+var TRANSLATIONS = {
+  fr: {
+    results: "Résultats",
+    year3Subtitle: "3ème Année — Dental Guide Oran",
+    invalidCredentials: "Identifiants incorrects",
+    fillAllFields: "Veuillez remplir tous les champs.",
+    connectionError: "Erreur de connexion. Réessayez.",
+    fullName: "Nom et Prénom",
+    namePlaceholder: "NOM PRENOM",
+    nameHint: "Nom et prénom en MAJUSCULES",
+    password: "Mot de passe",
+    passwordPlaceholder: "Votre numéro de liste",
+    accessResults: "Accéder à mes résultats",
+    verifying: "Vérification...",
+    myAccount: "Mon Compte",
+    average: "Moyenne",
+    ranking: "Classement",
+    students: "Étudiants",
+    detailedGrades: "Notes détaillées",
+    modules: "11 modules",
+    module: "Module",
+    coef: "Coef",
+    moyEMD: "Moy EMD",
+    moyModule: "Moy Module",
+    reportError: "Signaler une erreur",
+    concernedModule: "Module concerné",
+    chooseModule: "— Choisir un module —",
+    reportType: "Type de signalement",
+    gradeError: "Erreur de note",
+    missingGrade: "Note manquante",
+    other: "Autre",
+    commentOptional: "Commentaire (optionnel)",
+    describeProblem: "Décrivez le problème...",
+    sendReport: "Envoyer le signalement",
+    sending: "Envoi...",
+    reportSent: "Signalement envoyé !",
+    reportSaved: "Signalement enregistré.",
+    chooseModuleWarning: "Choisissez un module.",
+    back: "Retour",
+    accountHint: "Choisissez un identifiant et mot de passe mémorables.",
+    newIdentifier: "Nouvel identifiant",
+    newIdentifierPlaceholder: "Votre nouvel identifiant",
+    newPassword: "Nouveau mot de passe",
+    newPasswordPlaceholder: "Nouveau mot de passe",
+    confirmPassword: "Confirmer le mot de passe",
+    confirmPasswordPlaceholder: "Répétez le mot de passe",
+    saveChanges: "Sauvegarder les modifications",
+    saving: "Sauvegarde...",
+    accountUpdated: "Compte mis à jour !",
+    identifierEmpty: "L'identifiant ne peut pas être vide.",
+    passwordMismatch: "Les mots de passe ne correspondent pas.",
+    adminInterface: "Interface Admin",
+    readOnly: "Lecture seule",
+    year: "Année",
+    search: "Rechercher...",
+    logout: "Déconnexion",
+    studentsTab: "Étudiants",
+    reports: "Signalements",
+    accounts: "Comptes",
+    number: "N° ↕",
+    lastName: "Nom ↕",
+    firstName: "Prénom",
+    avg: "Moy ↕",
+    rank: "Rang ↕",
+    result: "Résultat",
+    actions: "Actions",
+    loading: "Chargement...",
+    noResults: "Aucun résultat",
+    noReports: "Aucun signalement reçu.",
+    noAccountChanges: "Aucun étudiant n'a modifié son compte.",
+    admitted: "Admis(e)",
+    catchup: "Rattrapage",
+    view: "Voir",
+    suggest: "Suggérer",
+    notes: "Notes",
+    close: "Fermer",
+    cancel: "Annuler",
+    save: "Sauvegarder",
+    noChanges: "Aucune modification détectée.",
+    notesSaved: "Notes sauvegardées et moyennes recalculées !",
+    saveError: "Erreur sauvegarde.",
+    calculatedMoy: "Moy Calculée",
+    autoCalculateInfo: "Les moyennes sont calculées automatiquement lors de la sauvegarde.",
+    contactUs: "Nous contacter",
+    home: "Accueil",
+    myResults: "Mes Résultats",
+    suggestion: "Suggestion de modification (Admin Lite)",
+    suggestTitle: "Suggérer —",
+    fieldToModify: "Champ à modifier",
+    suggestedValue: "Valeur suggérée",
+    suggestedValuePlaceholder: "Ex: 12.5",
+    justification: "Justification",
+    justificationPlaceholder: "Pourquoi cette modification ?",
+    send: "Envoyer",
+    suggestionSent: "Suggestion envoyée !",
+    suggestionSaved: "Suggestion enregistrée.",
+    resetAccount: "Réinitialiser le compte de N°",
+    accountReset: "Compte réinitialisé pour N°",
+    confirmReset: " ?",
+    customIdentifier: "Identifiant perso",
+    customPassword: "MDP perso",
+    reset: "Reset",
+    pageRefresh: "Rafraichissement page",
+    studentLogin: "Etudiant Login",
+    adminLogin: "Admin Login",
+    adminLiteLogin: "Connexion Admin Lite",
+    system: "Système",
+    noComment: "(aucun commentaire)",
+    connection: "Connexion",
+    accountModification: "Modification de compte",
+    suggestModule: "Suggestion: ",
+    reason: " | Raison: ",
+    noReportsYet: "Aucun signalement reçu.",
+    choose: "— Choisir —",
+    device: "Appareil"
+  },
+  en: {
+    results: "Results",
+    year3Subtitle: "3rd Year — Dental Guide Oran",
+    invalidCredentials: "Invalid credentials",
+    fillAllFields: "Please fill in all fields.",
+    connectionError: "Connection error. Please try again.",
+    fullName: "Full Name",
+    namePlaceholder: "FIRSTNAME LASTNAME",
+    nameHint: "First and last name in UPPERCASE",
+    password: "Password",
+    passwordPlaceholder: "Your list number",
+    accessResults: "Access my results",
+    verifying: "Verifying...",
+    myAccount: "My Account",
+    average: "Average",
+    ranking: "Ranking",
+    students: "Students",
+    detailedGrades: "Detailed grades",
+    modules: "11 modules",
+    module: "Module",
+    coef: "Coef",
+    moyEMD: "Avg EMD",
+    moyModule: "Avg Module",
+    reportError: "Report an error",
+    concernedModule: "Concerned module",
+    chooseModule: "— Select a module —",
+    reportType: "Report type",
+    gradeError: "Grade error",
+    missingGrade: "Missing grade",
+    other: "Other",
+    commentOptional: "Comment (optional)",
+    describeProblem: "Describe the problem...",
+    sendReport: "Send report",
+    sending: "Sending...",
+    reportSent: "Report sent!",
+    reportSaved: "Report saved.",
+    chooseModuleWarning: "Please select a module.",
+    back: "Back",
+    accountHint: "Choose a memorable username and password.",
+    newIdentifier: "New username",
+    newIdentifierPlaceholder: "Your new username",
+    newPassword: "New password",
+    newPasswordPlaceholder: "New password",
+    confirmPassword: "Confirm password",
+    confirmPasswordPlaceholder: "Repeat the password",
+    saveChanges: "Save changes",
+    saving: "Saving...",
+    accountUpdated: "Account updated!",
+    identifierEmpty: "Username cannot be empty.",
+    passwordMismatch: "Passwords do not match.",
+    adminInterface: "Admin Interface",
+    readOnly: "Read only",
+    year: "Year",
+    search: "Search...",
+    logout: "Logout",
+    studentsTab: "Students",
+    reports: "Reports",
+    accounts: "Accounts",
+    number: "No. ↕",
+    lastName: "Last Name ↕",
+    firstName: "First Name",
+    avg: "Avg ↕",
+    rank: "Rank ↕",
+    result: "Result",
+    actions: "Actions",
+    loading: "Loading...",
+    noResults: "No results",
+    noReports: "No reports received.",
+    noAccountChanges: "No student has modified their account.",
+    admitted: "Admitted",
+    catchup: "Catch-up",
+    view: "View",
+    suggest: "Suggest",
+    notes: "Notes",
+    close: "Close",
+    cancel: "Cancel",
+    save: "Save",
+    noChanges: "No changes detected.",
+    notesSaved: "Notes saved and averages recalculated!",
+    saveError: "Save error.",
+    calculatedMoy: "Calculated Avg",
+    autoCalculateInfo: "Averages are calculated automatically when saving.",
+    contactUs: "Contact us",
+    home: "Home",
+    myResults: "My Results",
+    suggestion: "Modification suggestion (Admin Lite)",
+    suggestTitle: "Suggest —",
+    fieldToModify: "Field to modify",
+    suggestedValue: "Suggested value",
+    suggestedValuePlaceholder: "Ex: 12.5",
+    justification: "Justification",
+    justificationPlaceholder: "Why this modification?",
+    send: "Send",
+    suggestionSent: "Suggestion sent!",
+    suggestionSaved: "Suggestion saved.",
+    fillAllFields: "Fill in all fields.",
+    resetAccount: "Reset account for No.",
+    accountReset: "Account reset for No.",
+    confirmReset: "?",
+    customIdentifier: "Custom username",
+    customPassword: "Custom password",
+    reset: "Reset",
+    pageRefresh: "Page refresh",
+    studentLogin: "Student Login",
+    adminLogin: "Admin Login",
+    adminLiteLogin: "Admin Lite Login",
+    system: "System",
+    noComment: "(no comment)",
+    connection: "Connection",
+    accountModification: "Account modification",
+    suggestModule: "Suggestion: ",
+    reason: " | Reason: ",
+    noReportsYet: "No reports received yet.",
+    choose: "— Select —",
+    device: "Device"
+  },
+  ar: {
+    results: "النتائج",
+    year3Subtitle: "السنة الثالثة — دليل طب الأسنان وهران",
+    invalidCredentials: "بيانات الدخول غير صحيحة",
+    fillAllFields: "يرجى ملء جميع الحقول.",
+    connectionError: "خطأ في الاتصال. حاول مرة أخرى.",
+    fullName: "الاسم الكامل",
+    namePlaceholder: "الاسم اللقب",
+    nameHint: "الاسم واللقب بأحرف كبيرة",
+    password: "كلمة المرور",
+    passwordPlaceholder: "رقم القائمة",
+    accessResults: "الوصول إلى نتائجي",
+    verifying: "جاري التحقق...",
+    myAccount: "حسابي",
+    average: "المعدل",
+    ranking: "الترتيب",
+    students: "طلاب",
+    detailedGrades: "النقاط التفصيلية",
+    modules: "11 مادة",
+    module: "المادة",
+    coef: "المعامل",
+    moyEMD: "معدل الامتحان",
+    moyModule: "معدل المادة",
+    reportError: "الإبلاغ عن خطأ",
+    concernedModule: "المادة المعنية",
+    chooseModule: "— اختر مادة —",
+    reportType: "نوع الإبلاغ",
+    gradeError: "خطأ في النقطة",
+    missingGrade: "نقطة مفقودة",
+    other: "أخرى",
+    commentOptional: "تعليق (اختياري)",
+    describeProblem: "صف المشكلة...",
+    sendReport: "إرسال الإبلاغ",
+    sending: "جاري الإرسال...",
+    reportSent: "تم إرسال الإبلاغ!",
+    reportSaved: "تم حفظ الإبلاغ.",
+    chooseModuleWarning: "اختر مادة.",
+    back: "رجوع",
+    accountHint: "اختر اسم مستخدم وكلمة مرور سهلة التذكر.",
+    newIdentifier: "اسم المستخدم الجديد",
+    newIdentifierPlaceholder: "اسم المستخدم الجديد",
+    newPassword: "كلمة المرور الجديدة",
+    newPasswordPlaceholder: "كلمة المرور الجديدة",
+    confirmPassword: "تأكيد كلمة المرور",
+    confirmPasswordPlaceholder: "أعد كتابة كلمة المرور",
+    saveChanges: "حفظ التغييرات",
+    saving: "جاري الحفظ...",
+    accountUpdated: "تم تحديث الحساب!",
+    identifierEmpty: "اسم المستخدم لا يمكن أن يكون فارغاً.",
+    passwordMismatch: "كلمات المرور غير متطابقة.",
+    adminInterface: "واجهة المشرف",
+    readOnly: "للقراءة فقط",
+    year: "سنة",
+    search: "بحث...",
+    logout: "تسجيل الخروج",
+    studentsTab: "الطلاب",
+    reports: "الإبلاغات",
+    accounts: "الحسابات",
+    number: "الرقم ↕",
+    lastName: "اللقب ↕",
+    firstName: "الاسم",
+    avg: "المعدل ↕",
+    rank: "الترتيب ↕",
+    result: "النتيجة",
+    actions: "إجراءات",
+    loading: "جاري التحميل...",
+    noResults: "لا توجد نتائج",
+    noReports: "لم يتم استلام أي إبلاغ.",
+    noAccountChanges: "لم يقم أي طالب بتعديل حسابه.",
+    admitted: "ناجح(ة)",
+    catchup: "مستدرك",
+    view: "عرض",
+    suggest: "اقتراح",
+    notes: "النقاط",
+    close: "إغلاق",
+    cancel: "إلغاء",
+    save: "حفظ",
+    noChanges: "لم يتم اكتشاف أي تغييرات.",
+    notesSaved: "تم حفظ النقاط وإعادة حساب المعدلات!",
+    saveError: "خطأ في الحفظ.",
+    calculatedMoy: "المعدل المحسوب",
+    autoCalculateInfo: "يتم حساب المعدلات تلقائياً عند الحفظ.",
+    contactUs: "اتصل بنا",
+    home: "الرئيسية",
+    myResults: "نتائجي",
+    suggestion: "اقتراح تعديل (مشرف محدود)",
+    suggestTitle: "اقتراح —",
+    fieldToModify: "الحقل المراد تعديله",
+    suggestedValue: "القيمة المقترحة",
+    suggestedValuePlaceholder: "مثال: 12.5",
+    justification: "التبرير",
+    justificationPlaceholder: "لماذا هذا التعديل؟",
+    send: "إرسال",
+    suggestionSent: "تم إرسال الاقتراح!",
+    suggestionSaved: "تم حفظ الاقتراح.",
+    fillAllFields: "املأ جميع الحقول.",
+    resetAccount: "إعادة تعيين حساب رقم",
+    accountReset: "تم إعادة تعيين حساب رقم",
+    confirmReset: "؟",
+    customIdentifier: "المعرف الشخصي",
+    customPassword: "كلمة المرور الشخصية",
+    reset: "إعادة تعيين",
+    pageRefresh: "تحديث الصفحة",
+    studentLogin: "دخول طالب",
+    adminLogin: "دخول المشرف",
+    adminLiteLogin: "دخول مشرف محدود",
+    system: "النظام",
+    noComment: "(بدون تعليق)",
+    connection: "اتصال",
+    accountModification: "تعديل الحساب",
+    suggestModule: "اقتراح: ",
+    reason: " | السبب: ",
+    noReportsYet: "لم يتم استلام أي إبلاغ بعد.",
+    choose: "— اختر —",
+    device: "الجهاز"
+  }
+};
 
+// Translate page
+function translatePage(lang) {
+  currentLang = lang;
+  
+  // Translate all elements with data-i18n attribute
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+      el.textContent = TRANSLATIONS[lang][key];
+    }
+  });
+  
+  // Translate placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n-placeholder');
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+      el.placeholder = TRANSLATIONS[lang][key];
+    }
+  });
+  
+  // Update select options
+  var signalModule = document.getElementById('signalModule');
+  if (signalModule && signalModule.options[0]) {
+    signalModule.options[0].textContent = TRANSLATIONS[lang].chooseModule;
+  }
+  
+  // Update sidebar navigation
+  updateSidebarNav();
+  updateBreadcrumb();
+}
+
+// ============================================
+// Device Detection
+// ============================================
 function getDeviceType() {
   var ua = navigator.userAgent;
-  var platform = navigator.platform || "";
   var maxTouchPoints = navigator.maxTouchPoints || 0;
-  
-  // Check for tablets first (larger touch devices)
-  if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && maxTouchPoints > 1)) {
-    return "tablet";
-  }
-  
-  // Check for mobile phones
-  if (/Mobi|Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|webOS|Windows Phone/i.test(ua)) {
-    return "mobile";
-  }
-  
-  // Default to desktop
+  if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && maxTouchPoints > 1)) return "tablet";
+  if (/Mobi|Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|webOS|Windows Phone/i.test(ua)) return "mobile";
   return "pc";
 }
 
 function getDeviceModel() {
   var ua = navigator.userAgent;
-  var platform = navigator.platform || "";
-  var maxTouchPoints = navigator.maxTouchPoints || 0;
+  var screenWidth = window.screen.width;
+  var screenHeight = window.screen.height;
+  var dpr = window.devicePixelRatio || 1;
   
-  // ============ IPHONE DETECTION ============
-  // iPhone model detection based on screen dimensions and pixel ratio
   if (/iPhone/i.test(ua)) {
-    var screenWidth = window.screen.width;
-    var screenHeight = window.screen.height;
-    var dpr = window.devicePixelRatio || 1;
-    
-    // Get actual screen dimensions in points (not pixels)
-    var widthPoints = screenWidth;
-    var heightPoints = screenHeight;
-    
-    // iPhone 14 Pro Max / 15 Plus / 15 Pro Max / 16 Plus / 16 Pro Max
-    if ((widthPoints === 430 && heightPoints === 932) || (widthPoints === 932 && heightPoints === 430)) {
-      if (/iPhone1[56]/.test(ua)) return "iPhone 16 Pro Max";
-      if (/iPhone1[45]/.test(ua)) return "iPhone 15 Pro Max";
-      return "iPhone 14 Pro Max";
-    }
-    
-    // iPhone 14 Pro / 15 / 15 Pro / 16 / 16 Pro
-    if ((widthPoints === 393 && heightPoints === 852) || (widthPoints === 852 && heightPoints === 393)) {
-      if (/iPhone1[56]/.test(ua)) return "iPhone 16 Pro";
-      if (/iPhone1[45]/.test(ua)) return "iPhone 15 Pro";
-      return "iPhone 14 Pro";
-    }
-    
-    // iPhone 14 / 15 / 16 (standard models)
-    if ((widthPoints === 390 && heightPoints === 844) || (widthPoints === 844 && heightPoints === 390)) {
-      return "iPhone 14 / 15 / 16";
-    }
-    
-    // iPhone 13 mini / 12 mini
-    if ((widthPoints === 360 && heightPoints === 780) || (widthPoints === 780 && heightPoints === 360)) {
-      return "iPhone 13 mini / 12 mini";
-    }
-    
-    // iPhone 13 Pro / 13 / 12 Pro / 12
-    if ((widthPoints === 390 && heightPoints === 844) || (widthPoints === 844 && heightPoints === 390)) {
-      return "iPhone 13 Pro / 13 / 12 Pro / 12";
-    }
-    
-    // iPhone 13 Pro Max / 12 Pro Max
-    if ((widthPoints === 428 && heightPoints === 926) || (widthPoints === 926 && heightPoints === 428)) {
-      return "iPhone 13 Pro Max / 12 Pro Max";
-    }
-    
-    // iPhone 11 Pro Max / XS Max
-    if ((widthPoints === 414 && heightPoints === 896) || (widthPoints === 896 && heightPoints === 414)) {
-      return "iPhone 11 Pro Max / XS Max";
-    }
-    
-    // iPhone 11 Pro / XS
-    if ((widthPoints === 375 && heightPoints === 812) || (widthPoints === 812 && heightPoints === 375)) {
-      return "iPhone 11 Pro / XS";
-    }
-    
-    // iPhone 11 / XR
-    if ((widthPoints === 414 && heightPoints === 896) || (widthPoints === 896 && heightPoints === 414)) {
-      return "iPhone 11 / XR";
-    }
-    
-    // iPhone SE 3rd / 2nd gen, iPhone 8, 7, 6s, 6
-    if ((widthPoints === 375 && heightPoints === 667) || (widthPoints === 667 && heightPoints === 375)) {
-      return "iPhone SE (3rd/2nd) / 8 / 7";
-    }
-    
-    // iPhone SE 1st gen, 5s, 5c, 5
-    if ((widthPoints === 320 && heightPoints === 568) || (widthPoints === 568 && heightPoints === 320)) {
-      return "iPhone SE (1st) / 5s";
-    }
-    
-    return "iPhone (Model Unknown)";
+    var w = screenWidth, h = screenHeight;
+    if ((w === 430 && h === 932) || (w === 932 && h === 430)) return "iPhone 16 Pro Max / 15 Pro Max / 14 Pro Max";
+    if ((w === 393 && h === 852) || (w === 852 && h === 393)) return "iPhone 16 Pro / 15 Pro / 14 Pro";
+    if ((w === 390 && h === 844) || (w === 844 && h === 390)) return "iPhone 14 / 15 / 16 / 13 Pro / 12 Pro";
+    if ((w === 428 && h === 926) || (w === 926 && h === 428)) return "iPhone 13 Pro Max / 12 Pro Max";
+    if ((w === 360 && h === 780) || (w === 780 && h === 360)) return "iPhone 13 mini / 12 mini";
+    if ((w === 414 && h === 896) || (w === 896 && h === 414)) return dpr >= 3 ? "iPhone 11 Pro Max / XS Max" : "iPhone 11 / XR";
+    if ((w === 375 && h === 812) || (w === 812 && h === 375)) return "iPhone 11 Pro / XS";
+    if ((w === 375 && h === 667) || (w === 667 && h === 375)) return "iPhone SE / 8 / 7";
+    return "iPhone";
   }
   
-  // ============ IPAD DETECTION ============
-  if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && maxTouchPoints > 1)) {
-    var screenWidth = window.screen.width;
-    var screenHeight = window.screen.height;
-    
-    // iPad Pro 12.9-inch (5th/6th gen)
-    if ((screenWidth === 1024 && screenHeight === 1366) || (screenWidth === 1366 && screenHeight === 1024)) {
-      return "iPad Pro 12.9\"";
-    }
-    
-    // iPad Pro 11-inch (3rd/4th gen)
-    if ((screenWidth === 834 && screenHeight === 1194) || (screenWidth === 1194 && screenHeight === 834)) {
-      return "iPad Pro 11\"";
-    }
-    
-    // iPad Pro 10.5-inch / iPad Air 3
-    if ((screenWidth === 834 && screenHeight === 1112) || (screenWidth === 1112 && screenHeight === 834)) {
-      return "iPad Pro 10.5\" / Air 3";
-    }
-    
-    // iPad Air 4th/5th gen, iPad 10th gen
-    if ((screenWidth === 820 && screenHeight === 1180) || (screenWidth === 1180 && screenHeight === 820)) {
-      return "iPad Air 4/5 / iPad 10";
-    }
-    
-    // iPad Mini 6
-    if ((screenWidth === 744 && screenHeight === 1133) || (screenWidth === 1133 && screenHeight === 744)) {
-      return "iPad Mini 6";
-    }
-    
-    // Standard iPad 9th gen and earlier
-    if ((screenWidth === 768 && screenHeight === 1024) || (screenWidth === 1024 && screenHeight === 768)) {
-      return "iPad (Standard)";
-    }
-    
-    return "iPad (Model Unknown)";
-  }
-  
-  // ============ SAMSUNG DETECTION ============
-  if (/Samsung|SM-|GT-|SCH-|SGH-/i.test(ua)) {
-    // Extract model number
-    var samsungModel = ua.match(/(SM-[A-Z][0-9]{3,4}[A-Z]?|GT-[A-Z][0-9]{4}|SCH-[A-Z][0-9]{4}|SGH-[A-Z][0-9]{4})/i);
-    if (samsungModel) {
-      var modelNum = samsungModel[1].toUpperCase();
-      
-      // Galaxy S series
-      if (modelNum === "S911B" || modelNum === "S911U" || modelNum === "S911W") return "Samsung Galaxy S23";
-      if (modelNum === "S918B" || modelNum === "S918U") return "Samsung Galaxy S23 Ultra";
-      if (modelNum === "S906B" || modelNum === "S906U" || modelNum === "S901B") return "Samsung Galaxy S22";
-      if (modelNum === "S908B" || modelNum === "S908U") return "Samsung Galaxy S22 Ultra";
-      if (modelNum === "S926B" || modelNum === "S926U" || modelNum === "S928B") return "Samsung Galaxy S24 Ultra";
-      if (modelNum === "S921B" || modelNum === "S926B") return "Samsung Galaxy S24";
-      if (modelNum === "S938B") return "Samsung Galaxy S25 Ultra";
-      if (modelNum === "S936B") return "Samsung Galaxy S25+";
-      if (modelNum === "S931B") return "Samsung Galaxy S25";
-      
-      // Galaxy Note series
-      if (modelNum.indexOf("N970") !== -1) return "Samsung Galaxy Note 9";
-      if (modelNum.indexOf("N980") !== -1 || modelNum.indexOf("N981") !== -1) return "Samsung Galaxy Note 20";
-      if (modelNum.indexOf("N986") !== -1 || modelNum.indexOf("N981B") !== -1) return "Samsung Galaxy Note 20 Ultra";
-      
-      // Galaxy A series
-      if (modelNum.indexOf("A536") !== -1) return "Samsung Galaxy A54";
-      if (modelNum.indexOf("A546") !== -1) return "Samsung Galaxy A54 5G";
-      if (modelNum.indexOf("A715") !== -1) return "Samsung Galaxy A71";
-      if (modelNum.indexOf("A525") !== -1) return "Samsung Galaxy A52";
-      if (modelNum.indexOf("A515") !== -1) return "Samsung Galaxy A51";
-      
-      // Galaxy Z Fold/Flip
-      if (modelNum.indexOf("F936") !== -1) return "Samsung Galaxy Z Fold 4";
-      if (modelNum.indexOf("F721") !== -1) return "Samsung Galaxy Z Flip 4";
-      if (modelNum.indexOf("F946") !== -1) return "Samsung Galaxy Z Fold 5";
-      if (modelNum.indexOf("F731") !== -1) return "Samsung Galaxy Z Flip 5";
-      if (modelNum.indexOf("F956") !== -1) return "Samsung Galaxy Z Fold 6";
-      if (modelNum.indexOf("F741") !== -1) return "Samsung Galaxy Z Flip 6";
-      
-      return "Samsung " + modelNum;
-    }
-    return "Samsung Device";
-  }
-  
-  // ============ GOOGLE PIXEL DETECTION ============
-  if (/Pixel/i.test(ua)) {
-    var pixelModel = ua.match(/Pixel ([0-9]+(?:a|Pro|XL)?)/i);
-    if (pixelModel) return "Google Pixel " + pixelModel[1];
-    return "Google Pixel";
-  }
-  
-  // ============ ONEPLUS DETECTION ============
-  if (/OnePlus|ONEPLUS/i.test(ua)) {
-    var oneplusModel = ua.match(/(OnePlus\s*[A-Z0-9]+)/i);
-    if (oneplusModel) return oneplusModel[1];
-    if (/CPH/i.test(ua)) {
-      var cphModel = ua.match(/CPH[0-9]{4}/i);
-      if (cphModel) return "OnePlus " + cphModel[0];
-    }
-    return "OnePlus Device";
-  }
-  
-  // ============ XIAOMI / REDMI DETECTION ============
-  if (/Xiaomi|Redmi|POCO|MI [0-9]/i.test(ua)) {
-    var xiaomiModel = ua.match(/(Redmi\s*[A-Z0-9 ]+|POCO\s*[A-Z0-9 ]+|Mi [0-9]+(?: Pro| Ultra)?)/i);
-    if (xiaomiModel) return xiaomiModel[1].trim();
-    if (/M[0-9]{4}/.test(ua)) {
-      var mModel = ua.match(/M[0-9]{4}/);
-      if (mModel) return "Xiaomi " + mModel[0];
-    }
-    return "Xiaomi Device";
-  }
-  
-  // ============ HUAWEI DETECTION ============
-  if (/Huawei|HUAWEI|HONOR/i.test(ua)) {
-    var huaweiModel = ua.match(/(Huawei\s*[A-Z0-9]+|Honor\s*[A-Z0-9]+)/i);
-    if (huaweiModel) return huaweiModel[1];
-    return "Huawei Device";
-  }
-  
-  // ============ LG DETECTION ============
-  if (/LG/i.test(ua)) {
-    var lgModel = ua.match(/LG[- ]([A-Z0-9]+)/i);
-    if (lgModel) return "LG " + lgModel[1];
-    return "LG Device";
-  }
-  
-  // ============ MOTOROLA DETECTION ============
-  if (/Moto|Motorola/i.test(ua)) {
-    var motoModel = ua.match(/(Moto\s*[A-Z0-9 ]+)/i);
-    if (motoModel) return motoModel[1].trim();
-    return "Motorola Device";
-  }
-  
-  // ============ NOKIA DETECTION ============
-  if (/Nokia/i.test(ua)) {
-    var nokiaModel = ua.match(/Nokia\s*([A-Z0-9]+)/i);
-    if (nokiaModel) return "Nokia " + nokiaModel[1];
-    return "Nokia Device";
-  }
-  
-  // ============ SONY DETECTION ============
-  if (/Sony|Xperia/i.test(ua)) {
-    var sonyModel = ua.match(/(Xperia\s*[A-Z0-9 ]+)/i);
-    if (sonyModel) return sonyModel[1].trim();
-    return "Sony Xperia";
-  }
-  
-  // ============ OPPO / REALME DETECTION ============
-  if (/OPPO|Realme|CPH|RMX/i.test(ua)) {
-    var oppoModel = ua.match(/(OPPO\s*[A-Z0-9]+|Realme\s*[A-Z0-9]+|CPH[0-9]+|RMX[0-9]+)/i);
-    if (oppoModel) return oppoModel[1];
-    return "OPPO / Realme Device";
-  }
-  
-  // ============ VIVO DETECTION ============
-  if (/vivo|VIVO/i.test(ua)) {
-    var vivoModel = ua.match(/vivo\s*([A-Z0-9]+)/i);
-    if (vivoModel) return "Vivo " + vivoModel[1];
-    return "Vivo Device";
-  }
-  
-  // ============ ANDROID GENERIC ============
   if (/Android/i.test(ua)) {
-    var androidModel = ua.match(/Android[^;]*;\s*([^)]+)\s*Build/i);
-    if (androidModel) return androidModel[1].trim();
+    var samsungPatterns = [
+      {pattern: /SM-S938|SM-S936|SM-S937|S25 Ultra/i, name: "Samsung Galaxy S25 Ultra"},
+      {pattern: /SM-S936|SM-S93[0-9]/i, name: "Samsung Galaxy S25+"},
+      {pattern: /SM-S931|SM-S93[0-9]B/i, name: "Samsung Galaxy S25"},
+      {pattern: /SM-S928|SM-S926|SM-S927|S24 Ultra/i, name: "Samsung Galaxy S24 Ultra"},
+      {pattern: /SM-S926|SM-S92[0-9]/i, name: "Samsung Galaxy S24+"},
+      {pattern: /SM-S921|SM-S92[0-9]B/i, name: "Samsung Galaxy S24"},
+      {pattern: /SM-S918|SM-S916|SM-S917|S23 Ultra/i, name: "Samsung Galaxy S23 Ultra"},
+      {pattern: /SM-S916/i, name: "Samsung Galaxy S23+"},
+      {pattern: /SM-S911|SM-S91[0-9]B/i, name: "Samsung Galaxy S23"},
+      {pattern: /SM-S908|S22 Ultra/i, name: "Samsung Galaxy S22 Ultra"},
+      {pattern: /SM-S906/i, name: "Samsung Galaxy S22+"},
+      {pattern: /SM-S901/i, name: "Samsung Galaxy S22"},
+      {pattern: /SM-G998|S21 Ultra/i, name: "Samsung Galaxy S21 Ultra"},
+      {pattern: /SM-G996/i, name: "Samsung Galaxy S21+"},
+      {pattern: /SM-G991/i, name: "Samsung Galaxy S21"},
+      {pattern: /SM-N986|Note 20 Ultra|Note20 Ultra/i, name: "Samsung Galaxy Note 20 Ultra"},
+      {pattern: /SM-N981|Note 20|Note20/i, name: "Samsung Galaxy Note 20"},
+      {pattern: /SM-F956|Z Fold6|Fold 6|Fold6/i, name: "Samsung Galaxy Z Fold 6"},
+      {pattern: /SM-F946|Z Fold5|Fold 5|Fold5/i, name: "Samsung Galaxy Z Fold 5"},
+      {pattern: /SM-F936|Z Fold4|Fold 4|Fold4/i, name: "Samsung Galaxy Z Fold 4"},
+      {pattern: /SM-F741|Z Flip6|Flip 6|Flip6/i, name: "Samsung Galaxy Z Flip 6"},
+      {pattern: /SM-F731|Z Flip5|Flip 5|Flip5/i, name: "Samsung Galaxy Z Flip 5"},
+      {pattern: /SM-F721|Z Flip4|Flip 4|Flip4/i, name: "Samsung Galaxy Z Flip 4"},
+      {pattern: /SM-A556|A55/i, name: "Samsung Galaxy A55"},
+      {pattern: /SM-A546|A54/i, name: "Samsung Galaxy A54"},
+      {pattern: /SM-A536|A53/i, name: "Samsung Galaxy A53"},
+    ];
+    for (var i = 0; i < samsungPatterns.length; i++) {
+      var p = samsungPatterns[i];
+      if (p.pattern.test(ua)) return p.name;
+    }
+    var genericSamsung = ua.match(/SM-([A-Z][0-9]{3,4}[A-Z]?)/i);
+    if (genericSamsung) return "Samsung Galaxy (SM-" + genericSamsung[1] + ")";
+    if (/Pixel/i.test(ua)) {
+      var pixelMatch = ua.match(/Pixel\s?([0-9]+(?:\s?(?:a|Pro|Pro XL|XL))?)/i);
+      if (pixelMatch) return "Google Pixel " + pixelMatch[1].trim();
+      return "Google Pixel";
+    }
+    if (/OnePlus|ONEPLUS/i.test(ua)) {
+      var opMatch = ua.match(/(?:OnePlus\s?)?(CPH[0-9]{4}|LE[0-9]{4})/i);
+      if (opMatch) return "OnePlus " + opMatch[1];
+      return "OnePlus Device";
+    }
+    if (/Xiaomi|Redmi|POCO/i.test(ua)) {
+      var miMatch = ua.match(/(?:Xiaomi|Redmi|POCO)[\s\-\/]?([A-Za-z0-9\s]+)/i);
+      if (miMatch) return "Xiaomi " + miMatch[1].trim();
+      return "Xiaomi Device";
+    }
+    var androidDevice = ua.match(/Android\s[0-9.]+;\s?([^;)]+?)\s?(?:Build|;|\))/i);
+    if (androidDevice && androidDevice[1] && androidDevice[1].length > 2 && androidDevice[1].length < 40) {
+      return androidDevice[1].trim();
+    }
     return "Android Device";
   }
   
-  // ============ WINDOWS PC DETECTION ============
+  if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1)) {
+    var w = screenWidth, h = screenHeight;
+    if ((w === 1024 && h === 1366) || (w === 1366 && h === 1024)) return "iPad Pro 12.9\"";
+    if ((w === 834 && h === 1194) || (w === 1194 && h === 834)) return "iPad Pro 11\"";
+    if ((w === 820 && h === 1180) || (w === 1180 && h === 820)) return "iPad Air / iPad 10";
+    if ((w === 744 && h === 1133) || (w === 1133 && h === 744)) return "iPad Mini 6";
+    if ((w === 768 && h === 1024) || (w === 1024 && h === 768)) return "iPad";
+    return "iPad";
+  }
+  
   if (/Windows NT/i.test(ua)) {
-    var winVersion = ua.match(/Windows NT ([0-9.]+)/);
-    var version = winVersion ? winVersion[1] : "";
-    
-    // Try to detect specific manufacturer
     if (/Surface/i.test(ua)) return "Microsoft Surface";
-    if (/HP/i.test(ua) || /Hewlett-Packard/i.test(ua)) return "HP PC (Windows)";
+    if (/HP/i.test(ua)) return "HP PC (Windows)";
     if (/Dell/i.test(ua)) return "Dell PC (Windows)";
     if (/Lenovo/i.test(ua)) return "Lenovo PC (Windows)";
     if (/ASUS/i.test(ua)) return "ASUS PC (Windows)";
-    if (/Acer/i.test(ua)) return "Acer PC (Windows)";
-    
     return "Windows PC";
   }
   
-  // ============ MAC DETECTION ============
-  if (/Macintosh|MacIntel|MacPPC|Mac68K/i.test(ua)) {
-    // Check for Apple Silicon
-    if (/Apple\s*M[12]/i.test(ua)) {
-      // Try to detect specific Mac model based on screen
-      var screenWidth = window.screen.width;
-      var screenHeight = window.screen.height;
-      
-      // MacBook Pro detection by screen
-      if (screenWidth === 1728 && screenHeight === 1117) return "MacBook Pro 16\" (M3)";
-      if (screenWidth === 1512 && screenHeight === 982) return "MacBook Pro 14\" (M3)";
-      if (screenWidth === 1440 && screenHeight === 900) return "MacBook Air 13\" (M2/M3)";
-      if (screenWidth === 2560 && screenHeight === 1600) return "MacBook Pro 13\" (Retina)";
-      if (screenWidth === 1680 && screenHeight === 1050) return "MacBook Pro 15\"";
-      
-      return "Mac (Apple Silicon)";
-    }
-    
-    return "Mac (Intel)";
+  if (/Macintosh|MacIntel/i.test(ua)) {
+    var w = screenWidth, h = screenHeight;
+    if (w === 1728 && h === 1117) return "MacBook Pro 16\" (M3)";
+    if (w === 1512 && h === 982) return "MacBook Pro 14\" (M3)";
+    if (w === 1440 && h === 900) return "MacBook Air 13\" (M2/M3)";
+    if (w === 2560 && h === 1600) return "MacBook Pro 13\" (Retina)";
+    if (/Apple\s*M[12]/i.test(ua)) return "Mac (Apple Silicon)";
+    return "Mac";
   }
   
-  // ============ LINUX DETECTION ============
-  if (/Linux/i.test(ua) && !/Android/i.test(ua)) {
-    if (/Ubuntu/i.test(ua)) return "Linux (Ubuntu)";
-    if (/Fedora/i.test(ua)) return "Linux (Fedora)";
-    if (/Debian/i.test(ua)) return "Linux (Debian)";
-    if (/Arch/i.test(ua)) return "Linux (Arch)";
-    return "Linux PC";
-  }
-  
-  // ============ CHROMEBOOK DETECTION ============
-  if (/CrOS/i.test(ua)) {
-    return "Chromebook";
-  }
-  
-  // ============ FALLBACK ============
+  if (/Linux/i.test(ua) && !/Android/i.test(ua)) return "Linux PC";
+  if (/CrOS/i.test(ua)) return "Chromebook";
   return "Unknown Device";
 }
 
 function getBrowserInfo() {
   var ua = navigator.userAgent;
-  
-  if (/Edg\//i.test(ua)) {
-    var version = ua.match(/Edg\/([0-9]+)/);
-    return "Edge" + (version ? " " + version[1] : "");
-  }
-  if (/Chrome\//i.test(ua) && !/Edg/i.test(ua)) {
-    var version = ua.match(/Chrome\/([0-9]+)/);
-    return "Chrome" + (version ? " " + version[1] : "");
-  }
-  if (/Firefox/i.test(ua)) {
-    var version = ua.match(/Firefox\/([0-9]+)/);
-    return "Firefox" + (version ? " " + version[1] : "");
-  }
-  if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) {
-    var version = ua.match(/Version\/([0-9]+)/);
-    return "Safari" + (version ? " " + version[1] : "");
-  }
-  if (/Opera|OPR\//i.test(ua)) {
-    var version = ua.match(/(?:Opera|OPR)\/([0-9]+)/);
-    return "Opera" + (version ? " " + version[1] : "");
-  }
-  
-  return "Unknown Browser";
-}
-
-function getDeviceInfo() {
-  var deviceType = getDeviceType();
-  var deviceModel = getDeviceModel();
-  var browser = getBrowserInfo();
-  var os = getOSInfo();
-  
-  return {
-    type: deviceType,           // "pc", "mobile", or "tablet"
-    model: deviceModel,          // e.g., "iPhone 13 Pro", "Samsung Galaxy S23 Ultra", "Windows PC"
-    browser: browser,            // e.g., "Chrome 120", "Safari 17"
-    os: os                       // e.g., "iOS 17.2", "Windows 11", "Android 14"
-  };
+  if (/Edg\//i.test(ua)) { var v = ua.match(/Edg\/([0-9]+)/); return "Edge " + (v ? v[1] : ""); }
+  if (/Chrome\//i.test(ua) && !/Edg/i.test(ua)) { var v = ua.match(/Chrome\/([0-9]+)/); return "Chrome " + (v ? v[1] : ""); }
+  if (/Firefox/i.test(ua)) { var v = ua.match(/Firefox\/([0-9]+)/); return "Firefox " + (v ? v[1] : ""); }
+  if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) { var v = ua.match(/Version\/([0-9]+)/); return "Safari " + (v ? v[1] : ""); }
+  if (/SamsungBrowser/i.test(ua)) { var v = ua.match(/SamsungBrowser\/([0-9]+)/); return "Samsung Internet " + (v ? v[1] : ""); }
+  return "Browser";
 }
 
 function getOSInfo() {
   var ua = navigator.userAgent;
-  
-  // iOS
   var iOS = ua.match(/iPhone OS ([0-9_]+)|iPad.*OS ([0-9_]+)/i);
-  if (iOS) {
-    var version = (iOS[1] || iOS[2]).replace(/_/g, ".");
-    return "iOS " + version;
-  }
-  
-  // Android
+  if (iOS) return "iOS " + (iOS[1] || iOS[2]).replace(/_/g, ".");
   var android = ua.match(/Android ([0-9.]+)/);
   if (android) return "Android " + android[1];
-  
-  // Windows
   var windows = ua.match(/Windows NT ([0-9.]+)/);
-  if (windows) {
-    var winVersions = {"10.0": "10/11", "6.3": "8.1", "6.2": "8", "6.1": "7"};
-    return "Windows " + (winVersions[windows[1]] || windows[1]);
-  }
-  
-  // macOS
+  if (windows) return "Windows " + ({"10.0": "10/11", "6.3": "8.1", "6.2": "8", "6.1": "7"}[windows[1]] || windows[1]);
   var macOS = ua.match(/Mac OS X ([0-9_]+)/);
   if (macOS) return "macOS " + macOS[1].replace(/_/g, ".");
-  
-  // Linux
-  if (/Linux/i.test(ua) && !/Android/i.test(ua)) {
-    if (/Ubuntu/i.test(ua)) return "Ubuntu Linux";
-    if (/Fedora/i.test(ua)) return "Fedora Linux";
-    return "Linux";
-  }
-  
-  // ChromeOS
+  if (/Linux/i.test(ua) && !/Android/i.test(ua)) return "Linux";
   if (/CrOS/i.test(ua)) return "Chrome OS";
-  
   return "Unknown OS";
 }
 
-// Get device display string for notifications
 function getDeviceDisplayString() {
-  var info = getDeviceInfo();
+  var info = { type: getDeviceType(), model: getDeviceModel(), browser: getBrowserInfo(), os: getOSInfo() };
   var icon = info.type === "mobile" ? "📱" : info.type === "tablet" ? "📲" : "💻";
   return icon + " " + info.model + " (" + info.os + ", " + info.browser + ")";
 }
 
-// Get short device string for database
 function getDeviceShortString() {
-  var info = getDeviceInfo();
-  return info.type + ": " + info.model;
+  return getDeviceType() + ": " + getDeviceModel();
 }
 
 // ============================================
-// END DEVICE DETECTION
+// Core Functions
 // ============================================
-
-// SHA-256
-async function sha256(msg){
-  var buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));
-  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,"0");}).join("");
+async function sha256(msg) {
+  var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
 }
 
-// Calcul moyennes 3eme annee: EMD moy x1, TD x2, TP x2
-function calcMoyModule(emd1, emd2, td, tp){
-  var pts=0, div=0;
-  var emdVals=[];
-  if(emd1!==null&&emd1!==undefined&&emd1!=="Abs")emdVals.push(parseFloat(emd1));
-  if(emd2!==null&&emd2!==undefined&&emd2!=="Abs")emdVals.push(parseFloat(emd2));
-  if(emdVals.length>0){pts+=(emdVals.reduce(function(a,b){return a+b;},0)/emdVals.length)*1;div+=1;}
-  if(td!==null&&td!==undefined&&td!=="Abs"){pts+=parseFloat(td)*2;div+=2;}
-  if(tp!==null&&tp!==undefined&&tp!=="Abs"){pts+=parseFloat(tp)*2;div+=2;}
-  if(div===0)return null;
-  return Math.round((pts/div)*10000)/10000;
+function calcMoyModule(emd1, emd2, td, tp) {
+  var pts = 0, div = 0, emdVals = [];
+  if (emd1 !== null && emd1 !== undefined && emd1 !== "Abs") emdVals.push(parseFloat(emd1));
+  if (emd2 !== null && emd2 !== undefined && emd2 !== "Abs") emdVals.push(parseFloat(emd2));
+  if (emdVals.length > 0) { pts += (emdVals.reduce(function(a, b) { return a + b; }, 0) / emdVals.length) * 1; div += 1; }
+  if (td !== null && td !== undefined && td !== "Abs") { pts += parseFloat(td) * 2; div += 2; }
+  if (tp !== null && tp !== undefined && tp !== "Abs") { pts += parseFloat(tp) * 2; div += 2; }
+  if (div === 0) return null;
+  return Math.round((pts / div) * 10000) / 10000;
 }
 
-function calcMoyGenerale(et){
-  var total=0, coefs=0;
-  MODULES.forEach(function(mod){
-    var moy=et["moy_"+mod.key];
-    if(moy!==null&&moy!==undefined&&moy!=="Abs"){
-      var n=parseFloat(moy);
-      if(!isNaN(n)){total+=n*mod.coef;coefs+=mod.coef;}
+function calcMoyGenerale(et) {
+  var total = 0, coefs = 0;
+  MODULES.forEach(function(mod) {
+    var moy = et["moy_" + mod.key];
+    if (moy !== null && moy !== undefined && moy !== "Abs") {
+      var n = parseFloat(moy);
+      if (!isNaN(n)) { total += n * mod.coef; coefs += mod.coef; }
     }
   });
-  if(coefs===0)return null;
-  return Math.round((total/coefs)*10000)/10000;
+  if (coefs === 0) return null;
+  return Math.round((total / coefs) * 10000) / 10000;
 }
 
-var SB_HEADERS={
+var SB_HEADERS = {
   "apikey": SUPABASE_KEY,
-  "Authorization": "Bearer "+SUPABASE_KEY,
+  "Authorization": "Bearer " + SUPABASE_KEY,
   "Content-Type": "application/json",
   "Prefer": "return=representation"
 };
 
-// GET single row by numero
-function fsGet(col,id){
-  var url=SUPABASE_URL+"/rest/v1/"+col+"?numero=eq."+id+"&limit=1";
-  return fetch(url,{headers:SB_HEADERS}).then(function(r){return r.json();}).then(function(d){
-    return (Array.isArray(d)&&d.length>0)?d[0]:null;
-  });
+function fsGet(col, id) {
+  return fetch(SUPABASE_URL + "/rest/v1/" + col + "?numero=eq." + id + "&limit=1", { headers: SB_HEADERS })
+    .then(function(r) { return r.json(); })
+    .then(function(d) { return (Array.isArray(d) && d.length > 0) ? d[0] : null; });
 }
 
-// LIST all rows with pagination
-function fsList(col){
-  var all=[];
-  function page(offset){
-    var url=SUPABASE_URL+"/rest/v1/"+col+"?select=*&limit=500&offset="+offset;
-    return fetch(url,{headers:SB_HEADERS}).then(function(r){return r.json();}).then(function(d){
-      if(!Array.isArray(d))return{documents:all};
-      all=all.concat(d);
-      if(d.length===500)return page(offset+500);
-      return{documents:all};
-    });
+function fsList(col) {
+  var all = [];
+  function page(offset) {
+    return fetch(SUPABASE_URL + "/rest/v1/" + col + "?select=*&limit=500&offset=" + offset, { headers: SB_HEADERS })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (!Array.isArray(d)) return { documents: all };
+        all = all.concat(d);
+        if (d.length === 500) return page(offset + 500);
+        return { documents: all };
+      });
   }
   return page(0);
 }
 
-// PATCH (update) by numero
-function fsPatch(col,id,fields){
-  var url=SUPABASE_URL+"/rest/v1/"+col+"?numero=eq."+id;
-  return fetch(url,{
-    method:"PATCH",
-    headers:SB_HEADERS,
-    body:JSON.stringify(fields)
-  }).then(function(r){return r.json();});
+function fsPatch(col, id, fields) {
+  return fetch(SUPABASE_URL + "/rest/v1/" + col + "?numero=eq." + id, {
+    method: "PATCH",
+    headers: SB_HEADERS,
+    body: JSON.stringify(fields)
+  }).then(function(r) { return r.json(); });
 }
 
-// CREATE new row
-function fsCreate(col,data){
-  var url=SUPABASE_URL+"/rest/v1/"+col;
-  return fetch(url,{
-    method:"POST",
-    headers:SB_HEADERS,
-    body:JSON.stringify(data)
-  }).then(function(r){return r.json();});
+function fsCreate(col, data) {
+  return fetch(SUPABASE_URL + "/rest/v1/" + col, {
+    method: "POST",
+    headers: SB_HEADERS,
+    body: JSON.stringify(data)
+  }).then(function(r) { return r.json(); });
 }
 
-// Supabase returns plain objects - no conversion needed
-function fromFs(doc){
-  if(!doc)return null;
-  return doc;
+function saveSession(v) { localStorage.setItem(SESSION_KEY, String(v)); }
+function clearSession() { localStorage.removeItem(SESSION_KEY); }
+
+function t(key) {
+  return TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key] ? TRANSLATIONS[currentLang][key] : key;
 }
 
-function saveSession(v){localStorage.setItem(SESSION_KEY,String(v));}
-function clearSession(){localStorage.removeItem(SESSION_KEY);}
-function checkSession(){
-  var s=localStorage.getItem(SESSION_KEY);
-  if(!s)return;
-  if(s==="ADMIN"){isAdmin=true;isAdminLite=false;showView("admin");loadAdmin();logConnection("Admin","N/A","Rafraichissement page");return;}
-  if(s==="ADMINLITE"){isAdmin=true;isAdminLite=true;showView("admin");loadAdmin();logConnection("Admin Lite","N/A","Rafraichissement Admin Lite");return;}
-  var num=parseInt(s);
-  if(!num)return;
-  fsGet("etudiants",String(num)).then(function(et){
-    if(!et){clearSession();return;}
-    currentStudent=et;showView("student");renderStudent(et);
-    logConnection(et.nom+" "+et.prenom,et.numero,"Rafraichissement page");
-  }).catch(function(){clearSession();});
-}
-
-async function doLogin(){
-  var id=document.getElementById("inputNom").value.trim();
-  var mdp=document.getElementById("inputMdp").value.trim();
-  if(!id||!mdp){showLoginError("Veuillez remplir tous les champs.");return;}
-  var inputHash=await sha256(mdp);
-  if(id===ADMIN_ID&&inputHash===ADMIN_MDP_HASH){
-    saveSession("ADMIN");isAdmin=true;isAdminLite=false;showView("admin");loadAdmin();
-    logConnection("Admin","N/A","Admin Login");return;
-  }
-  if(id===ADMIN_LITE_ID&&inputHash===ADMIN_LITE_MDP_HASH){
-    saveSession("ADMINLITE");isAdmin=true;isAdminLite=true;showView("admin");loadAdmin();
-    logConnection("Admin Lite","N/A","Connexion Admin Lite");
+function checkSession() {
+  var s = localStorage.getItem(SESSION_KEY);
+  if (!s) return;
+  if (s === "ADMIN") {
+    isAdmin = true; isAdminLite = false;
+    showView("admin"); loadAdmin();
+    // Real admin does NOT create notifications
     return;
   }
-  setLoginLoading(true);hideLoginError();
-  findEtudiant(id,mdp).then(function(et){
-    setLoginLoading(false);
-    if(!et){showLoginError("Identifiant ou mot de passe incorrect.");return;}
-    currentStudent=et;saveSession(et.numero);showView("student");renderStudent(et);
-    logConnection(et.nom+" "+et.prenom,et.numero,"Etudiant Login");
-  }).catch(function(){setLoginLoading(false);showLoginError("Erreur de connexion. Réessayez.");});
+  if (s === "ADMINLITE") {
+    isAdmin = true; isAdminLite = true;
+    showView("admin"); loadAdmin();
+    logConnection("Admin Lite", "N/A", t("pageRefresh"));
+    return;
+  }
+  var num = parseInt(s);
+  if (!num) return;
+  fsGet("etudiants", String(num)).then(function(et) {
+    if (!et) { clearSession(); return; }
+    currentStudent = et; showView("student"); renderStudent(et);
+    logConnection(et.nom + " " + et.prenom, et.numero, t("pageRefresh"));
+  }).catch(function() { clearSession(); });
 }
 
-function logConnection(nom,numero,type){
-  var now=new Date().toLocaleString("fr-FR");
-  var isAdminLiteConn=type.indexOf("Admin Lite")!==-1;
+async function doLogin() {
+  var id = document.getElementById("inputNom").value.trim();
+  var mdp = document.getElementById("inputMdp").value.trim();
+  if (!id || !mdp) { showLoginError(t("fillAllFields")); return; }
+  var inputHash = await sha256(mdp);
+  
+  if (id === ADMIN_ID && inputHash === ADMIN_MDP_HASH) {
+    saveSession("ADMIN"); isAdmin = true; isAdminLite = false;
+    showView("admin"); loadAdmin();
+    // Real admin does NOT create notifications
+    return;
+  }
+  
+  if (id === ADMIN_LITE_ID && inputHash === ADMIN_LITE_MDP_HASH) {
+    saveSession("ADMINLITE"); isAdmin = true; isAdminLite = true;
+    showView("admin"); loadAdmin();
+    logConnection("Admin Lite", "N/A", t("adminLiteLogin"));
+    return;
+  }
+  
+  setLoginLoading(true); hideLoginError();
+  findEtudiant(id, mdp).then(function(et) {
+    setLoginLoading(false);
+    if (!et) { showLoginError(t("invalidCredentials")); return; }
+    currentStudent = et; saveSession(et.numero); showView("student"); renderStudent(et);
+    logConnection(et.nom + " " + et.prenom, et.numero, t("studentLogin"));
+  }).catch(function() { setLoginLoading(false); showLoginError(t("connectionError")); });
+}
+
+function logConnection(nom, numero, type) {
+  var now = new Date().toLocaleString("fr-FR");
+  var isAdminLiteConn = type.indexOf("Admin Lite") !== -1;
   var deviceInfo = getDeviceShortString();
   var deviceFull = getDeviceDisplayString();
   
-  // Toutes les connexions: admin_only=true (invisible pour admin lite)
-  fsCreate("notifications",{
-    etudiant_nom:nom,etudiant_numero:String(numero),module:"Système",
-    type:"Connexion",message:type,date:now,lu:false,
-    admin_only:true,
+  fsCreate("notifications", {
+    etudiant_nom: nom,
+    etudiant_numero: String(numero),
+    module: t("system"),
+    type: t("connection"),
+    message: type,
+    date: now,
+    lu: false,
+    admin_only: isAdminLiteConn,
     device_info: deviceInfo,
     device_full: deviceFull
   });
-  // Email seulement pour admin lite
-  if(isAdminLiteConn){
+  
+  if (isAdminLiteConn) {
     emailjs.init(EMAILJS_KEY);
-    emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
-      etudiant_nom:nom,etudiant_numero:String(numero),
-      module:"Système",type_signalement:type,
-      message:type+" — "+now+" | Appareil: "+deviceFull,date:now
+    emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      etudiant_nom: nom,
+      etudiant_numero: String(numero),
+      module: t("system"),
+      type_signalement: type,
+      message: type + " — " + now + " | " + t("device") + ": " + deviceFull,
+      date: now
     });
   }
 }
 
-function findEtudiant(id,mdp){
-  return fsList("etudiants").then(function(data){
-    if(!data.documents)return null;
-    var all=data.documents;
-    for(var i=0;i<all.length;i++){
-      var et=all[i];
-      if(et.custom_id&&et.custom_mdp&&et.custom_id===id&&et.custom_mdp===mdp)return et;
-      var nom=(et.nom+" "+et.prenom).trim();
-      if(nom===id.trim()&&String(et.numero)===String(mdp))return et;
+function findEtudiant(id, mdp) {
+  return fsList("etudiants").then(function(data) {
+    if (!data.documents) return null;
+    var all = data.documents;
+    for (var i = 0; i < all.length; i++) {
+      var et = all[i];
+      if (et.custom_id && et.custom_mdp && et.custom_id === id && et.custom_mdp === mdp) return et;
+      var nom = (et.nom + " " + et.prenom).trim();
+      if (nom === id.trim() && String(et.numero) === String(mdp)) return et;
     }
     return null;
   });
 }
 
-function setLoginLoading(on){
-  var btn=document.getElementById("loginBtn");
-  btn.innerHTML=on?"<div class=\"spinner\"></div> Vérification...":"<i class=\"ph-bold ph-sign-in\"></i> Accéder à mes résultats";
-  btn.disabled=on;
+function setLoginLoading(on) {
+  var btn = document.getElementById("loginBtn");
+  btn.innerHTML = on ? '<div class="spinner"></div> ' + t("verifying") : '<i class="ph-bold ph-sign-in"></i> ' + t("accessResults");
+  btn.disabled = on;
 }
-function showLoginError(msg){document.getElementById("loginErrorMsg").textContent=msg;document.getElementById("loginError").classList.add("show");}
-function hideLoginError(){document.getElementById("loginError").classList.remove("show");}
 
-function renderStudent(et){
-  document.getElementById("studentName").textContent=et.nom+" "+et.prenom;
-  document.getElementById("studentMeta").textContent="N° "+et.numero+" | 3ème Année";
-  var moy=et.moyenne_generale;
-  document.getElementById("statMoy").textContent=moy?parseFloat(moy).toFixed(3):"—";
-  document.getElementById("statRank").textContent=et.classement||"—";
-  var badge=document.getElementById("studentBadge");
-  var res=et.resultat||"";
-  if(res.indexOf("admis")!==-1||res.indexOf("Félicitations")!==-1)
-    badge.innerHTML='<span class="badge badge-success"><i class="ph-fill ph-check-circle"></i> Admis(e)</span>';
-  else if(res.indexOf("Rattrapage")!==-1)
-    badge.innerHTML='<span class="badge badge-warning"><i class="ph-fill ph-warning"></i> '+res+'</span>';
+function showLoginError(msg) {
+  document.getElementById("loginErrorMsg").textContent = msg;
+  document.getElementById("loginError").classList.add("show");
+}
+
+function hideLoginError() {
+  document.getElementById("loginError").classList.remove("show");
+}
+
+function renderStudent(et) {
+  document.getElementById("studentName").textContent = et.nom + " " + et.prenom;
+  document.getElementById("studentMeta").textContent = "N° " + et.numero + " | 3" + (currentLang === "ar" ? "" : "ème") + " " + t("year");
+  var moy = et.moyenne_generale;
+  document.getElementById("statMoy").textContent = moy ? parseFloat(moy).toFixed(3) : "—";
+  document.getElementById("statRank").textContent = et.classement || "—";
+  
+  var badge = document.getElementById("studentBadge");
+  var res = et.resultat || "";
+  if (res.indexOf("admis") !== -1 || res.indexOf("Félicitations") !== -1)
+    badge.innerHTML = '<span class="badge badge-success"><i class="ph-fill ph-check-circle"></i> ' + t("admitted") + '</span>';
+  else if (res.indexOf("Rattrapage") !== -1)
+    badge.innerHTML = '<span class="badge badge-warning"><i class="ph-fill ph-warning"></i> ' + t("catchup") + '</span>';
   else
-    badge.innerHTML='<span class="badge badge-danger"><i class="ph-fill ph-x-circle"></i> '+(res||"—")+'</span>';
-  var tbody=document.getElementById("modulesBody");
-  tbody.innerHTML="";
-  var sel=document.getElementById("signalModule");
-  sel.innerHTML='<option value="">— Choisir un module —</option>';
-  MODULES.forEach(function(mod){
-    var k=mod.key;
-    var e1=et[k+"_emd1"],e2=et[k+"_emd2"],td=et[k+"_td"],tp=et[k+"_tp"];
-    var mm=et[k+"_moy_module"]!==undefined?et[k+"_moy_module"]:et["moy_"+k];
-    var tr=document.createElement("tr");
-    tr.innerHTML=
-      "<td><span style=\"font-weight:600;\">"+mod.nom+"</span><span class=\"coef-badge\">x"+mod.coef+"</span></td>"+
-      "<td class=\"mono\">"+mod.coef+"</td>"+
-      "<td class=\"mono "+nc(e1)+"\">"+fn(e1)+"</td>"+
-      "<td class=\"mono "+nc(e2)+"\">"+fn(e2)+"</td>"+
-      "<td class=\"mono "+nc(et[k+"_moy_emd"])+"\">"+fn(et[k+"_moy_emd"])+"</td>"+
-      "<td class=\"mono "+nc(td)+"\">"+fn(td)+"</td>"+
-      "<td class=\"mono "+nc(tp)+"\">"+fn(tp)+"</td>"+
-      "<td class=\"mono "+nc(mm)+"\" style=\"font-weight:700;\">"+fn(mm)+"</td>";
+    badge.innerHTML = '<span class="badge badge-danger"><i class="ph-fill ph-x-circle"></i> ' + (res || "—") + '</span>';
+  
+  var tbody = document.getElementById("modulesBody");
+  tbody.innerHTML = "";
+  var sel = document.getElementById("signalModule");
+  sel.innerHTML = '<option value="">' + t("chooseModule") + '</option>';
+  
+  MODULES.forEach(function(mod) {
+    var k = mod.key;
+    var e1 = et[k + "_emd1"], e2 = et[k + "_emd2"], td = et[k + "_td"], tp = et[k + "_tp"];
+    var mm = et[k + "_moy_module"] !== undefined ? et[k + "_moy_module"] : et["moy_" + k];
+    var tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td><span style="font-weight:600;">' + mod.nom + '</span><span class="coef-badge">x' + mod.coef + '</span></td>' +
+      '<td class="mono">' + mod.coef + '</td>' +
+      '<td class="mono ' + nc(e1) + '">' + fn(e1) + '</td>' +
+      '<td class="mono ' + nc(e2) + '">' + fn(e2) + '</td>' +
+      '<td class="mono ' + nc(et[k + "_moy_emd"]) + '">' + fn(et[k + "_moy_emd"]) + '</td>' +
+      '<td class="mono ' + nc(td) + '">' + fn(td) + '</td>' +
+      '<td class="mono ' + nc(tp) + '">' + fn(tp) + '</td>' +
+      '<td class="mono ' + nc(mm) + '" style="font-weight:700;">' + fn(mm) + '</td>';
     tbody.appendChild(tr);
-    var opt=document.createElement("option");opt.value=mod.nom;opt.textContent=mod.nom;
+    
+    var opt = document.createElement("option");
+    opt.value = mod.nom;
+    opt.textContent = mod.nom;
     sel.appendChild(opt);
   });
 }
 
-function fn(v){
-  if(v===null||v===undefined)return '<span class="note-abs">—</span>';
-  if(v==="Abs")return '<span class="note-abs">Abs</span>';
-  var n=parseFloat(v);if(isNaN(n))return v;
+function fn(v) {
+  if (v === null || v === undefined) return '<span class="note-abs">—</span>';
+  if (v === "Abs") return '<span class="note-abs">Abs</span>';
+  var n = parseFloat(v);
+  if (isNaN(n)) return v;
   return n.toFixed(2);
 }
-function nc(v){
-  if(v==="Abs"||v===null||v===undefined)return "note-abs";
-  var n=parseFloat(v);if(isNaN(n))return "";
-  return n<5?"note-bad":n<10?"note-mid":"note-good";
+
+function nc(v) {
+  if (v === "Abs" || v === null || v === undefined) return "note-abs";
+  var n = parseFloat(v);
+  if (isNaN(n)) return "";
+  return n < 5 ? "note-bad" : n < 10 ? "note-mid" : "note-good";
 }
 
-function showAccount(){
-  if(!currentStudent)return;
-  document.getElementById("accountSubtitle").textContent=currentStudent.nom+" "+currentStudent.prenom+" — N° "+currentStudent.numero;
-  document.getElementById("newIdentifiant").value=currentStudent.custom_id||(currentStudent.nom+" "+currentStudent.prenom);
-  document.getElementById("newMdp").value="";
-  document.getElementById("confirmMdp").value="";
+function showAccount() {
+  if (!currentStudent) return;
+  document.getElementById("accountSubtitle").textContent = currentStudent.nom + " " + currentStudent.prenom + " — N° " + currentStudent.numero;
+  document.getElementById("newIdentifiant").value = currentStudent.custom_id || (currentStudent.nom + " " + currentStudent.prenom);
+  document.getElementById("newMdp").value = "";
+  document.getElementById("confirmMdp").value = "";
   showView("account");
 }
 
-function saveAccount(){
-  var newId=document.getElementById("newIdentifiant").value.trim();
-  var newMdp=document.getElementById("newMdp").value.trim();
-  var conf=document.getElementById("confirmMdp").value.trim();
-  if(!newId){showToast("L'identifiant ne peut pas être vide.","danger");return;}
-  if(newMdp&&newMdp!==conf){showToast("Les mots de passe ne correspondent pas.","danger");return;}
-  var btn=document.getElementById("saveAccountBtn");
-  btn.innerHTML='<div class="spinner"></div> Sauvegarde...';btn.disabled=true;
-  var fields={custom_id:newId};
-  if(newMdp)fields.custom_mdp=newMdp;
-  var changes="Identifiant: "+newId+(newMdp?" | Mot de passe modifie":"");
-  var now=new Date().toLocaleString("fr-FR");
+function saveAccount() {
+  var newId = document.getElementById("newIdentifiant").value.trim();
+  var newMdp = document.getElementById("newMdp").value.trim();
+  var conf = document.getElementById("confirmMdp").value.trim();
+  if (!newId) { showToast(t("identifierEmpty"), "danger"); return; }
+  if (newMdp && newMdp !== conf) { showToast(t("passwordMismatch"), "danger"); return; }
+  
+  var btn = document.getElementById("saveAccountBtn");
+  btn.innerHTML = '<div class="spinner"></div> ' + t("saving"); btn.disabled = true;
+  
+  var fields = { custom_id: newId };
+  if (newMdp) fields.custom_mdp = newMdp;
+  var changes = "Identifiant: " + newId + (newMdp ? " | Mot de passe modifie" : "");
+  var now = new Date().toLocaleString("fr-FR");
   var deviceInfo = getDeviceShortString();
   var deviceFull = getDeviceDisplayString();
   
-  fsPatch("etudiants",String(currentStudent.numero),fields).then(function(){
-    currentStudent.custom_id=newId;
-    if(newMdp)currentStudent.custom_mdp=newMdp;
-    return fsCreate("notifications",{
-      etudiant_nom:currentStudent.nom+" "+currentStudent.prenom,
-      etudiant_numero:currentStudent.numero,module:"—",
-      type:"Modification de compte",message:changes,date:now,lu:false,
-      admin_only:true,
+  fsPatch("etudiants", String(currentStudent.numero), fields).then(function() {
+    currentStudent.custom_id = newId;
+    if (newMdp) currentStudent.custom_mdp = newMdp;
+    return fsCreate("notifications", {
+      etudiant_nom: currentStudent.nom + " " + currentStudent.prenom,
+      etudiant_numero: currentStudent.numero,
+      module: "—",
+      type: t("accountModification"),
+      message: changes,
+      date: now,
+      lu: false,
+      admin_only: true,
       device_info: deviceInfo,
       device_full: deviceFull
     });
-  }).then(function(){
+  }).then(function() {
     emailjs.init(EMAILJS_KEY);
-    return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
-      etudiant_nom:currentStudent.nom+" "+currentStudent.prenom,
-      etudiant_numero:String(currentStudent.numero),
-      module:"Compte",type_signalement:"Modification de compte",
-      message:changes+" | Appareil: "+deviceFull,date:now
+    return emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      etudiant_nom: currentStudent.nom + " " + currentStudent.prenom,
+      etudiant_numero: String(currentStudent.numero),
+      module: t("myAccount"),
+      type_signalement: t("accountModification"),
+      message: changes + " | " + t("device") + ": " + deviceFull,
+      date: now
     });
-  }).then(function(){
-    btn.innerHTML='<i class="ph-bold ph-floppy-disk"></i> Sauvegarder les modifications';
-    btn.disabled=false;showToast("Compte mis à jour !","success");showView("student");
-  }).catch(function(){
-    btn.innerHTML='<i class="ph-bold ph-floppy-disk"></i> Sauvegarder les modifications';
-    btn.disabled=false;showToast("Modifications sauvegardées.","success");showView("student");
+  }).then(function() {
+    btn.innerHTML = '<i class="ph-bold ph-floppy-disk"></i> ' + t("saveChanges");
+    btn.disabled = false;
+    showToast(t("accountUpdated"), "success");
+    showView("student");
+  }).catch(function() {
+    btn.innerHTML = '<i class="ph-bold ph-floppy-disk"></i> ' + t("saveChanges");
+    btn.disabled = false;
+    showToast(t("accountUpdated"), "success");
+    showView("student");
   });
 }
 
-function envoyerSignalement(){
-  var module=document.getElementById("signalModule").value;
-  var type=document.getElementById("signalType").value;
-  var comment=document.getElementById("signalComment").value.trim();
-  if(!module){showToast("Choisissez un module.","warning");return;}
-  var btn=document.getElementById("signalBtn");
-  btn.innerHTML='<div class="spinner"></div> Envoi...';btn.disabled=true;
-  var now=new Date().toLocaleString("fr-FR");
-  var nom=currentStudent.nom+" "+currentStudent.prenom;
+function envoyerSignalement() {
+  var module = document.getElementById("signalModule").value;
+  var type = document.getElementById("signalType").value;
+  var comment = document.getElementById("signalComment").value.trim();
+  if (!module) { showToast(t("chooseModuleWarning"), "warning"); return; }
+  
+  var btn = document.getElementById("signalBtn");
+  btn.innerHTML = '<div class="spinner"></div> ' + t("sending"); btn.disabled = true;
+  
+  var now = new Date().toLocaleString("fr-FR");
+  var nom = currentStudent.nom + " " + currentStudent.prenom;
   var deviceInfo = getDeviceShortString();
   var deviceFull = getDeviceDisplayString();
   
-  fsCreate("notifications",{
-    etudiant_nom:nom,etudiant_numero:currentStudent.numero,
-    module:module,type:type,message:comment||"(aucun commentaire)",date:now,lu:false,
-    admin_only:false,
+  fsCreate("notifications", {
+    etudiant_nom: nom,
+    etudiant_numero: currentStudent.numero,
+    module: module,
+    type: type,
+    message: comment || t("noComment"),
+    date: now,
+    lu: false,
+    admin_only: false,
     device_info: deviceInfo,
     device_full: deviceFull
-  }).then(function(){
+  }).then(function() {
     emailjs.init(EMAILJS_KEY);
-    return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
-      etudiant_nom:nom,etudiant_numero:String(currentStudent.numero),
-      module:module,type_signalement:type,message:(comment||"(aucun commentaire)")+" | Appareil: "+deviceFull,date:now
+    return emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      etudiant_nom: nom,
+      etudiant_numero: String(currentStudent.numero),
+      module: module,
+      type_signalement: type,
+      message: (comment || t("noComment")) + " | " + t("device") + ": " + deviceFull,
+      date: now
     });
-  }).then(function(){
-    btn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> Envoyer le signalement';
-    btn.disabled=false;
-    document.getElementById("signalModule").value="";
-    document.getElementById("signalComment").value="";
-    showToast("Signalement envoyé !","success");
-  }).catch(function(){
-    // Email fail mais Supabase OK
-    btn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> Envoyer le signalement';
-    btn.disabled=false;
-    document.getElementById("signalModule").value="";
-    document.getElementById("signalComment").value="";
-    showToast("Signalement enregistré.","warning");
+  }).then(function() {
+    btn.innerHTML = '<i class="ph-bold ph-paper-plane-right"></i> ' + t("sendReport");
+    btn.disabled = false;
+    document.getElementById("signalModule").value = "";
+    document.getElementById("signalComment").value = "";
+    showToast(t("reportSent"), "success");
+  }).catch(function() {
+    btn.innerHTML = '<i class="ph-bold ph-paper-plane-right"></i> ' + t("sendReport");
+    btn.disabled = false;
+    document.getElementById("signalModule").value = "";
+    document.getElementById("signalComment").value = "";
+    showToast(t("reportSaved"), "warning");
   });
 }
 
-function loadAdmin(){
-  var badge=document.getElementById("adminLiteBadge");
-  if(isAdminLite)badge.classList.remove("hidden");else badge.classList.add("hidden");
-  document.getElementById("adminBody").innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Chargement...</td></tr>';
-  fsList("etudiants").then(function(data){
-    if(!data.documents){adminData=[];renderAdminTable([]);return;}
-    adminData=data.documents.filter(Boolean);
-    adminData.sort(function(a,b){return a.numero-b.numero;});
-    renderAdminTable(adminData);
-  });
-  loadNotifs();loadComptes();
-}
-
-function renderAdminTable(data){
-  var tbody=document.getElementById("adminBody");
-  if(!data.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Aucun résultat</td></tr>';return;}
-  tbody.innerHTML="";
-  data.forEach(function(et){
-    var moy=et.moyenne_generale?parseFloat(et.moyenne_generale).toFixed(3):"—";
-    var res=et.resultat||"—";
-    var resBadge=res.indexOf("admis")!==-1||res.indexOf("Félicitations")!==-1
-      ?'<span class="badge badge-success" style="font-size:0.72rem;padding:2px 8px;">Admis</span>'
-      :res.indexOf("Rattrapage")!==-1
-        ?'<span class="badge badge-warning" style="font-size:0.72rem;padding:2px 8px;">Rattrapage</span>'
-        :'<span style="color:var(--text-muted);font-size:0.85rem;">'+res+'</span>';
-    var actionBtn=isAdminLite
-      ?'<button class="btn-sm btn-ghost-sm" onclick="viewNotes('+et.numero+')"><i class="ph-bold ph-eye"></i> Voir</button> <button class="btn-sm btn-ghost-sm" onclick="suggestEdit('+et.numero+')"><i class="ph-bold ph-pencil-simple"></i> Suggérer</button>'
-      :'<button class="btn-sm btn-success-sm" onclick="openEditNotes('+et.numero+')"><i class="ph-bold ph-pencil"></i> Notes</button>';
-    var tr=document.createElement("tr");
-    tr.innerHTML=
-      '<td class="mono" style="font-weight:700;">'+et.numero+'</td>'+
-      '<td style="font-weight:600;">'+et.nom+'</td>'+
-      '<td>'+et.prenom+'</td>'+
-      '<td class="mono '+nc(et.moyenne_generale)+'" style="font-weight:700;">'+moy+'</td>'+
-      '<td class="mono">'+(et.classement||"—")+'</td>'+
-      '<td>'+resBadge+'</td>'+
-      '<td>'+actionBtn+'</td>';
-    tbody.appendChild(tr);
-  });
-}
-
-function openEditNotes(num){
-  var et=adminData.find(function(e){return e.numero===num;});
-  if(!et)return;
-  var d=document.createElement("div");
-  d.id="editModal";d.className="modal-overlay";
-  var inner=document.createElement("div");inner.className="modal-box";
-  var hdr=document.createElement("div");
-  hdr.style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
-  hdr.innerHTML='<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">'+et.nom+' '+et.prenom+' — Notes</div>';
-  var closeBtn=document.createElement("button");closeBtn.className="btn-ghost";closeBtn.style="padding:0.4rem 0.8rem;";
-  closeBtn.innerHTML='<i class="ph-bold ph-x"></i>';closeBtn.onclick=function(){d.remove();};
-  hdr.appendChild(closeBtn);inner.appendChild(hdr);
-
-  // Info: moy_module calculee automatiquement
-  var info=document.createElement("div");
-  info.style="background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);border-radius:10px;padding:0.6rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#a5b4fc;";
-  info.innerHTML='<i class="ph-fill ph-info"></i> Les moyennes sont calculées automatiquement lors de la sauvegarde.';
-  inner.appendChild(info);
-
-  var tableWrap=document.createElement("div");tableWrap.style="overflow-x:auto;";
-  var table=document.createElement("table");table.className="res-table";
-  var thead=document.createElement("thead");
-  // Moy Module is read-only, shown but not editable
-  thead.innerHTML='<tr><th>Module</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th style="color:var(--accent2);">Moy Calculée</th></tr>';
-  table.appendChild(thead);
-  var tbody=document.createElement("tbody");
-  MODULES.forEach(function(mod){
-    var k=mod.key;
-    var tr=document.createElement("tr");
-    var td0=document.createElement("td");td0.style="font-weight:600;";td0.textContent=mod.nom;tr.appendChild(td0);
-    ["emd1","emd2","td","tp"].forEach(function(sub){
-      var fk=k+"_"+sub;
-      var v=et[fk];
-      var cell=document.createElement("td");
-      var inp=document.createElement("input");
-      inp.className="calc-input";inp.id="edit_"+fk;
-      inp.value=(v!==null&&v!==undefined)?v:"";
-      inp.placeholder="—";inp.style="padding:0.4rem 0.6rem;width:80px;";
-      // Live preview of moy_module
-      inp.oninput=function(){updateMoyPreview(k,mod);};
-      cell.appendChild(inp);tr.appendChild(cell);
-    });
-    // Moy module preview (read-only)
-    var moyCell=document.createElement("td");
-    moyCell.id="preview_moy_"+k;
-    moyCell.className="mono";
-    moyCell.style="font-weight:700;color:var(--accent2);";
-    var mm=et[k+"_moy_module"]!==undefined?et[k+"_moy_module"]:et["moy_"+k];
-    moyCell.textContent=(mm!==null&&mm!==undefined)?parseFloat(mm).toFixed(2):"—";
-    tr.appendChild(moyCell);
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);tableWrap.appendChild(table);inner.appendChild(tableWrap);
-  var footer=document.createElement("div");
-  footer.style="margin-top:1.25rem;display:flex;gap:0.75rem;justify-content:flex-end;";
-  var cancelBtn=document.createElement("button");cancelBtn.className="btn-ghost";cancelBtn.textContent="Annuler";
-  cancelBtn.onclick=function(){d.remove();};
-  var saveBtn=document.createElement("button");saveBtn.className="btn-main";
-  saveBtn.style="width:auto;padding:0.6rem 1.5rem;";
-  saveBtn.innerHTML='<i class="ph-bold ph-floppy-disk"></i> Sauvegarder';
-  saveBtn.onclick=function(){saveEditNotes(num,d);};
-  footer.appendChild(cancelBtn);footer.appendChild(saveBtn);
-  inner.appendChild(footer);d.appendChild(inner);document.body.appendChild(d);
-}
-
-function updateMoyPreview(key, mod){
-  var getVal=function(sub){
-    var el=document.getElementById("edit_"+key+"_"+sub);
-    if(!el||el.value.trim()==="")return null;
-    if(el.value.trim()==="Abs")return "Abs";
-    return parseFloat(el.value.replace(",","."));
-  };
-  var e1=getVal("emd1"),e2=getVal("emd2"),td=getVal("td"),tp=getVal("tp");
-  var moy=calcMoyModule(e1,e2,td,tp);
-  var preview=document.getElementById("preview_moy_"+key);
-  if(preview){
-    preview.textContent=moy!==null?parseFloat(moy).toFixed(2):"—";
-    preview.style.color=moy===null?"var(--text-muted)":moy<5?"var(--danger)":moy<10?"var(--warning)":"var(--success)";
-  }
-}
-
-function saveEditNotes(num,modal){
-  var et=adminData.find(function(e){return e.numero===num;});
-  if(!et)return;
-  var fields={};
-  var tempEt=Object.assign({},et);
-  var hasChanges=false;
-
-  MODULES.forEach(function(mod){
-    var k=mod.key;
-    var modChanged=false;
-    ["emd1","emd2","td","tp"].forEach(function(sub){
-      var fk=k+"_"+sub;
-      var el=document.getElementById("edit_"+fk);
-      if(!el)return;
-      var v=el.value.trim();
-      var val;
-      // Champ vide = garder l'ancienne valeur, ne pas ecraser
-      if(v===""){
-        val=et[fk]; // ancienne valeur
-      } else if(v==="Abs"){
-        val="Abs";
-      } else {
-        var n=parseFloat(v);
-        val=isNaN(n)?et[fk]:n; // si invalide, garder ancienne valeur
-      }
-      // N'ajouter au patch que si la valeur a change
-      var oldVal=et[fk];
-      if(String(val)!==String(oldVal)){
-        fields[fk]=val;
-        hasChanges=true;
-        modChanged=true;
-      }
-      tempEt[fk]=val;
-    });
-
-    // Recalculer moy_emd et moy_module si ce module a change
-    if(modChanged){
-      var e1=tempEt[k+"_emd1"], e2=tempEt[k+"_emd2"];
-      var emdVals=[];
-      if(e1!==null&&e1!==undefined&&e1!=="Abs")emdVals.push(parseFloat(e1));
-      if(e2!==null&&e2!==undefined&&e2!=="Abs")emdVals.push(parseFloat(e2));
-      var moyEmd=emdVals.length>0?Math.round((emdVals.reduce(function(a,b){return a+b;},0)/emdVals.length)*10000)/10000:null;
-      fields[k+"_moy_emd"]=moyEmd;
-      tempEt[k+"_moy_emd"]=moyEmd;
-
-      var moyMod=calcMoyModule(tempEt[k+"_emd1"],tempEt[k+"_emd2"],tempEt[k+"_td"],tempEt[k+"_tp"]);
-      fields["moy_"+k]=moyMod;
-      fields[k+"_moy_module"]=moyMod;
-      tempEt["moy_"+k]=moyMod;
-      tempEt[k+"_moy_module"]=moyMod;
-    }
-  });
-
-  if(!hasChanges){
-    if(modal)modal.remove();
-    showToast("Aucune modification détectée.","info");
-    return;
-  }
-
-  // Recalculer moyenne generale
-  var moyGen=calcMoyGenerale(tempEt);
-  fields["moyenne_generale"]=moyGen;
-
-  fsPatch("etudiants",String(num),fields).then(function(){
-    for(var k in fields)et[k]=fields[k];
-    if(modal)modal.remove();
-    showToast("Notes sauvegardées et moyennes recalculées !","success");
-    renderAdminTable(adminData);
-  }).catch(function(){showToast("Erreur sauvegarde.","danger");});
-}
-
-function viewNotes(num){
-  var et=adminData.find(function(e){return e.numero===num;});
-  if(!et)return;
-  var d=document.createElement("div");
-  d.id="viewNotesModal";d.className="modal-overlay";
-  var inner=document.createElement("div");inner.className="modal-box";
-  var hdr=document.createElement("div");
-  hdr.style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
-  hdr.innerHTML='<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">'+et.nom+' '+et.prenom+' — Notes</div>';
-  var closeBtn=document.createElement("button");closeBtn.className="btn-ghost";closeBtn.style="padding:0.4rem 0.8rem;";
-  closeBtn.innerHTML='<i class="ph-bold ph-x"></i>';closeBtn.onclick=function(){d.remove();};
-  hdr.appendChild(closeBtn);inner.appendChild(hdr);
-  var tableWrap=document.createElement("div");tableWrap.style="overflow-x:auto;";
-  var table=document.createElement("table");table.className="res-table";
-  var thead=document.createElement("thead");
-  thead.innerHTML='<tr><th>Module</th><th>Coef</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th>Moy Module</th></tr>';
-  table.appendChild(thead);
-  var tbody=document.createElement("tbody");
-  MODULES.forEach(function(mod){
-    var k=mod.key;
-    var tr=document.createElement("tr");
-    var vals=[et[k+"_emd1"],et[k+"_emd2"],et[k+"_td"],et[k+"_tp"],et[k+"_moy_module"]!==undefined?et[k+"_moy_module"]:et["moy_"+k]];
-    var td0=document.createElement("td");td0.style="font-weight:600;";td0.textContent=mod.nom;tr.appendChild(td0);
-    var td1=document.createElement("td");td1.className="mono";td1.textContent=mod.coef;tr.appendChild(td1);
-    vals.forEach(function(v){
-      var cell=document.createElement("td");cell.className="mono "+nc(v);cell.innerHTML=fn(v);tr.appendChild(cell);
-    });
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);tableWrap.appendChild(table);inner.appendChild(tableWrap);
-  var footer=document.createElement("div");footer.style="margin-top:1.25rem;display:flex;justify-content:flex-end;";
-  var closeBtn2=document.createElement("button");closeBtn2.className="btn-ghost";closeBtn2.textContent="Fermer";
-  closeBtn2.onclick=function(){d.remove();};
-  footer.appendChild(closeBtn2);inner.appendChild(footer);d.appendChild(inner);document.body.appendChild(d);
-}
-
-function suggestEdit(num){
-  var et=adminData.find(function(e){return e.numero===num;});
-  if(!et)return;
-  var d=document.createElement("div");d.id="suggestModal";d.className="modal-overlay";
-  var inner=document.createElement("div");inner.className="modal-box";
-  var hdr=document.createElement("div");hdr.style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
-  hdr.innerHTML='<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">Suggérer — '+et.nom+' '+et.prenom+'</div>';
-  var closeBtn=document.createElement("button");closeBtn.className="btn-ghost";closeBtn.style="padding:0.4rem 0.8rem;";
-  closeBtn.innerHTML='<i class="ph-bold ph-x"></i>';closeBtn.onclick=function(){d.remove();};
-  hdr.appendChild(closeBtn);inner.appendChild(hdr);
-  var modDiv=document.createElement("div");modDiv.className="mb-4";modDiv.innerHTML='<label class="field-label">Module concerné</label>';
-  var modSel=document.createElement("select");modSel.className="glass-select";modSel.id="suggestModule";
-  modSel.innerHTML='<option value="">— Choisir —</option>';
-  MODULES.forEach(function(m){var o=document.createElement("option");o.value=m.nom;o.textContent=m.nom;modSel.appendChild(o);});
-  modDiv.appendChild(modSel);inner.appendChild(modDiv);
-  var fieldDiv=document.createElement("div");fieldDiv.className="mb-4";fieldDiv.innerHTML='<label class="field-label">Champ à modifier</label>';
-  var fieldSel=document.createElement("select");fieldSel.className="glass-select";fieldSel.id="suggestField";
-  fieldSel.innerHTML='<option value="emd1">EMD 1</option><option value="emd2">EMD 2</option><option value="td">TD</option><option value="tp">TP</option><option value="moy_module">Moy Module</option>';
-  fieldDiv.appendChild(fieldSel);inner.appendChild(fieldDiv);
-  var valDiv=document.createElement("div");valDiv.className="mb-4";valDiv.innerHTML='<label class="field-label">Valeur suggérée</label>';
-  var valInp=document.createElement("input");valInp.type="text";valInp.className="calc-input";valInp.id="suggestVal";valInp.placeholder="Ex: 12.5";
-  valDiv.appendChild(valInp);inner.appendChild(valDiv);
-  var reasonDiv=document.createElement("div");reasonDiv.className="mb-5";reasonDiv.innerHTML='<label class="field-label">Justification</label>';
-  var reasonTa=document.createElement("textarea");reasonTa.className="calc-input";reasonTa.id="suggestReason";reasonTa.placeholder="Pourquoi cette modification ?";reasonTa.style="min-height:70px;resize:vertical;";
-  reasonDiv.appendChild(reasonTa);inner.appendChild(reasonDiv);
-  var footer=document.createElement("div");footer.style="display:flex;gap:0.75rem;justify-content:flex-end;";
-  var cancelBtn=document.createElement("button");cancelBtn.className="btn-ghost";cancelBtn.textContent="Annuler";cancelBtn.onclick=function(){d.remove();};
-  var sendBtn=document.createElement("button");sendBtn.className="btn-main";sendBtn.style="width:auto;padding:0.6rem 1.5rem;";
-  sendBtn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> Envoyer';sendBtn.onclick=function(){sendSuggestion(num,d);};
-  footer.appendChild(cancelBtn);footer.appendChild(sendBtn);inner.appendChild(footer);d.appendChild(inner);document.body.appendChild(d);
-}
-
-function sendSuggestion(num,modal){
-  var et=adminData.find(function(e){return e.numero===num;});
-  var module=document.getElementById("suggestModule").value;
-  var field=document.getElementById("suggestField").value;
-  var val=document.getElementById("suggestVal").value.trim();
-  var reason=document.getElementById("suggestReason").value.trim();
-  if(!module||!val){showToast("Remplissez tous les champs.","warning");return;}
-  var now=new Date().toLocaleString("fr-FR");
-  var msg="Suggestion: "+module+" / "+field+" = "+val+(reason?" | Raison: "+reason:"");
-  var deviceInfo = getDeviceShortString();
-  var deviceFull = getDeviceDisplayString();
+function loadAdmin() {
+  var badge = document.getElementById("adminLiteBadge");
+  if (isAdminLite) badge.classList.remove("hidden"); else badge.classList.add("hidden");
+  document.getElementById("adminBody").innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">' + t("loading") + '</td></tr>';
   
-  fsCreate("notifications",{
-    etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:et.numero,
-    module:module,type:"Suggestion de modification (Admin Lite)",message:msg,date:now,lu:false,
-    admin_only:false,
-    device_info: deviceInfo,
-    device_full: deviceFull
-  }).then(function(){
-    emailjs.init(EMAILJS_KEY);
-    return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
-      etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:String(et.numero),
-      module:module,type_signalement:"Suggestion Admin Lite",message:msg+" | Appareil: "+deviceFull,date:now
-    });
-  }).then(function(){if(modal)modal.remove();showToast("Suggestion envoyée !","success");})
-  .catch(function(){if(modal)modal.remove();showToast("Suggestion enregistrée.","warning");});
-}
-
-function filterAdmin(){
-  var q=document.getElementById("adminSearch").value.toLowerCase();
-  renderAdminTable(adminData.filter(function(et){
-    return (et.nom||"").toLowerCase().includes(q)||(et.prenom||"").toLowerCase().includes(q)||String(et.numero).includes(q);
-  }));
-}
-function sortAdmin(key){
-  if(adminSortKey===key)adminSortAsc=!adminSortAsc;else{adminSortKey=key;adminSortAsc=true;}
-  adminData.sort(function(a,b){
-    var av=a[key],bv=b[key];
-    if(av===null||av===undefined)av=-Infinity;if(bv===null||bv===undefined)bv=-Infinity;
-    if(typeof av==="string")return adminSortAsc?av.localeCompare(bv):bv.localeCompare(av);
-    return adminSortAsc?av-bv:bv-av;
+  fsList("etudiants").then(function(data) {
+    if (!data.documents) { adminData = []; renderAdminTable([]); return; }
+    adminData = data.documents.filter(Boolean);
+    adminData.sort(function(a, b) { return a.numero - b.numero; });
+    renderAdminTable(adminData);
   });
-  renderAdminTable(adminData);
+  loadNotifs(); loadComptes();
 }
 
-function loadNotifs(){
-  var url=SUPABASE_URL+"/rest/v1/notifications?select=*&order=created_at.desc&limit=100";
-  fetch(url,{headers:SB_HEADERS}).then(function(r){return r.json();}).then(function(notifs){
-    if(!Array.isArray(notifs)){renderNotifs([]);return;}
-    // Admin lite ne voit pas les notifications admin_only
-    if(isAdminLite){
-      notifs=notifs.filter(function(n){return !n.admin_only;});
-    }
-    var unread=notifs.filter(function(n){return !n.lu;}).length;
-    if(unread>0){document.getElementById("notifCount").textContent=unread;document.getElementById("notifCount").classList.remove("hidden");}
-    renderNotifs(notifs);
-  });
-}
-
-function renderNotifs(notifs){
-  var el=document.getElementById("notifsList");
-  if(!notifs.length){el.innerHTML='<p class="text-center py-8" style="color:var(--text-muted);">Aucun signalement reçu.</p>';return;}
-  el.innerHTML="";
-  notifs.forEach(function(n){
-    var isCompte=n.type==="Modification de compte";
-    var isConnexion=n.type==="Connexion";
-    var typeColor=isConnexion||isCompte?"var(--success)":"var(--warning)";
+function renderAdminTable(data) {
+  var tbody = document.getElementById("adminBody");
+  if (!data.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">' + t("noResults") + '</td></tr>'; return; }
+  tbody.innerHTML = "";
+  
+  data.forEach(function(et) {
+    var moy = et.moyenne_generale ? parseFloat(et.moyenne_generale).toFixed(3) : "—";
+    var res = et.resultat || "—";
+    var resBadge = res.indexOf("admis") !== -1 || res.indexOf("Félicitations") !== -1
+      ? '<span class="badge badge-success" style="font-size:0.72rem;padding:2px 8px;">' + t("admitted") + '</span>'
+      : res.indexOf("Rattrapage") !== -1
+        ? '<span class="badge badge-warning" style="font-size:0.72rem;padding:2px 8px;">' + t("catchup") + '</span>'
+        : '<span style="color:var(--text-muted);font-size:0.85rem;">' + res + '</span>';
     
-    // Device badge styling
+    var actionBtn = isAdminLite
+      ? '<button class="btn-sm btn-ghost-sm" onclick="viewNotes(' + et.numero + ')"><i class="ph-bold ph-eye"></i> ' + t("view") + '</button> <button class="btn-sm btn-ghost-sm" onclick="suggestEdit(' + et.numero + ')"><i class="ph-bold ph-pencil-simple"></i> ' + t("suggest") + '</button>'
+      : '<button class="btn-sm btn-success-sm" onclick="openEditNotes(' + et.numero + ')"><i class="ph-bold ph-pencil"></i> ' + t("notes") + '</button>';
+    
+    var tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td class="mono" style="font-weight:700;">' + et.numero + '</td>' +
+      '<td style="font-weight:600;">' + et.nom + '</td>' +
+      '<td>' + et.prenom + '</td>' +
+      '<td class="mono ' + nc(et.moyenne_generale) + '" style="font-weight:700;">' + moy + '</td>' +
+      '<td class="mono">' + (et.classement || "—") + '</td>' +
+      '<td>' + resBadge + '</td>' +
+      '<td>' + actionBtn + '</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function loadNotifs() {
+  fetch(SUPABASE_URL + "/rest/v1/notifications?select=*&order=created_at.desc&limit=100", { headers: SB_HEADERS })
+    .then(function(r) { return r.json(); })
+    .then(function(notifs) {
+      if (!Array.isArray(notifs)) { renderNotifs([]); return; }
+      
+      // Admin Lite sees ONLY reports (no connections, no account modifications)
+      if (isAdminLite) {
+        notifs = notifs.filter(function(n) { 
+          // Hide admin-only notifications
+          if (n.admin_only) return false;
+          // Hide connection notifications
+          if (n.type === "Connexion" || n.type === "Connection" || n.type === "اتصال") return false;
+          // Hide account modification notifications
+          if (n.type === "Modification de compte" || n.type === "Account modification" || n.type === "تعديل الحساب") return false;
+          return true;
+        });
+      }
+      
+      var unread = notifs.filter(function(n) { return !n.lu; }).length;
+      if (unread > 0) {
+        document.getElementById("notifCount").textContent = unread;
+        document.getElementById("notifCount").classList.remove("hidden");
+      }
+      renderNotifs(notifs);
+    });
+}
+
+function renderNotifs(notifs) {
+  var el = document.getElementById("notifsList");
+  if (!notifs.length) { el.innerHTML = '<p class="text-center py-8" style="color:var(--text-muted);">' + t("noReports") + '</p>'; return; }
+  el.innerHTML = "";
+  
+  notifs.forEach(function(n) {
+    var isCompte = n.type === t("accountModification") || n.type === "Modification de compte";
+    var isConnexion = n.type === t("connection") || n.type === "Connexion";
+    var typeColor = isConnexion || isCompte ? "var(--success)" : "var(--warning)";
+    
     var deviceBadge = "";
-    if(n.device_info) {
+    if (n.device_info) {
       var deviceType = n.device_info.split(":")[0].trim();
       var deviceClass = deviceType === "mobile" ? "device-mobile" : deviceType === "tablet" ? "device-tablet" : "device-pc";
       var deviceIcon = deviceType === "mobile" ? "ph-device-mobile" : deviceType === "tablet" ? "ph-device-tablet" : "ph-desktop";
-      deviceBadge = '<div class="device-badge '+deviceClass+'"><i class="ph-bold '+deviceIcon+'"></i> '+n.device_info+'</div>';
+      deviceBadge = '<div class="device-badge ' + deviceClass + '"><i class="ph-bold ' + deviceIcon + '"></i> ' + n.device_info + '</div>';
     }
     
-    var div=document.createElement("div");
-    div.className="notif-card "+(n.lu?"notif-read":"notif-unread");
-    div.innerHTML=
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;flex-wrap:wrap;">'+
-      '<div><div style="font-weight:700;">'+n.etudiant_nom+' <span style="color:var(--text-muted);font-size:0.85rem;">N°'+n.etudiant_numero+'</span></div>'+
-      '<div style="margin-top:0.3rem;font-size:0.88rem;"><span style="color:#a5b4fc;">'+n.module+'</span> — '+
-      '<span style="color:'+typeColor+';">'+n.type+'</span></div>'+
-      (n.message&&n.message!=="(aucun commentaire)"?'<div style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-muted);font-style:italic;">"'+n.message+'"</div>':'')+
-      deviceBadge+
-      '</div><div style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap;">'+n.date+'</div></div>';
+    var div = document.createElement("div");
+    div.className = "notif-card " + (n.lu ? "notif-read" : "notif-unread");
+    div.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;flex-wrap:wrap;">' +
+      '<div><div style="font-weight:700;">' + n.etudiant_nom + ' <span style="color:var(--text-muted);font-size:0.85rem;">N°' + n.etudiant_numero + '</span></div>' +
+      '<div style="margin-top:0.3rem;font-size:0.88rem;"><span style="color:#a5b4fc;">' + n.module + '</span> — ' +
+      '<span style="color:' + typeColor + ';">' + n.type + '</span></div>' +
+      (n.message && n.message !== t("noComment") && n.message !== "(aucun commentaire)" ? '<div style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-muted);font-style:italic;">"' + n.message + '"</div>' : '') +
+      deviceBadge +
+      '</div><div style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap;">' + n.date + '</div></div>';
     el.appendChild(div);
   });
 }
 
-function loadComptes(){
-  fsList("etudiants").then(function(data){
-    if(!data.documents){renderComptes([]);return;}
-    var modifies=data.documents.filter(function(et){return et&&(et.custom_id||et.custom_mdp);});
+function loadComptes() {
+  fsList("etudiants").then(function(data) {
+    if (!data.documents) { renderComptes([]); return; }
+    var modifies = data.documents.filter(function(et) { return et && (et.custom_id || et.custom_mdp); });
     renderComptes(modifies);
   });
 }
-function renderComptes(data){
-  var el=document.getElementById("comptesList");
-  if(!data.length){el.innerHTML='<p class="text-center py-8" style="color:var(--text-muted);">Aucun étudiant n\'a modifié son compte.</p>';return;}
-  var html='<div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;"><table class="res-table"><thead><tr><th>N°</th><th>Nom</th><th>Prénom</th><th>Identifiant perso</th><th>MDP perso</th><th>Action</th></tr></thead><tbody>';
-  data.forEach(function(et){
-    html+='<tr>'+
-      '<td class="mono" style="font-weight:700;">'+et.numero+'</td>'+
-      '<td style="font-weight:600;">'+et.nom+'</td><td>'+et.prenom+'</td>'+
-      '<td class="mono">'+(et.custom_id||"—")+'</td>'+
-      '<td class="mono">'+(isAdminLite?(et.custom_mdp?"••••••":"—"):(et.custom_mdp?et.custom_mdp:"—"))+'</td>'+
-      '<td>'+(isAdminLite?'—':'<button class="btn-sm btn-danger-sm" onclick="resetCompte('+et.numero+')"><i class="ph-bold ph-arrow-counter-clockwise"></i> Reset</button>')+'</td>'+
+
+function renderComptes(data) {
+  var el = document.getElementById("comptesList");
+  if (!data.length) { el.innerHTML = '<p class="text-center py-8" style="color:var(--text-muted);">' + t("noAccountChanges") + '</p>'; return; }
+  
+  var html = '<div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;"><table class="res-table"><thead><tr><th>' + t("number") + '</th><th>' + t("lastName") + '</th><th>' + t("firstName") + '</th><th>' + t("customIdentifier") + '</th><th>' + t("customPassword") + '</th><th>' + t("actions") + '</th></tr></thead><tbody>';
+  data.forEach(function(et) {
+    html += '<tr>' +
+      '<td class="mono" style="font-weight:700;">' + et.numero + '</td>' +
+      '<td style="font-weight:600;">' + et.nom + '</td><td>' + et.prenom + '</td>' +
+      '<td class="mono">' + (et.custom_id || "—") + '</td>' +
+      '<td class="mono">' + (isAdminLite ? (et.custom_mdp ? "••••••" : "—") : (et.custom_mdp ? et.custom_mdp : "—")) + '</td>' +
+      '<td>' + (isAdminLite ? "—" : '<button class="btn-sm btn-danger-sm" onclick="resetCompte(' + et.numero + ')"><i class="ph-bold ph-arrow-counter-clockwise"></i> ' + t("reset") + '</button>') + '</td>' +
       '</tr>';
   });
-  html+='</tbody></table></div></div>';
-  el.innerHTML=html;
+  html += '</tbody></table></div></div>';
+  el.innerHTML = html;
 }
-function resetCompte(num){
-  if(!confirm("Réinitialiser le compte de N°"+num+" ?"))return;
-  fsPatch("etudiants",String(num),{custom_id:null,custom_mdp:null}).then(function(){
-    showToast("Compte réinitialisé pour N°"+num,"success");loadComptes();
-  }).catch(function(){showToast("Erreur.","danger");});
+
+function resetCompte(num) {
+  if (!confirm(t("resetAccount") + num + t("confirmReset"))) return;
+  fsPatch("etudiants", String(num), { custom_id: null, custom_mdp: null }).then(function() {
+    showToast(t("accountReset") + num, "success");
+    loadComptes();
+  }).catch(function() { showToast(t("saveError"), "danger"); });
 }
-function switchTab(tab){
-  ["etudiants","notifs","comptes"].forEach(function(t){
-    var T=t.charAt(0).toUpperCase()+t.slice(1);
-    document.getElementById("tab"+T).classList.toggle("active",t===tab);
-    document.getElementById("panel"+T).classList.toggle("hidden",t!==tab);
+
+function openEditNotes(num) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  if (!et) return;
+  
+  var d = document.createElement("div");
+  d.id = "editModal"; d.className = "modal-overlay";
+  var inner = document.createElement("div"); inner.className = "modal-box";
+  
+  var hdr = document.createElement("div");
+  hdr.style = "display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
+  hdr.innerHTML = '<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">' + et.nom + ' ' + et.prenom + ' — ' + t("notes") + '</div>';
+  var closeBtn = document.createElement("button"); closeBtn.className = "btn-ghost"; closeBtn.style = "padding:0.4rem 0.8rem;";
+  closeBtn.innerHTML = '<i class="ph-bold ph-x"></i>'; closeBtn.onclick = function() { d.remove(); };
+  hdr.appendChild(closeBtn); inner.appendChild(hdr);
+  
+  var info = document.createElement("div");
+  info.style = "background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);border-radius:10px;padding:0.6rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#a5b4fc;";
+  info.innerHTML = '<i class="ph-fill ph-info"></i> ' + t("autoCalculateInfo");
+  inner.appendChild(info);
+  
+  var tableWrap = document.createElement("div"); tableWrap.style = "overflow-x:auto;";
+  var table = document.createElement("table"); table.className = "res-table";
+  var thead = document.createElement("thead");
+  thead.innerHTML = '<tr><th>' + t("module") + '</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th style="color:#818cf8;">' + t("calculatedMoy") + '</th></tr>';
+  table.appendChild(thead);
+  
+  var tbody = document.createElement("tbody");
+  MODULES.forEach(function(mod) {
+    var k = mod.key;
+    var tr = document.createElement("tr");
+    var td0 = document.createElement("td"); td0.style = "font-weight:600;"; td0.textContent = mod.nom; tr.appendChild(td0);
+    
+    ["emd1", "emd2", "td", "tp"].forEach(function(sub) {
+      var fk = k + "_" + sub;
+      var v = et[fk];
+      var cell = document.createElement("td");
+      var inp = document.createElement("input");
+      inp.className = "calc-input"; inp.id = "edit_" + fk;
+      inp.value = (v !== null && v !== undefined) ? v : "";
+      inp.placeholder = "—"; inp.style = "padding:0.4rem 0.6rem;width:80px;";
+      inp.oninput = function() { updateMoyPreview(k, mod); };
+      cell.appendChild(inp); tr.appendChild(cell);
+    });
+    
+    var moyCell = document.createElement("td");
+    moyCell.id = "preview_moy_" + k;
+    moyCell.className = "mono";
+    moyCell.style = "font-weight:700;color:#818cf8;";
+    var mm = et[k + "_moy_module"] !== undefined ? et[k + "_moy_module"] : et["moy_" + k];
+    moyCell.textContent = (mm !== null && mm !== undefined) ? parseFloat(mm).toFixed(2) : "—";
+    tr.appendChild(moyCell);
+    tbody.appendChild(tr);
+  });
+  
+  table.appendChild(tbody); tableWrap.appendChild(table); inner.appendChild(tableWrap);
+  
+  var footer = document.createElement("div");
+  footer.style = "margin-top:1.25rem;display:flex;gap:0.75rem;justify-content:flex-end;";
+  var cancelBtn = document.createElement("button"); cancelBtn.className = "btn-ghost"; cancelBtn.textContent = t("cancel");
+  cancelBtn.onclick = function() { d.remove(); };
+  var saveBtn = document.createElement("button"); saveBtn.className = "btn-main";
+  saveBtn.style = "width:auto;padding:0.6rem 1.5rem;";
+  saveBtn.innerHTML = '<i class="ph-bold ph-floppy-disk"></i> ' + t("save");
+  saveBtn.onclick = function() { saveEditNotes(num, d); };
+  footer.appendChild(cancelBtn); footer.appendChild(saveBtn);
+  inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
+}
+
+function updateMoyPreview(key, mod) {
+  var getVal = function(sub) {
+    var el = document.getElementById("edit_" + key + "_" + sub);
+    if (!el || el.value.trim() === "") return null;
+    if (el.value.trim() === "Abs") return "Abs";
+    return parseFloat(el.value.replace(",", "."));
+  };
+  var e1 = getVal("emd1"), e2 = getVal("emd2"), td = getVal("td"), tp = getVal("tp");
+  var moy = calcMoyModule(e1, e2, td, tp);
+  var preview = document.getElementById("preview_moy_" + key);
+  if (preview) {
+    preview.textContent = moy !== null ? parseFloat(moy).toFixed(2) : "—";
+    preview.style.color = moy === null ? "var(--text-muted)" : moy < 5 ? "var(--danger)" : moy < 10 ? "var(--warning)" : "var(--success)";
+  }
+}
+
+function saveEditNotes(num, modal) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  if (!et) return;
+  
+  var fields = {};
+  var tempEt = Object.assign({}, et);
+  var hasChanges = false;
+  
+  MODULES.forEach(function(mod) {
+    var k = mod.key;
+    var modChanged = false;
+    
+    ["emd1", "emd2", "td", "tp"].forEach(function(sub) {
+      var fk = k + "_" + sub;
+      var el = document.getElementById("edit_" + fk);
+      if (!el) return;
+      var v = el.value.trim();
+      var val;
+      if (v === "") { val = et[fk]; }
+      else if (v === "Abs") { val = "Abs"; }
+      else { var n = parseFloat(v); val = isNaN(n) ? et[fk] : n; }
+      
+      var oldVal = et[fk];
+      if (String(val) !== String(oldVal)) {
+        fields[fk] = val;
+        hasChanges = true;
+        modChanged = true;
+      }
+      tempEt[fk] = val;
+    });
+    
+    if (modChanged) {
+      var e1 = tempEt[k + "_emd1"], e2 = tempEt[k + "_emd2"];
+      var emdVals = [];
+      if (e1 !== null && e1 !== undefined && e1 !== "Abs") emdVals.push(parseFloat(e1));
+      if (e2 !== null && e2 !== undefined && e2 !== "Abs") emdVals.push(parseFloat(e2));
+      var moyEmd = emdVals.length > 0 ? Math.round((emdVals.reduce(function(a, b) { return a + b; }, 0) / emdVals.length) * 10000) / 10000 : null;
+      fields[k + "_moy_emd"] = moyEmd;
+      tempEt[k + "_moy_emd"] = moyEmd;
+      
+      var moyMod = calcMoyModule(tempEt[k + "_emd1"], tempEt[k + "_emd2"], tempEt[k + "_td"], tempEt[k + "_tp"]);
+      fields["moy_" + k] = moyMod;
+      fields[k + "_moy_module"] = moyMod;
+      tempEt["moy_" + k] = moyMod;
+      tempEt[k + "_moy_module"] = moyMod;
+    }
+  });
+  
+  if (!hasChanges) {
+    if (modal) modal.remove();
+    showToast(t("noChanges"), "info");
+    return;
+  }
+  
+  var moyGen = calcMoyGenerale(tempEt);
+  fields["moyenne_generale"] = moyGen;
+  
+  fsPatch("etudiants", String(num), fields).then(function() {
+    for (var k in fields) et[k] = fields[k];
+    if (modal) modal.remove();
+    showToast(t("notesSaved"), "success");
+    renderAdminTable(adminData);
+  }).catch(function() { showToast(t("saveError"), "danger"); });
+}
+
+function viewNotes(num) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  if (!et) return;
+  
+  var d = document.createElement("div");
+  d.id = "viewNotesModal"; d.className = "modal-overlay";
+  var inner = document.createElement("div"); inner.className = "modal-box";
+  
+  var hdr = document.createElement("div");
+  hdr.style = "display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
+  hdr.innerHTML = '<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">' + et.nom + ' ' + et.prenom + ' — ' + t("notes") + '</div>';
+  var closeBtn = document.createElement("button"); closeBtn.className = "btn-ghost"; closeBtn.style = "padding:0.4rem 0.8rem;";
+  closeBtn.innerHTML = '<i class="ph-bold ph-x"></i>'; closeBtn.onclick = function() { d.remove(); };
+  hdr.appendChild(closeBtn); inner.appendChild(hdr);
+  
+  var tableWrap = document.createElement("div"); tableWrap.style = "overflow-x:auto;";
+  var table = document.createElement("table"); table.className = "res-table";
+  var thead = document.createElement("thead");
+  thead.innerHTML = '<tr><th>' + t("module") + '</th><th>' + t("coef") + '</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th>' + t("moyModule") + '</th></tr>';
+  table.appendChild(thead);
+  
+  var tbody = document.createElement("tbody");
+  MODULES.forEach(function(mod) {
+    var k = mod.key;
+    var tr = document.createElement("tr");
+    var vals = [et[k + "_emd1"], et[k + "_emd2"], et[k + "_td"], et[k + "_tp"], et[k + "_moy_module"] !== undefined ? et[k + "_moy_module"] : et["moy_" + k]];
+    
+    var td0 = document.createElement("td"); td0.style = "font-weight:600;"; td0.textContent = mod.nom; tr.appendChild(td0);
+    var td1 = document.createElement("td"); td1.className = "mono"; td1.textContent = mod.coef; tr.appendChild(td1);
+    vals.forEach(function(v) {
+      var cell = document.createElement("td"); cell.className = "mono " + nc(v); cell.innerHTML = fn(v); tr.appendChild(cell);
+    });
+    tbody.appendChild(tr);
+  });
+  
+  table.appendChild(tbody); tableWrap.appendChild(table); inner.appendChild(tableWrap);
+  
+  var footer = document.createElement("div"); footer.style = "margin-top:1.25rem;display:flex;justify-content:flex-end;";
+  var closeBtn2 = document.createElement("button"); closeBtn2.className = "btn-ghost"; closeBtn2.textContent = t("close");
+  closeBtn2.onclick = function() { d.remove(); };
+  footer.appendChild(closeBtn2); inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
+}
+
+function suggestEdit(num) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  if (!et) return;
+  
+  var d = document.createElement("div"); d.id = "suggestModal"; d.className = "modal-overlay";
+  var inner = document.createElement("div"); inner.className = "modal-box";
+  
+  var hdr = document.createElement("div"); hdr.style = "display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
+  hdr.innerHTML = '<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">' + t("suggestTitle") + ' ' + et.nom + ' ' + et.prenom + '</div>';
+  var closeBtn = document.createElement("button"); closeBtn.className = "btn-ghost"; closeBtn.style = "padding:0.4rem 0.8rem;";
+  closeBtn.innerHTML = '<i class="ph-bold ph-x"></i>'; closeBtn.onclick = function() { d.remove(); };
+  hdr.appendChild(closeBtn); inner.appendChild(hdr);
+  
+  var modDiv = document.createElement("div"); modDiv.className = "mb-4"; modDiv.innerHTML = '<label class="field-label">' + t("concernedModule") + '</label>';
+  var modSel = document.createElement("select"); modSel.className = "glass-select"; modSel.id = "suggestModule";
+  modSel.innerHTML = '<option value="">' + t("choose") + '</option>';
+  MODULES.forEach(function(m) { var o = document.createElement("option"); o.value = m.nom; o.textContent = m.nom; modSel.appendChild(o); });
+  modDiv.appendChild(modSel); inner.appendChild(modDiv);
+  
+  var fieldDiv = document.createElement("div"); fieldDiv.className = "mb-4"; fieldDiv.innerHTML = '<label class="field-label">' + t("fieldToModify") + '</label>';
+  var fieldSel = document.createElement("select"); fieldSel.className = "glass-select"; fieldSel.id = "suggestField";
+  fieldSel.innerHTML = '<option value="emd1">EMD 1</option><option value="emd2">EMD 2</option><option value="td">TD</option><option value="tp">TP</option><option value="moy_module">' + t("moyModule") + '</option>';
+  fieldDiv.appendChild(fieldSel); inner.appendChild(fieldDiv);
+  
+  var valDiv = document.createElement("div"); valDiv.className = "mb-4"; valDiv.innerHTML = '<label class="field-label">' + t("suggestedValue") + '</label>';
+  var valInp = document.createElement("input"); valInp.type = "text"; valInp.className = "calc-input"; valInp.id = "suggestVal"; valInp.placeholder = t("suggestedValuePlaceholder");
+  valDiv.appendChild(valInp); inner.appendChild(valDiv);
+  
+  var reasonDiv = document.createElement("div"); reasonDiv.className = "mb-5"; reasonDiv.innerHTML = '<label class="field-label">' + t("justification") + '</label>';
+  var reasonTa = document.createElement("textarea"); reasonTa.className = "calc-input"; reasonTa.id = "suggestReason"; reasonTa.placeholder = t("justificationPlaceholder"); reasonTa.style = "min-height:70px;resize:vertical;";
+  reasonDiv.appendChild(reasonTa); inner.appendChild(reasonDiv);
+  
+  var footer = document.createElement("div"); footer.style = "display:flex;gap:0.75rem;justify-content:flex-end;";
+  var cancelBtn = document.createElement("button"); cancelBtn.className = "btn-ghost"; cancelBtn.textContent = t("cancel"); cancelBtn.onclick = function() { d.remove(); };
+  var sendBtn = document.createElement("button"); sendBtn.className = "btn-main"; sendBtn.style = "width:auto;padding:0.6rem 1.5rem;";
+  sendBtn.innerHTML = '<i class="ph-bold ph-paper-plane-right"></i> ' + t("send"); sendBtn.onclick = function() { sendSuggestion(num, d); };
+  footer.appendChild(cancelBtn); footer.appendChild(sendBtn); inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
+}
+
+function sendSuggestion(num, modal) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  var module = document.getElementById("suggestModule").value;
+  var field = document.getElementById("suggestField").value;
+  var val = document.getElementById("suggestVal").value.trim();
+  var reason = document.getElementById("suggestReason").value.trim();
+  
+  if (!module || !val) { showToast(t("fillAllFields"), "warning"); return; }
+  
+  var now = new Date().toLocaleString("fr-FR");
+  var msg = t("suggestModule") + module + " / " + field + " = " + val + (reason ? t("reason") + reason : "");
+  var deviceInfo = getDeviceShortString();
+  var deviceFull = getDeviceDisplayString();
+  
+  fsCreate("notifications", {
+    etudiant_nom: et.nom + " " + et.prenom,
+    etudiant_numero: et.numero,
+    module: module,
+    type: t("suggestion"),
+    message: msg,
+    date: now,
+    lu: false,
+    admin_only: false,
+    device_info: deviceInfo,
+    device_full: deviceFull
+  }).then(function() {
+    emailjs.init(EMAILJS_KEY);
+    return emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      etudiant_nom: et.nom + " " + et.prenom,
+      etudiant_numero: String(et.numero),
+      module: module,
+      type_signalement: t("suggestion"),
+      message: msg + " | " + t("device") + ": " + deviceFull,
+      date: now
+    });
+  }).then(function() {
+    if (modal) modal.remove();
+    showToast(t("suggestionSent"), "success");
+  }).catch(function() {
+    if (modal) modal.remove();
+    showToast(t("suggestionSaved"), "warning");
   });
 }
 
-function showView(v){
-  ["Login","Student","Account","Admin"].forEach(function(n){
-    document.getElementById("view"+n).classList.add("hidden");
-  });
-  document.getElementById("view"+v.charAt(0).toUpperCase()+v.slice(1)).classList.remove("hidden");
-  currentView=v;updateSidebarNav();updateBreadcrumb();
+function filterAdmin() {
+  var q = document.getElementById("adminSearch").value.toLowerCase();
+  renderAdminTable(adminData.filter(function(et) {
+    return (et.nom || "").toLowerCase().includes(q) || (et.prenom || "").toLowerCase().includes(q) || String(et.numero).includes(q);
+  }));
 }
-function logout(){
-  currentStudent=null;isAdmin=false;isAdminLite=false;adminData=[];
+
+function sortAdmin(key) {
+  if (adminSortKey === key) adminSortAsc = !adminSortAsc;
+  else { adminSortKey = key; adminSortAsc = true; }
+  adminData.sort(function(a, b) {
+    var av = a[key], bv = b[key];
+    if (av === null || av === undefined) av = -Infinity;
+    if (bv === null || bv === undefined) bv = -Infinity;
+    if (typeof av === "string") return adminSortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+    return adminSortAsc ? av - bv : bv - av;
+  });
+  renderAdminTable(adminData);
+}
+
+function switchTab(tab) {
+  ["etudiants", "notifs", "comptes"].forEach(function(t) {
+    var T = t.charAt(0).toUpperCase() + t.slice(1);
+    document.getElementById("tab" + T).classList.toggle("active", t === tab);
+    document.getElementById("panel" + T).classList.toggle("hidden", t !== tab);
+  });
+}
+
+function showView(v) {
+  ["Login", "Student", "Account", "Admin"].forEach(function(n) {
+    document.getElementById("view" + n).classList.add("hidden");
+  });
+  document.getElementById("view" + v.charAt(0).toUpperCase() + v.slice(1)).classList.remove("hidden");
+  currentView = v;
+  updateSidebarNav();
+  updateBreadcrumb();
+}
+
+function logout() {
+  currentStudent = null; isAdmin = false; isAdminLite = false; adminData = [];
   clearSession();
-  document.getElementById("inputNom").value="";
-  document.getElementById("inputMdp").value="";
-  hideLoginError();showView("login");
+  document.getElementById("inputNom").value = "";
+  document.getElementById("inputMdp").value = "";
+  hideLoginError();
+  showView("login");
 }
-function goHome(){window.location.href="dental-guide.html#year-3";}
 
-function updateSidebarNav(){
-  var nav=document.getElementById("sidebarNav");if(!nav)return;
-  var h='<button onclick="goHome();closeMenu();" class="nav-link glass"><i class="ph-bold ph-house text-xl"></i><span>Accueil</span></button>';
-  if(currentView==="student"||currentView==="account"){
-    h+='<button onclick="showView(\'student\');closeMenu();" class="nav-link glass '+(currentView==="student"?"active":"")+'"><i class="ph-bold ph-chart-bar text-xl"></i><span>Mes Résultats</span></button>';
-    h+='<button onclick="showAccount();closeMenu();" class="nav-link glass '+(currentView==="account"?"active":"")+'"><i class="ph-bold ph-user-circle text-xl"></i><span>Mon Compte</span></button>';
-  }
-  if(currentView==="admin")
-    h+='<button onclick="showView(\'admin\');closeMenu();" class="nav-link glass active"><i class="ph-bold ph-shield text-xl"></i><span>Admin</span></button>';
-  h+='<div class="w-full h-px my-2" style="background:var(--glass-border);"></div>';
-  if(currentView!=="login")
-    h+='<button onclick="logout();closeMenu();" class="nav-link glass"><i class="ph-bold ph-sign-out text-xl"></i><span>Déconnexion</span></button>';
-  nav.innerHTML=h;
+function goHome() {
+  window.location.href = "dental-guide.html#year-3";
 }
-function updateBreadcrumb(){
-  var bc=document.getElementById("breadcrumb");
-  if(currentView==="login"){bc.style.display="none";bc.innerHTML="";return;}
-  bc.style.display="flex";
-  var p=['<button class="breadcrumb-btn" onclick="goHome()"><i class="ph-bold ph-house" style="font-size:0.65rem;"></i> Accueil</button>'];
+
+function updateSidebarNav() {
+  var nav = document.getElementById("sidebarNav");
+  if (!nav) return;
+  
+  var h = '<button onclick="goHome();closeMenu();" class="nav-link glass"><i class="ph-bold ph-house text-xl"></i><span>' + t("home") + '</span></button>';
+  
+  if (currentView === "student" || currentView === "account") {
+    h += '<button onclick="showView(\'student\');closeMenu();" class="nav-link glass ' + (currentView === "student" ? "active" : "") + '"><i class="ph-bold ph-chart-bar text-xl"></i><span>' + t("myResults") + '</span></button>';
+    h += '<button onclick="showAccount();closeMenu();" class="nav-link glass ' + (currentView === "account" ? "active" : "") + '"><i class="ph-bold ph-user-circle text-xl"></i><span>' + t("myAccount") + '</span></button>';
+  }
+  if (currentView === "admin")
+    h += '<button onclick="showView(\'admin\');closeMenu();" class="nav-link glass active"><i class="ph-bold ph-shield text-xl"></i><span>' + t("adminInterface") + '</span></button>';
+  
+  h += '<div class="w-full h-px my-2" style="background:var(--glass-border);"></div>';
+  if (currentView !== "login")
+    h += '<button onclick="logout();closeMenu();" class="nav-link glass"><i class="ph-bold ph-sign-out text-xl"></i><span>' + t("logout") + '</span></button>';
+  
+  nav.innerHTML = h;
+}
+
+function updateBreadcrumb() {
+  var bc = document.getElementById("breadcrumb");
+  if (currentView === "login") { bc.style.display = "none"; bc.innerHTML = ""; return; }
+  bc.style.display = "flex";
+  
+  var p = ['<button class="breadcrumb-btn" onclick="goHome()"><i class="ph-bold ph-house" style="font-size:0.65rem;"></i> ' + t("home") + '</button>'];
   p.push('<span class="breadcrumb-sep">›</span>');
-  if(currentView==="student")p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">Résultats</span>');
-  else if(currentView==="account"){
-    p.push('<button class="breadcrumb-btn" onclick="showView(\'student\')">Résultats</button>');
+  
+  if (currentView === "student") p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">' + t("results") + '</span>');
+  else if (currentView === "account") {
+    p.push('<button class="breadcrumb-btn" onclick="showView(\'student\')">' + t("results") + '</button>');
     p.push('<span class="breadcrumb-sep">›</span>');
-    p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">Mon Compte</span>');
+    p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">' + t("myAccount") + '</span>');
   }
-  else if(currentView==="admin")p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">Admin</span>');
-  bc.innerHTML=p.join('');
+  else if (currentView === "admin") p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">' + t("adminInterface") + '</span>');
+  
+  bc.innerHTML = p.join('');
 }
 
-var langPill=document.getElementById("langPill");
-var langBtns=document.querySelectorAll(".lang-btn");
-function getLang(){return localStorage.getItem("lang")||"fr";}
-function setLangPill(lang){
-  var idx=lang==="fr"?0:lang==="en"?1:2;
-  langPill.style.transform="translateX("+(idx*100)+"%)";
-  for(var i=0;i<langBtns.length;i++)langBtns[i].classList.toggle("active",langBtns[i].getAttribute("data-lang")===lang);
+// Language switching
+var langPill = document.getElementById("langPill");
+var langBtns = document.querySelectorAll(".lang-btn");
+
+function getLang() { return localStorage.getItem("lang") || "fr"; }
+
+function setLangPill(lang) {
+  var idx = lang === "fr" ? 0 : lang === "en" ? 1 : 2;
+  langPill.style.transform = "translateX(" + (idx * 100) + "%)";
+  for (var i = 0; i < langBtns.length; i++) {
+    langBtns[i].classList.toggle("active", langBtns[i].getAttribute("data-lang") === lang);
+  }
 }
-function initLang(){
-  var lang=getLang();
-  document.documentElement.setAttribute("lang",lang);
-  document.documentElement.setAttribute("dir",lang==="ar"?"rtl":"ltr");
+
+function initLang() {
+  var lang = getLang();
+  currentLang = lang;
+  document.documentElement.setAttribute("lang", lang);
+  document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
   setLangPill(lang);
+  translatePage(lang);
 }
-for(var _i=0;_i<langBtns.length;_i++){
-  (function(btn){btn.addEventListener("click",function(){
-    var lang=btn.getAttribute("data-lang");
-    document.body.classList.add("switching-lang");
-    setLangPill(lang);
-    setTimeout(function(){
-      document.documentElement.setAttribute("lang",lang);
-      document.documentElement.setAttribute("dir",lang==="ar"?"rtl":"ltr");
-      localStorage.setItem("lang",lang);
-      requestAnimationFrame(function(){document.body.classList.remove("switching-lang");});
-    },300);
-  });})(langBtns[_i]);
+
+for (var _i = 0; _i < langBtns.length; _i++) {
+  (function(btn) {
+    btn.addEventListener("click", function() {
+      var lang = btn.getAttribute("data-lang");
+      document.body.classList.add("switching-lang");
+      setLangPill(lang);
+      setTimeout(function() {
+        document.documentElement.setAttribute("lang", lang);
+        document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
+        localStorage.setItem("lang", lang);
+        translatePage(lang);
+        requestAnimationFrame(function() { document.body.classList.remove("switching-lang"); });
+      }, 300);
+    });
+  })(langBtns[_i]);
 }
-function initTheme(){
-  var t=localStorage.getItem("theme")||"dark";
-  document.documentElement.setAttribute("data-theme",t);
+
+// Theme switching
+function initTheme() {
+  var t = localStorage.getItem("theme") || "dark";
+  document.documentElement.setAttribute("data-theme", t);
 }
-document.getElementById("themeBtn").addEventListener("click",function(){
-  var cur=document.documentElement.getAttribute("data-theme");
-  var next=cur==="dark"?"light":"dark";
-  document.documentElement.setAttribute("data-theme",next);
-  localStorage.setItem("theme",next);
+
+document.getElementById("themeBtn").addEventListener("click", function() {
+  var cur = document.documentElement.getAttribute("data-theme");
+  var next = cur === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  localStorage.setItem("theme", next);
 });
-var sidebar=document.getElementById("sidebar");
-var overlay=document.getElementById("overlay");
-var menuBtn=document.getElementById("menuBtn");
-menuBtn.onclick=function(e){
-  e.stopPropagation();sidebar.classList.toggle("open");
-  overlay.classList.toggle("hidden",!sidebar.classList.contains("open"));
+
+// Sidebar toggle
+var sidebar = document.getElementById("sidebar");
+var overlay = document.getElementById("overlay");
+var menuBtn = document.getElementById("menuBtn");
+
+menuBtn.onclick = function(e) {
+  e.stopPropagation();
+  sidebar.classList.toggle("open");
+  overlay.classList.toggle("hidden", !sidebar.classList.contains("open"));
 };
-window.closeMenu=function(){sidebar.classList.remove("open");overlay.classList.add("hidden");};
-window.showToast=function(msg,type){
-  type=type||"info";
-  var colors={success:"var(--success)",danger:"var(--danger)",warning:"var(--warning)",info:"#a5b4fc"};
-  var icons={success:"ph-check-circle",danger:"ph-x-circle",warning:"ph-warning",info:"ph-info"};
-  var c=document.getElementById("toastContainer");
-  var t=document.createElement("div");
-  t.className="toast-item glass";
-  t.innerHTML='<i class="ph-fill '+icons[type]+'" style="color:'+colors[type]+';font-size:1.1rem;"></i> '+msg;
+
+window.closeMenu = function() {
+  sidebar.classList.remove("open");
+  overlay.classList.add("hidden");
+};
+
+// Toast notifications
+window.showToast = function(msg, type) {
+  type = type || "info";
+  var colors = { success: "var(--success)", danger: "var(--danger)", warning: "var(--warning)", info: "#a5b4fc" };
+  var icons = { success: "ph-check-circle", danger: "ph-x-circle", warning: "ph-warning", info: "ph-info" };
+  var c = document.getElementById("toastContainer");
+  var t = document.createElement("div");
+  t.className = "toast-item glass";
+  t.innerHTML = '<i class="ph-fill ' + icons[type] + '" style="color:' + colors[type] + ';font-size:1.1rem;"></i> ' + msg;
   c.appendChild(t);
-  requestAnimationFrame(function(){t.classList.add("show");});
-  setTimeout(function(){t.classList.remove("show");setTimeout(function(){t.remove();},400);},3500);
+  requestAnimationFrame(function() { t.classList.add("show"); });
+  setTimeout(function() { t.classList.remove("show"); setTimeout(function() { t.remove(); }, 400); }, 3500);
 };
-document.getElementById("inputMdp").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
-document.getElementById("inputNom").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
-initTheme();initLang();updateSidebarNav();updateBreadcrumb();checkSession();
+
+// Enter key for login
+document.getElementById("inputMdp").addEventListener("keydown", function(e) { if (e.key === "Enter") doLogin(); });
+document.getElementById("inputNom").addEventListener("keydown", function(e) { if (e.key === "Enter") doLogin(); });
+
+// Initialize
+initTheme();
+initLang();
+updateSidebarNav();
+updateBreadcrumb();
+checkSession();
 </script>
 </body>
 </html>
