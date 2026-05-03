@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#6366f1"/>
   <title>Résultats 3ème Année - Dental Guide</title>
   <link rel="manifest" href="manifest.json"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web@2.1.2"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -33,7 +33,8 @@
       --table-header: rgba(255,255,255,0.4); --table-row-hover: rgba(255,255,255,0.3);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg-gradient); color: var(--text-main); font-family: 'Inter', sans-serif; overflow-x: hidden; transition: background 0.5s ease, color 0.5s ease, opacity 0.3s ease, filter 0.3s ease; min-height: 100vh; }
+    body { background: var(--bg-gradient); color: var(--text-main); font-family: 'Inter', 'Noto Sans Arabic', sans-serif; overflow-x: hidden; transition: background 0.5s ease, color 0.5s ease, opacity 0.3s ease, filter 0.3s ease; min-height: 100vh; }
+    [lang="ar"] body { font-family: 'Noto Sans Arabic', 'Inter', sans-serif; }
     body.switching-lang { opacity: 0; filter: blur(15px); pointer-events: none; }
     body.switching-lang #sidebar { transition: none !important; }
     .glass { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); transition: all 0.3s ease; }
@@ -41,13 +42,24 @@
     [data-theme="light"] .text-gradient { background-image: linear-gradient(to right, #4f46e5, #9333ea, #db2777); }
     @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
     .animate-float { animation: float 6s ease-in-out infinite; }
+    .device-badge { display:inline-flex; align-items:center; gap:0.3rem; padding:0.25rem 0.6rem; border-radius:6px; font-size:0.72rem; font-weight:600; margin-top:0.3rem; cursor:help; position:relative; }
+    .device-pc { background:rgba(99,102,241,0.15); color:#a5b4fc; border:1px solid rgba(99,102,241,0.3); }
+    .device-mobile { background:rgba(42,212,165,0.15); color:var(--success); border:1px solid rgba(42,212,165,0.3); }
+    .device-tablet { background:rgba(255,201,74,0.15); color:var(--warning); border:1px solid rgba(255,201,74,0.3); }
+    .device-tooltip { position:absolute; bottom:100%; left:50%; transform:translateX(-50%); background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:8px; padding:0.6rem 0.8rem; font-size:0.7rem; white-space:nowrap; z-index:100; margin-bottom:0.4rem; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+    .device-badge:hover .device-tooltip { opacity:1; pointer-events:auto; }
+    .device-stat-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1rem; margin-bottom:1.5rem; }
+    .device-stat-item { background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:12px; padding:1rem; text-align:center; }
+    .device-stat-val { font-size:1.4rem; font-weight:800; color:#818cf8; font-family:'JetBrains Mono',monospace; }
+    .device-stat-lbl { font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-top:0.3rem; }
+    /* Keep all other styles from original */
     .lang-container { position:relative; display:flex; background:var(--pill-bg); border-radius:99px; padding:4px; border:1px solid var(--glass-border); height:48px; width:100%; direction:ltr; }
     [data-theme="light"] .lang-container { background:rgba(255,255,255,0.4); }
     .lang-pill { position:absolute; top:4px; bottom:4px; left:4px; width:calc(33.33% - 5px); background:var(--pill-color); border-radius:99px; transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); z-index:0; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
-    .lang-btn { flex:1; position:relative; z-index:1; font-size:0.9rem; font-weight:600; color:var(--text-muted); transition:color 0.3s; }
+    .lang-btn { flex:1; position:relative; z-index:1; font-size:0.9rem; font-weight:600; color:var(--text-muted); transition:color 0.3s; cursor:pointer; background:none; border:none; }
     [data-theme="dark"] .lang-btn.active { color:#333; font-weight:800; }
     [data-theme="light"] .lang-btn.active { color:#fff; font-weight:800; }
-    .theme-toggle-btn { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; color:var(--text-main); flex-shrink:0; }
+    .theme-toggle-btn { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; color:var(--text-main); flex-shrink:0; background:none; border:none; }
     .theme-toggle-btn:hover { background:var(--btn-hover); }
     .theme-toggle-btn i { position:absolute; top:50%; left:50%; transition:all 0.5s cubic-bezier(0.23,1,0.32,1); }
     [data-theme="dark"] .ph-moon { transform:translate(-50%,-50%) scale(1) rotate(0deg); opacity:1; }
@@ -63,9 +75,11 @@
     .nav-link:hover { background:var(--btn-hover); transform:translateX(4px); }
     html[dir="rtl"] .nav-link:hover { transform:translateX(-4px); }
     .nav-link.active { background:var(--nav-active-bg); color:var(--nav-active-text); border-color:var(--glass-border); font-weight:600; }
-    .calc-input { width:100%; background:var(--input-bg); border:1px solid var(--glass-border); color:var(--text-main); border-radius:0.75rem; padding:0.75rem 1rem; outline:none; transition:border-color 0.3s; font-family:'Inter',sans-serif; font-size:0.95rem; }
+    .calc-input { width:100%; background:var(--input-bg); border:1px solid var(--glass-border); color:var(--text-main); border-radius:0.75rem; padding:0.75rem 1rem; outline:none; transition:border-color 0.3s; font-family:'Inter', 'Noto Sans Arabic', sans-serif; font-size:0.95rem; }
+    [lang="ar"] .calc-input { font-family: 'Noto Sans Arabic', 'Inter', sans-serif; }
     .calc-input:focus { border-color:#818cf8; box-shadow:0 0 0 3px rgba(129,140,248,0.15); }
     .field-label { display:block; font-size:0.8rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem; }
+    [lang="ar"] .field-label { text-transform: none; letter-spacing: 0; }
     .btn-main { width:100%; padding:0.9rem 1.5rem; border-radius:99px; font-weight:700; font-size:0.95rem; cursor:pointer; border:none; display:flex; align-items:center; justify-content:center; gap:0.5rem; transition:all 0.25s; background:linear-gradient(135deg,#818cf8,#9333ea); color:white; box-shadow:0 4px 20px rgba(129,140,248,0.3); }
     .btn-main:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(129,140,248,0.4); }
     .btn-main:active { transform:scale(0.98); }
@@ -84,8 +98,10 @@
     .stat-card { border-radius:20px; padding:1.25rem; text-align:center; }
     .stat-val { font-size:1.3rem; font-weight:800; font-family:'JetBrains Mono',monospace; }
     .stat-lbl { font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-top:0.2rem; }
+    [lang="ar"] .stat-lbl { text-transform: none; letter-spacing: 0; }
     .res-table { width:100%; border-collapse:collapse; font-size:0.88rem; }
     .res-table th { padding:0.75rem 1rem; text-align:left; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); background:var(--table-header); border-bottom:1px solid var(--glass-border); white-space:nowrap; }
+    [lang="ar"] .res-table th { text-transform: none; letter-spacing: 0; text-align: right; }
     .res-table td { padding:0.85rem 1rem; border-bottom:1px solid rgba(255,255,255,0.06); white-space:nowrap; }
     [data-theme="light"] .res-table td { border-bottom:1px solid rgba(0,0,0,0.06); }
     .res-table tr:last-child td { border-bottom:none; }
@@ -96,13 +112,16 @@
     .note-bad  { color:var(--danger);  font-weight:600; }
     .note-abs  { color:var(--text-muted); font-style:italic; }
     .coef-badge { display:inline-block; background:rgba(255,255,255,0.1); border:1px solid var(--glass-border); border-radius:6px; padding:1px 6px; font-size:0.72rem; color:var(--text-muted); margin-left:6px; }
+    [dir="rtl"] .coef-badge { margin-left:0; margin-right:6px; }
     [data-theme="light"] .coef-badge { background:rgba(0,0,0,0.06); }
     .tabs { display:flex; gap:0.5rem; background:var(--input-bg); border:1px solid var(--glass-border); border-radius:14px; padding:4px; margin-bottom:1.5rem; }
     .tab { flex:1; padding:0.6rem; border-radius:10px; font-size:0.85rem; font-weight:600; cursor:pointer; border:none; background:none; color:var(--text-muted); transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:0.4rem; }
     .tab.active { background:var(--glass-bg); color:var(--text-main); border:1px solid var(--glass-border); box-shadow:0 2px 8px rgba(0,0,0,0.15); }
-    .glass-select { width:100%; padding:0.75rem 1rem; background:var(--input-bg); border:1px solid var(--glass-border); border-radius:0.75rem; color:var(--text-main); font-family:'Inter',sans-serif; font-size:0.9rem; outline:none; cursor:pointer; transition:all 0.2s; }
+    .glass-select { width:100%; padding:0.75rem 1rem; background:var(--input-bg); border:1px solid var(--glass-border); border-radius:0.75rem; color:var(--text-main); font-family:'Inter', 'Noto Sans Arabic', sans-serif; font-size:0.9rem; outline:none; cursor:pointer; transition:all 0.2s; }
+    [lang="ar"] .glass-select { font-family: 'Noto Sans Arabic', 'Inter', sans-serif; }
     .glass-select:focus { border-color:#818cf8; }
     .notif-badge { background:var(--danger); color:white; border-radius:99px; font-size:0.7rem; font-weight:700; padding:2px 7px; margin-left:6px; }
+    [dir="rtl"] .notif-badge { margin-left:0; margin-right:6px; }
     .notif-card { border-radius:16px; padding:1rem 1.25rem; margin-bottom:0.75rem; }
     .notif-unread { border:1px solid rgba(129,140,248,0.3); background:rgba(129,140,248,0.07); }
     .notif-read { border:1px solid var(--glass-border); background:var(--glass-bg); }
@@ -151,24 +170,24 @@
 
 <!-- LOGIN -->
 <div id="viewLogin" class="pt-28 pb-32 px-6 max-w-lg mx-auto flex flex-col items-center justify-center min-h-screen">
-  <h1 class="text-5xl font-bold text-gradient animate-float mb-4 text-center">Résultats</h1>
-  <p class="text-xl mb-10 font-light text-center" style="color:var(--text-muted);">3ème Année — Dental Guide Oran</p>
+  <h1 class="text-5xl font-bold text-gradient animate-float mb-4 text-center" data-i18n="results">Résultats</h1>
+  <p class="text-xl mb-10 font-light text-center" style="color:var(--text-muted);" data-i18n="year3Subtitle">3ème Année — Dental Guide Oran</p>
   <div class="glass w-full rounded-3xl p-8">
     <div class="error-msg" id="loginError">
       <i class="ph-fill ph-warning-circle"></i>
-      <span id="loginErrorMsg">Identifiants incorrects</span>
+      <span id="loginErrorMsg" data-i18n="invalidCredentials">Identifiants incorrects</span>
     </div>
     <div class="mb-5">
-      <label class="field-label">Nom et Prénom</label>
-      <input type="text" class="calc-input" id="inputNom" placeholder="NOM PRENOM" autocomplete="off">
-      <p class="text-xs mt-1" style="color:var(--text-muted);"><i class="ph-fill ph-info"></i> Nom et prénom en MAJUSCULES</p>
+      <label class="field-label" data-i18n="fullName">Nom et Prénom</label>
+      <input type="text" class="calc-input" id="inputNom" data-i18n-placeholder="namePlaceholder" placeholder="NOM PRENOM" autocomplete="off">
+      <p class="text-xs mt-1" style="color:var(--text-muted);"><i class="ph-fill ph-info"></i> <span data-i18n="nameHint">Nom et prénom en MAJUSCULES</span></p>
     </div>
     <div class="mb-6">
-      <label class="field-label">Mot de passe</label>
-      <input type="password" class="calc-input" id="inputMdp" placeholder="Votre numéro de liste">
+      <label class="field-label" data-i18n="password">Mot de passe</label>
+      <input type="password" class="calc-input" id="inputMdp" data-i18n-placeholder="passwordPlaceholder" placeholder="Votre numéro de liste">
     </div>
     <button class="btn-main" id="loginBtn" onclick="doLogin()">
-      <i class="ph-bold ph-sign-in"></i> Accéder à mes résultats
+      <i class="ph-bold ph-sign-in"></i> <span data-i18n="accessResults">Accéder à mes résultats</span>
     </button>
   </div>
 </div>
@@ -184,51 +203,59 @@
       <div class="flex flex-col items-end gap-3">
         <div id="studentBadge"></div>
         <button class="btn-ghost" onclick="showView('account')">
-          <i class="ph-bold ph-user-circle"></i> Mon Compte
+          <i class="ph-bold ph-user-circle"></i> <span data-i18n="myAccount">Mon Compte</span>
         </button>
       </div>
     </div>
   </div>
   <div class="grid grid-cols-3 gap-4 mb-6">
-    <div class="glass stat-card"><div class="stat-val text-gradient" id="statMoy">—</div><div class="stat-lbl">Moyenne</div></div>
-    <div class="glass stat-card"><div class="stat-val text-gradient" id="statRank">—</div><div class="stat-lbl">Classement</div></div>
-    <div class="glass stat-card"><div class="stat-val text-gradient">444</div><div class="stat-lbl">Étudiants</div></div>
+    <div class="glass stat-card"><div class="stat-val text-gradient" id="statMoy">—</div><div class="stat-lbl" data-i18n="average">Moyenne</div></div>
+    <div class="glass stat-card"><div class="stat-val text-gradient" id="statRank">—</div><div class="stat-lbl" data-i18n="ranking">Classement</div></div>
+    <div class="glass stat-card"><div class="stat-val text-gradient">444</div><div class="stat-lbl" data-i18n="students">Étudiants</div></div>
   </div>
   <div class="glass rounded-3xl overflow-hidden mb-6">
     <div class="px-6 py-4 flex items-center justify-between" style="border-bottom:1px solid var(--glass-border);">
-      <span class="font-bold text-sm uppercase tracking-widest" style="color:var(--text-muted);">Notes détaillées</span>
-      <span class="text-sm" style="color:var(--text-muted);">11 modules</span>
+      <span class="font-bold text-sm uppercase tracking-widest" style="color:var(--text-muted);" data-i18n="detailedGrades">Notes détaillées</span>
+      <span class="text-sm" style="color:var(--text-muted);"><span data-i18n="modules">11 modules</span></span>
     </div>
     <div style="overflow-x:auto;">
       <table class="res-table">
-        <thead><tr><th>Module</th><th>Coef</th><th>EMD 1</th><th>EMD 2</th><th>Moy EMD</th><th>TD</th><th>TP</th><th>Moy Module</th></tr></thead>
+        <thead><tr>
+          <th data-i18n="module">Module</th>
+          <th data-i18n="coef">Coef</th>
+          <th>EMD 1</th>
+          <th>EMD 2</th>
+          <th data-i18n="moyEMD">Moy EMD</th>
+          <th>TD</th>
+          <th>TP</th>
+          <th data-i18n="moyModule">Moy Module</th>
+        </tr></thead>
         <tbody id="modulesBody"></tbody>
       </table>
     </div>
   </div>
   <div class="glass rounded-3xl p-6 mb-6">
     <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-      <i class="ph-fill ph-flag" style="color:var(--warning);"></i> Signaler une erreur
+      <i class="ph-fill ph-flag" style="color:var(--warning);"></i> <span data-i18n="reportError">Signaler une erreur</span>
     </h3>
     <div class="mb-4">
-      <label class="field-label">Module concerné</label>
-      <select class="glass-select" id="signalModule"><option value="">— Choisir un module —</option></select>
+      <label class="field-label" data-i18n="concernedModule">Module concerné</label>
+      <select class="glass-select" id="signalModule"><option value="" data-i18n="chooseModule">— Choisir un module —</option></select>
     </div>
     <div class="mb-4">
-      <label class="field-label">Type de signalement</label>
+      <label class="field-label" data-i18n="reportType">Type de signalement</label>
       <select class="glass-select" id="signalType">
-        <option value="Erreur de note">Erreur de note</option>
-        <option value="Note manquante">Note manquante</option>
-        <option value="Absence injustifiée">Absence injustifiée</option>
-        <option value="Autre">Autre</option>
+        <option value="Erreur de note" data-i18n="gradeError">Erreur de note</option>
+        <option value="Note manquante" data-i18n="missingGrade">Note manquante</option>
+        <option value="Autre" data-i18n="other">Autre</option>
       </select>
     </div>
     <div class="mb-5">
-      <label class="field-label">Commentaire (optionnel)</label>
-      <textarea class="calc-input" id="signalComment" placeholder="Décrivez le problème..." style="min-height:80px;resize:vertical;"></textarea>
+      <label class="field-label" data-i18n="commentOptional">Commentaire (optionnel)</label>
+      <textarea class="calc-input" id="signalComment" data-i18n-placeholder="describeProblem" placeholder="Décrivez le problème..." style="min-height:80px;resize:vertical;"></textarea>
     </div>
     <button class="btn-main" onclick="envoyerSignalement()" id="signalBtn">
-      <i class="ph-bold ph-paper-plane-right"></i> Envoyer le signalement
+      <i class="ph-bold ph-paper-plane-right"></i> <span data-i18n="sendReport">Envoyer le signalement</span>
     </button>
   </div>
 </div>
@@ -236,21 +263,21 @@
 <!-- MON COMPTE -->
 <div id="viewAccount" class="hidden pt-28 pb-32 px-6 max-w-lg mx-auto">
   <button class="flex items-center gap-2 mb-6 font-semibold" style="color:var(--text-muted);background:none;border:none;cursor:pointer;" onclick="showView('student')">
-    <i class="ph-bold ph-arrow-left"></i> Retour
+    <i class="ph-bold ph-arrow-left"></i> <span data-i18n="back">Retour</span>
   </button>
-  <h1 class="text-4xl font-bold text-gradient mb-2">Mon Compte</h1>
+  <h1 class="text-4xl font-bold text-gradient mb-2" data-i18n="myAccount">Mon Compte</h1>
   <p class="mb-8" style="color:var(--text-muted);" id="accountSubtitle"></p>
   <div class="glass rounded-3xl p-8">
     <div class="mb-5 p-4 rounded-2xl" style="background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);">
       <p class="text-sm flex items-center gap-2" style="color:#a5b4fc;">
-        <i class="ph-fill ph-info"></i> Choisissez un identifiant et mot de passe mémorables.
+        <i class="ph-fill ph-info"></i> <span data-i18n="accountHint">Choisissez un identifiant et mot de passe mémorables.</span>
       </p>
     </div>
-    <div class="mb-5"><label class="field-label">Nouvel identifiant</label><input type="text" class="calc-input" id="newIdentifiant" placeholder="Votre nouvel identifiant"></div>
-    <div class="mb-5"><label class="field-label">Nouveau mot de passe</label><input type="password" class="calc-input" id="newMdp" placeholder="Nouveau mot de passe"></div>
-    <div class="mb-6"><label class="field-label">Confirmer le mot de passe</label><input type="password" class="calc-input" id="confirmMdp" placeholder="Répétez le mot de passe"></div>
+    <div class="mb-5"><label class="field-label" data-i18n="newIdentifier">Nouvel identifiant</label><input type="text" class="calc-input" id="newIdentifiant" data-i18n-placeholder="newIdentifierPlaceholder" placeholder="Votre nouvel identifiant"></div>
+    <div class="mb-5"><label class="field-label" data-i18n="newPassword">Nouveau mot de passe</label><input type="password" class="calc-input" id="newMdp" data-i18n-placeholder="newPasswordPlaceholder" placeholder="Nouveau mot de passe"></div>
+    <div class="mb-6"><label class="field-label" data-i18n="confirmPassword">Confirmer le mot de passe</label><input type="password" class="calc-input" id="confirmMdp" data-i18n-placeholder="confirmPasswordPlaceholder" placeholder="Répétez le mot de passe"></div>
     <button class="btn-main" onclick="saveAccount()" id="saveAccountBtn">
-      <i class="ph-bold ph-floppy-disk"></i> Sauvegarder les modifications
+      <i class="ph-bold ph-floppy-disk"></i> <span data-i18n="saveChanges">Sauvegarder les modifications</span>
     </button>
   </div>
 </div>
@@ -259,59 +286,68 @@
 <div id="viewAdmin" class="hidden pt-28 pb-32 px-6 max-w-6xl mx-auto">
   <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
     <div>
-      <h1 class="text-4xl font-bold text-gradient">Interface Admin <span id="adminLiteBadge" class="hidden" style="font-size:0.75rem;background:rgba(255,201,74,0.15);color:var(--warning);border:1px solid rgba(255,201,74,0.3);padding:3px 10px;border-radius:99px;font-weight:600;vertical-align:middle;">Lecture seule</span></h1>
-      <p style="color:var(--text-muted);">444 étudiants — 3ème Année</p>
+      <h1 class="text-4xl font-bold text-gradient"><span data-i18n="adminInterface">Interface Admin</span> <span id="adminLiteBadge" class="hidden" style="font-size:0.75rem;background:rgba(255,201,74,0.15);color:var(--warning);border:1px solid rgba(255,201,74,0.3);padding:3px 10px;border-radius:99px;font-weight:600;vertical-align:middle;" data-i18n="readOnly">Lecture seule</span></h1>
+      <p style="color:var(--text-muted);">444 <span data-i18n="students">étudiants</span> — 3<sup>ème</sup> <span data-i18n="year">Année</span></p>
     </div>
     <div class="flex gap-3 flex-wrap items-center">
       <div class="glass rounded-xl flex items-center px-3" style="border:1px solid var(--glass-border);">
         <i class="ph-bold ph-magnifying-glass" style="color:var(--text-muted);"></i>
-        <input type="text" id="adminSearch" placeholder="Rechercher..." oninput="filterAdmin()" style="background:none;border:none;outline:none;padding:0.65rem 0.75rem;color:var(--text-main);width:200px;">
+        <input type="text" id="adminSearch" data-i18n-placeholder="search" placeholder="Rechercher..." oninput="filterAdmin()" style="background:none;border:none;outline:none;padding:0.65rem 0.75rem;color:var(--text-main);width:200px;">
       </div>
-      <button class="btn-ghost" onclick="logout()"><i class="ph-bold ph-sign-out"></i> Déconnexion</button>
+      <button class="btn-ghost" onclick="logout()"><i class="ph-bold ph-sign-out"></i> <span data-i18n="logout">Déconnexion</span></button>
     </div>
   </div>
   <div class="tabs">
-    <button class="tab active" id="tabEtudiants" onclick="switchTab('etudiants')"><i class="ph-bold ph-users"></i> Étudiants</button>
-    <button class="tab" id="tabNotifs" onclick="switchTab('notifs')"><i class="ph-bold ph-bell"></i> Signalements <span class="notif-badge hidden" id="notifCount">0</span></button>
-    <button class="tab" id="tabComptes" onclick="switchTab('comptes')"><i class="ph-bold ph-key"></i> Comptes</button>
+    <button class="tab active" id="tabEtudiants" onclick="switchTab('etudiants')"><i class="ph-bold ph-users"></i> <span data-i18n="studentsTab">Étudiants</span></button>
+    <button class="tab" id="tabNotifs" onclick="switchTab('notifs')"><i class="ph-bold ph-bell"></i> <span data-i18n="reports">Signalements</span> <span class="notif-badge hidden" id="notifCount">0</span></button>
+    <button class="tab" id="tabComptes" onclick="switchTab('comptes')"><i class="ph-bold ph-key"></i> <span data-i18n="accounts">Comptes</span></button>
+    <button class="tab" id="tabDevices" onclick="switchTab('devices')"><i class="ph-bold ph-phone"></i> <span data-i18n="deviceAnalytics">Analytics</span></button>
   </div>
   <div id="panelEtudiants">
     <div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;">
       <table class="res-table">
         <thead><tr>
-          <th onclick="sortAdmin('numero')" style="cursor:pointer;">N° ↕</th>
-          <th onclick="sortAdmin('nom')" style="cursor:pointer;">Nom ↕</th>
-          <th>Prénom</th>
-          <th onclick="sortAdmin('moyenne_generale')" style="cursor:pointer;">Moy ↕</th>
-          <th onclick="sortAdmin('classement')" style="cursor:pointer;">Rang ↕</th>
-          <th>Résultat</th>
-          <th>Actions</th>
+          <th onclick="sortAdmin('numero')" style="cursor:pointer;" data-i18n="number">N° ↕</th>
+          <th onclick="sortAdmin('nom')" style="cursor:pointer;" data-i18n="lastName">Nom ↕</th>
+          <th data-i18n="firstName">Prénom</th>
+          <th onclick="sortAdmin('moyenne_generale')" style="cursor:pointer;" data-i18n="avg">Moy ↕</th>
+          <th onclick="sortAdmin('classement')" style="cursor:pointer;" data-i18n="rank">Rang ↕</th>
+          <th data-i18n="result">Résultat</th>
+          <th data-i18n="actions">Actions</th>
         </tr></thead>
         <tbody id="adminBody"></tbody>
       </table>
     </div></div>
   </div>
-  <div id="panelNotifs" class="hidden"><div id="notifsList"><p class="text-center py-8" style="color:var(--text-muted);">Chargement...</p></div></div>
-  <div id="panelComptes" class="hidden"><div id="comptesList"><p class="text-center py-8" style="color:var(--text-muted);">Chargement...</p></div></div>
+  <div id="panelNotifs" class="hidden"><div id="notifsList"><p class="text-center py-8" style="color:var(--text-muted);" data-i18n="loading">Chargement...</p></div></div>
+  <div id="panelComptes" class="hidden"><div id="comptesList"><p class="text-center py-8" style="color:var(--text-muted);" data-i18n="loading">Chargement...</p></div></div>
+  <div id="panelDevices" class="hidden">
+    <div class="glass rounded-3xl p-6">
+      <h3 class="font-bold text-lg mb-4" data-i18n="deviceAnalytics">Device Analytics</h3>
+      <div id="deviceAnalyticsContent"><p class="text-center py-8" style="color:var(--text-muted);" data-i18n="loading">Chargement...</p></div>
+    </div>
+  </div>
 </div>
 
 <a href="mailto:dentaireoranmoy@gmail.com" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 group w-max max-w-[90vw]">
   <div class="px-6 py-3 rounded-full glass shadow-2xl flex items-center justify-center gap-3 font-semibold transition hover:scale-105 active:scale-95 border border-white/20 backdrop-blur-xl whitespace-nowrap" style="color:var(--text-main);">
     <i class="ph-fill ph-paper-plane-right text-lg group-hover:-rotate-12 transition-transform"></i>
-    Nous contacter
+    <span data-i18n="contactUs">Nous contacter</span>
   </div>
 </a>
 
 <script>
-var FIREBASE_PROJECT = "denteria-e01d1";
-var FIREBASE_API_KEY = "AIzaSyDTVjkzfU8Upp6LBIroVNfWj5SZZUtRgR0";
+var SUPABASE_URL = "https://wjhugpnjapsyysgsxrtp.supabase.co";
+var SUPABASE_KEY = "sb_publishable_zOYqcJMGGvqSFeR5kHT5lg_3xHXoP7s";
 var EMAILJS_SERVICE  = "service_5sgcx6a";
 var EMAILJS_TEMPLATE = "template_74cg8ho";
 var EMAILJS_KEY      = "lxg6X0FF2kADJ5DYR";
-var ADMIN_ID       = "amel bmd";
-var ADMIN_MDP      = "0207";
-var ADMIN_LITE_ID  = "user";
-var ADMIN_LITE_MDP = "azerty00";
+
+var ADMIN_ID       = "admin";
+var ADMIN_MDP_HASH = "2e3c969e2e9b367ade00279743f88ea0e32f283152223e3d9aaf1c14669d7cbe";
+var ADMIN_LITE_ID       = "user";
+var ADMIN_LITE_MDP_HASH = "90d06112d5dc4274afd6ba187432cbf203586566e2ffe87b7494e9b1e1268187";
+
 var SESSION_KEY = "dg_session";
 var MODULES = [
   {key:"oce",nom:"OCE",coef:5},{key:"odf",nom:"ODF",coef:5},
@@ -323,660 +359,1458 @@ var MODULES = [
 ];
 var currentStudent=null, isAdmin=false, isAdminLite=false;
 var adminData=[], adminSortKey="numero", adminSortAsc=true, currentView="login";
+var currentLang = "fr";
 
-var FS_BASE="https://firestore.googleapis.com/v1/projects/"+FIREBASE_PROJECT+"/databases/(default)/documents";
-function fsGet(col,id){return fetch(FS_BASE+"/"+col+"/"+id+"?key="+FIREBASE_API_KEY).then(function(r){return r.json();});}
-function fsList(col){
-  var all=[];
-  function page(tok){
-    var url=FS_BASE+"/"+col+"?key="+FIREBASE_API_KEY+"&pageSize=300";
-    if(tok)url+="&pageToken="+encodeURIComponent(tok);
-    return fetch(url).then(function(r){return r.json();}).then(function(d){
-      if(d.documents)all=all.concat(d.documents);
-      if(d.nextPageToken)return page(d.nextPageToken);
-      return{documents:all};
+// ============================================
+// DEVICE DETECTION
+// ============================================
+function getScreenResolution() {
+  return window.screen.width + "x" + window.screen.height;
+}
+
+function getDevicePixelRatio() {
+  return (window.devicePixelRatio || 1).toFixed(2);
+}
+
+function getDeviceRAM() {
+  if (navigator.deviceMemory) return navigator.deviceMemory + "GB";
+  return "Unknown";
+}
+
+function getHardwareConcurrency() {
+  return navigator.hardwareConcurrency || "Unknown";
+}
+
+function getDeviceType() {
+  var ua = navigator.userAgent;
+  var maxTouchPoints = navigator.maxTouchPoints || 0;
+  if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && maxTouchPoints > 1)) return "tablet";
+  if (/Mobi|Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|webOS|Windows Phone/i.test(ua)) return "mobile";
+  return "pc";
+}
+
+function getDeviceModel() {
+  var ua = navigator.userAgent;
+  var screenWidth = window.screen.width;
+  var screenHeight = window.screen.height;
+  
+  if (/iPhone/i.test(ua)) {
+    var w = screenWidth, h = screenHeight;
+    if ((w === 430 && h === 932) || (w === 932 && h === 430)) return "iPhone 16 Pro Max";
+    if ((w === 393 && h === 852) || (w === 852 && h === 393)) return "iPhone 16 Pro";
+    if ((w === 390 && h === 844) || (w === 844 && h === 390)) return "iPhone 14/15/16";
+    if ((w === 428 && h === 926) || (w === 926 && h === 428)) return "iPhone 13 Pro Max";
+    return "iPhone";
+  }
+  
+  if (/Android/i.test(ua)) {
+    var smPatterns = [
+      {regex: /SM-S938|SM-S936|SM-S937/i, name: "Samsung S25 Ultra"},
+      {regex: /SM-S93[0-5]/i, name: "Samsung S25"},
+      {regex: /SM-S928|SM-S926|SM-S927/i, name: "Samsung S24 Ultra"},
+      {regex: /SM-S92[0-5]/i, name: "Samsung S24"},
+      {regex: /SM-F956/i, name: "Samsung Z Fold 6"},
+      {regex: /SM-F741/i, name: "Samsung Z Flip 6"},
+    ];
+    for (var i = 0; i < smPatterns.length; i++) {
+      if (smPatterns[i].regex.test(ua)) return smPatterns[i].name;
+    }
+    
+    if (/Pixel/i.test(ua)) return "Google Pixel";
+    if (/OnePlus|ONEPLUS/i.test(ua)) return "OnePlus";
+    if (/Xiaomi|Redmi/i.test(ua)) return "Xiaomi";
+    
+    var androidDevice = ua.match(/Android\s[0-9.]+;\s?([^;)]+?)\s?(?:Build|;|\))/i);
+    if (androidDevice && androidDevice[1]) return androidDevice[1].trim();
+    return "Android Device";
+  }
+  
+  if (/iPad/i.test(ua)) return "iPad";
+  if (/Windows NT/i.test(ua)) return "Windows PC";
+  if (/Macintosh/i.test(ua)) return "Mac";
+  if (/Linux/i.test(ua)) return "Linux PC";
+  if (/CrOS/i.test(ua)) return "Chromebook";
+  
+  return "Unknown Device";
+}
+
+function getBrowserInfo() {
+  var ua = navigator.userAgent;
+  if (/Edg\//i.test(ua)) { var v = ua.match(/Edg\/([0-9]+)/); return "Edge " + (v ? v[1] : ""); }
+  if (/Chrome\//i.test(ua) && !/Edg/i.test(ua)) { var v = ua.match(/Chrome\/([0-9]+)/); return "Chrome " + (v ? v[1] : ""); }
+  if (/Firefox/i.test(ua)) { var v = ua.match(/Firefox\/([0-9]+)/); return "Firefox " + (v ? v[1] : ""); }
+  if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) { var v = ua.match(/Version\/([0-9]+)/); return "Safari " + (v ? v[1] : ""); }
+  if (/SamsungBrowser/i.test(ua)) { var v = ua.match(/SamsungBrowser\/([0-9]+)/); return "Samsung Internet " + (v ? v[1] : ""); }
+  return "Browser";
+}
+
+function getOSInfo() {
+  var ua = navigator.userAgent;
+  var iOS = ua.match(/iPhone OS ([0-9_]+)|iPad.*OS ([0-9_]+)/i);
+  if (iOS) return "iOS " + (iOS[1] || iOS[2]).replace(/_/g, ".");
+  var android = ua.match(/Android ([0-9.]+)/);
+  if (android) return "Android " + android[1];
+  var windows = ua.match(/Windows NT ([0-9.]+)/);
+  if (windows) return "Windows " + ({"10.0": "10/11", "6.3": "8.1", "6.2": "8", "6.1": "7"}[windows[1]] || windows[1]);
+  var macOS = ua.match(/Mac OS X ([0-9_]+)/);
+  if (macOS) return "macOS " + macOS[1].replace(/_/g, ".");
+  if (/Linux/i.test(ua) && !/Android/i.test(ua)) return "Linux";
+  if (/CrOS/i.test(ua)) return "Chrome OS";
+  return "Unknown OS";
+}
+
+function getFullDeviceProfile() {
+  return {
+    type: getDeviceType(),
+    model: getDeviceModel(),
+    browser: getBrowserInfo(),
+    os: getOSInfo(),
+    screenRes: getScreenResolution(),
+    dpr: getDevicePixelRatio(),
+    ram: getDeviceRAM(),
+    cores: getHardwareConcurrency()
+  };
+}
+
+function getDeviceShortString() {
+  var prof = getFullDeviceProfile();
+  return prof.type + ": " + prof.model;
+}
+
+function getDeviceDisplayString() {
+  var prof = getFullDeviceProfile();
+  var icon = prof.type === "mobile" ? "📱" : prof.type === "tablet" ? "📲" : "💻";
+  return icon + " " + prof.model + " (" + prof.os + " / " + prof.browser + " / " + prof.screenRes + ")";
+}
+
+function getDeviceFingerprint() {
+  var prof = getFullDeviceProfile();
+  return prof.type + "_" + prof.model.replace(/\s+/g, "_") + "_" + prof.os.replace(/\s+/g, "_");
+}
+
+// ============================================
+// TRANSLATIONS
+// ============================================
+var TRANSLATIONS = {
+  fr: {
+    results: "Résultats",
+    year3Subtitle: "3ème Année — Dental Guide Oran",
+    invalidCredentials: "Identifiants incorrects",
+    fillAllFields: "Veuillez remplir tous les champs.",
+    connectionError: "Erreur de connexion. Réessayez.",
+    fullName: "Nom et Prénom",
+    namePlaceholder: "NOM PRENOM",
+    nameHint: "Nom et prénom en MAJUSCULES",
+    password: "Mot de passe",
+    passwordPlaceholder: "Votre numéro de liste",
+    accessResults: "Accéder à mes résultats",
+    verifying: "Vérification...",
+    myAccount: "Mon Compte",
+    average: "Moyenne",
+    ranking: "Classement",
+    students: "Étudiants",
+    detailedGrades: "Notes détaillées",
+    modules: "11 modules",
+    module: "Module",
+    coef: "Coef",
+    moyEMD: "Moy EMD",
+    moyModule: "Moy Module",
+    reportError: "Signaler une erreur",
+    concernedModule: "Module concerné",
+    chooseModule: "— Choisir un module —",
+    reportType: "Type de signalement",
+    gradeError: "Erreur de note",
+    missingGrade: "Note manquante",
+    other: "Autre",
+    commentOptional: "Commentaire (optionnel)",
+    describeProblem: "Décrivez le problème...",
+    sendReport: "Envoyer le signalement",
+    sending: "Envoi...",
+    reportSent: "Signalement envoyé !",
+    reportSaved: "Signalement enregistré.",
+    chooseModuleWarning: "Choisissez un module.",
+    back: "Retour",
+    accountHint: "Choisissez un identifiant et mot de passe mémorables.",
+    newIdentifier: "Nouvel identifiant",
+    newIdentifierPlaceholder: "Votre nouvel identifiant",
+    newPassword: "Nouveau mot de passe",
+    newPasswordPlaceholder: "Nouveau mot de passe",
+    confirmPassword: "Confirmer le mot de passe",
+    confirmPasswordPlaceholder: "Répétez le mot de passe",
+    saveChanges: "Sauvegarder les modifications",
+    saving: "Sauvegarde...",
+    accountUpdated: "Compte mis à jour !",
+    identifierEmpty: "L'identifiant ne peut pas être vide.",
+    passwordMismatch: "Les mots de passe ne correspondent pas.",
+    adminInterface: "Interface Admin",
+    readOnly: "Lecture seule",
+    year: "Année",
+    search: "Rechercher...",
+    logout: "Déconnexion",
+    studentsTab: "Étudiants",
+    reports: "Signalements",
+    accounts: "Comptes",
+    deviceAnalytics: "Appareils",
+    number: "N° ↕",
+    lastName: "Nom ↕",
+    firstName: "Prénom",
+    avg: "Moy ↕",
+    rank: "Rang ↕",
+    result: "Résultat",
+    actions: "Actions",
+    loading: "Chargement...",
+    noResults: "Aucun résultat",
+    noReports: "Aucun signalement reçu.",
+    noAccountChanges: "Aucun étudiant n'a modifié son compte.",
+    admitted: "Admis(e)",
+    catchup: "Rattrapage",
+    view: "Voir",
+    suggest: "Suggérer",
+    notes: "Notes",
+    close: "Fermer",
+    cancel: "Annuler",
+    save: "Sauvegarder",
+    noChanges: "Aucune modification détectée.",
+    notesSaved: "Notes sauvegardées !",
+    saveError: "Erreur sauvegarde.",
+    calculatedMoy: "Moy Calculée",
+    autoCalculateInfo: "Les moyennes sont calculées automatiquement lors de la sauvegarde.",
+    contactUs: "Nous contacter",
+    home: "Accueil",
+    myResults: "Mes Résultats",
+    suggestion: "Suggestion de modification",
+    suggestTitle: "Suggérer —",
+    fieldToModify: "Champ à modifier",
+    suggestedValue: "Valeur suggérée",
+    suggestedValuePlaceholder: "Ex: 12.5",
+    justification: "Justification",
+    justificationPlaceholder: "Pourquoi cette modification ?",
+    send: "Envoyer",
+    suggestionSent: "Suggestion envoyée !",
+    suggestionSaved: "Suggestion enregistrée.",
+    resetAccount: "Réinitialiser le compte de N°",
+    accountReset: "Compte réinitialisé pour N°",
+    confirmReset: " ?",
+    customIdentifier: "Identifiant perso",
+    customPassword: "MDP perso",
+    reset: "Reset",
+    pageRefresh: "Rafraichissement page",
+    studentLogin: "Etudiant Login",
+    adminLogin: "Admin Login",
+    adminLiteLogin: "Connexion Admin Lite",
+    system: "Système",
+    noComment: "(aucun commentaire)",
+    connection: "Connexion",
+    accountModification: "Modification de compte",
+    suggestModule: "Suggestion: ",
+    reason: " | Raison: ",
+    noReportsYet: "Aucun signalement reçu.",
+    choose: "— Choisir —",
+    device: "Appareil",
+    deviceType: "Type",
+    deviceModel: "Modèle",
+    browser: "Navigateur",
+    os: "OS",
+    screenRes: "Résolution",
+    totalLogins: "Connexions",
+    uniqueDevices: "Appareils uniques",
+    deviceDetails: "Détails de l'appareil",
+    clickToSee: "Cliquez pour plus de détails"
+  },
+  en: {
+    results: "Results",
+    year3Subtitle: "3rd Year — Dental Guide Oran",
+    invalidCredentials: "Invalid credentials",
+    fillAllFields: "Please fill in all fields.",
+    connectionError: "Connection error. Please try again.",
+    fullName: "Full Name",
+    namePlaceholder: "FIRSTNAME LASTNAME",
+    nameHint: "First and last name in UPPERCASE",
+    password: "Password",
+    passwordPlaceholder: "Your list number",
+    accessResults: "Access my results",
+    verifying: "Verifying...",
+    myAccount: "My Account",
+    average: "Average",
+    ranking: "Ranking",
+    students: "Students",
+    detailedGrades: "Detailed grades",
+    modules: "11 modules",
+    module: "Module",
+    coef: "Coef",
+    moyEMD: "Avg EMD",
+    moyModule: "Avg Module",
+    reportError: "Report an error",
+    concernedModule: "Concerned module",
+    chooseModule: "— Select a module —",
+    reportType: "Report type",
+    gradeError: "Grade error",
+    missingGrade: "Missing grade",
+    other: "Other",
+    commentOptional: "Comment (optional)",
+    describeProblem: "Describe the problem...",
+    sendReport: "Send report",
+    sending: "Sending...",
+    reportSent: "Report sent!",
+    reportSaved: "Report saved.",
+    chooseModuleWarning: "Please select a module.",
+    back: "Back",
+    accountHint: "Choose a memorable username and password.",
+    newIdentifier: "New username",
+    newIdentifierPlaceholder: "Your new username",
+    newPassword: "New password",
+    newPasswordPlaceholder: "New password",
+    confirmPassword: "Confirm password",
+    confirmPasswordPlaceholder: "Repeat the password",
+    saveChanges: "Save changes",
+    saving: "Saving...",
+    accountUpdated: "Account updated!",
+    identifierEmpty: "Username cannot be empty.",
+    passwordMismatch: "Passwords do not match.",
+    adminInterface: "Admin Interface",
+    readOnly: "Read only",
+    year: "Year",
+    search: "Search...",
+    logout: "Logout",
+    studentsTab: "Students",
+    reports: "Reports",
+    accounts: "Accounts",
+    deviceAnalytics: "Devices",
+    number: "No. ↕",
+    lastName: "Last Name ↕",
+    firstName: "First Name",
+    avg: "Avg ↕",
+    rank: "Rank ↕",
+    result: "Result",
+    actions: "Actions",
+    loading: "Loading...",
+    noResults: "No results",
+    noReports: "No reports received.",
+    noAccountChanges: "No student has modified their account.",
+    admitted: "Admitted",
+    catchup: "Catch-up",
+    view: "View",
+    suggest: "Suggest",
+    notes: "Notes",
+    close: "Close",
+    cancel: "Cancel",
+    save: "Save",
+    noChanges: "No changes detected.",
+    notesSaved: "Notes saved!",
+    saveError: "Save error.",
+    calculatedMoy: "Calculated Avg",
+    autoCalculateInfo: "Averages are calculated automatically when saving.",
+    contactUs: "Contact us",
+    home: "Home",
+    myResults: "My Results",
+    suggestion: "Modification suggestion",
+    suggestTitle: "Suggest —",
+    fieldToModify: "Field to modify",
+    suggestedValue: "Suggested value",
+    suggestedValuePlaceholder: "Ex: 12.5",
+    justification: "Justification",
+    justificationPlaceholder: "Why this modification?",
+    send: "Send",
+    suggestionSent: "Suggestion sent!",
+    suggestionSaved: "Suggestion saved.",
+    fillAllFields: "Fill in all fields.",
+    resetAccount: "Reset account for No.",
+    accountReset: "Account reset for No.",
+    confirmReset: "?",
+    customIdentifier: "Custom username",
+    customPassword: "Custom password",
+    reset: "Reset",
+    pageRefresh: "Page refresh",
+    studentLogin: "Student Login",
+    adminLogin: "Admin Login",
+    adminLiteLogin: "Admin Lite Login",
+    system: "System",
+    noComment: "(no comment)",
+    connection: "Connection",
+    accountModification: "Account modification",
+    suggestModule: "Suggestion: ",
+    reason: " | Reason: ",
+    noReportsYet: "No reports received yet.",
+    choose: "— Select —",
+    device: "Device",
+    deviceType: "Type",
+    deviceModel: "Model",
+    browser: "Browser",
+    os: "OS",
+    screenRes: "Resolution",
+    totalLogins: "Total Logins",
+    uniqueDevices: "Unique Devices",
+    deviceDetails: "Device Details",
+    clickToSee: "Click for details"
+  },
+  ar: {
+    results: "النتائج",
+    year3Subtitle: "السنة الثالثة — دليل طب الأسنان وهران",
+    invalidCredentials: "بيانات الدخول غير صحيحة",
+    fillAllFields: "يرجى ملء جميع الحقول.",
+    connectionError: "خطأ في الاتصال. حاول مرة أخرى.",
+    fullName: "الاسم الكامل",
+    namePlaceholder: "الاسم اللقب",
+    nameHint: "الاسم واللقب بأحرف كبيرة",
+    password: "كلمة المرور",
+    passwordPlaceholder: "رقم القائمة",
+    accessResults: "الوصول إلى نتائجي",
+    verifying: "جاري التحقق...",
+    myAccount: "حسابي",
+    average: "المعدل",
+    ranking: "الترتيب",
+    students: "طلاب",
+    detailedGrades: "النقاط التفصيلية",
+    modules: "11 مادة",
+    module: "المادة",
+    coef: "المعامل",
+    moyEMD: "معدل الامتحان",
+    moyModule: "معدل المادة",
+    reportError: "الإبلاغ عن خطأ",
+    concernedModule: "المادة المعنية",
+    chooseModule: "— اختر مادة —",
+    reportType: "نوع الإبلاغ",
+    gradeError: "خطأ في النقطة",
+    missingGrade: "نقطة مفقودة",
+    other: "أخرى",
+    commentOptional: "تعليق (اختياري)",
+    describeProblem: "صف المشكلة...",
+    sendReport: "إرسال الإبلاغ",
+    sending: "جاري الإرسال...",
+    reportSent: "تم إرسال الإبلاغ!",
+    reportSaved: "تم حفظ الإبلاغ.",
+    chooseModuleWarning: "اختر مادة.",
+    back: "رجوع",
+    accountHint: "اختر اسم مستخدم وكلمة مرور سهلة التذكر.",
+    newIdentifier: "اسم المستخدم الجديد",
+    newIdentifierPlaceholder: "اسم المستخدم الجديد",
+    newPassword: "كلمة المرور الجديدة",
+    newPasswordPlaceholder: "كلمة المرور الجديدة",
+    confirmPassword: "تأكيد كلمة المرور",
+    confirmPasswordPlaceholder: "أعد كتابة كلمة المرور",
+    saveChanges: "حفظ التغييرات",
+    saving: "جاري الحفظ...",
+    accountUpdated: "تم تحديث الحساب!",
+    identifierEmpty: "اسم المستخدم لا يمكن أن يكون فارغاً.",
+    passwordMismatch: "كلمات المرور غير متطابقة.",
+    adminInterface: "واجهة المشرف",
+    readOnly: "للقراءة فقط",
+    year: "سنة",
+    search: "بحث...",
+    logout: "تسجيل الخروج",
+    studentsTab: "الطلاب",
+    reports: "الإبلاغات",
+    accounts: "الحسابات",
+    deviceAnalytics: "الأجهزة",
+    number: "الرقم ↕",
+    lastName: "اللقب ↕",
+    firstName: "الاسم",
+    avg: "المعدل ↕",
+    rank: "الترتيب ↕",
+    result: "النتيجة",
+    actions: "إجراءات",
+    loading: "جاري التحميل...",
+    noResults: "لا توجد نتائج",
+    noReports: "لم يتم استلام أي إبلاغ.",
+    noAccountChanges: "لم يقم أي طالب بتعديل حسابه.",
+    admitted: "ناجح(ة)",
+    catchup: "مستدرك",
+    view: "عرض",
+    suggest: "اقتراح",
+    notes: "النقاط",
+    close: "إغلاق",
+    cancel: "إلغاء",
+    save: "حفظ",
+    noChanges: "لم يتم اكتشاف أي تغييرات.",
+    notesSaved: "تم حفظ النقاط!",
+    saveError: "خطأ في الحفظ.",
+    calculatedMoy: "المعدل المحسوب",
+    autoCalculateInfo: "يتم حساب المعدلات تلقائياً عند الحفظ.",
+    contactUs: "اتصل بنا",
+    home: "الرئيسية",
+    myResults: "نتائجي",
+    suggestion: "اقتراح تعديل",
+    suggestTitle: "اقتراح —",
+    fieldToModify: "الحقل المراد تعديله",
+    suggestedValue: "القيمة المقترحة",
+    suggestedValuePlaceholder: "مثال: 12.5",
+    justification: "التبرير",
+    justificationPlaceholder: "لماذا هذا التعديل؟",
+    send: "إرسال",
+    suggestionSent: "تم إرسال الاقتراح!",
+    suggestionSaved: "تم حفظ الاقتراح.",
+    fillAllFields: "املأ جميع الحقول.",
+    resetAccount: "إعادة تعيين حساب رقم",
+    accountReset: "تم إعادة تعيين حساب رقم",
+    confirmReset: "؟",
+    customIdentifier: "المعرف الشخصي",
+    customPassword: "كلمة المرور الشخصية",
+    reset: "إعادة تعيين",
+    pageRefresh: "تحديث الصفحة",
+    studentLogin: "دخول طالب",
+    adminLogin: "دخول المشرف",
+    adminLiteLogin: "دخول مشرف محدود",
+    system: "النظام",
+    noComment: "(بدون تعليق)",
+    connection: "اتصال",
+    accountModification: "تعديل الحساب",
+    suggestModule: "اقتراح: ",
+    reason: " | السبب: ",
+    noReportsYet: "لم يتم استلام أي إبلاغ بعد.",
+    choose: "— اختر —",
+    device: "الجهاز",
+    deviceType: "النوع",
+    deviceModel: "الموديل",
+    browser: "المتصفح",
+    os: "نظام التشغيل",
+    screenRes: "الدقة",
+    totalLogins: "عدد الدخول",
+    uniqueDevices: "الأجهزة الفريدة",
+    deviceDetails: "تفاصيل الجهاز",
+    clickToSee: "انقر لمزيد من التفاصيل"
+  }
+};
+
+function translatePage(lang) {
+  currentLang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+      el.textContent = TRANSLATIONS[lang][key];
+    }
+  });
+  
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n-placeholder');
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+      el.placeholder = TRANSLATIONS[lang][key];
+    }
+  });
+  
+  var signalModule = document.getElementById('signalModule');
+  if (signalModule && signalModule.options[0]) {
+    signalModule.options[0].textContent = TRANSLATIONS[lang].chooseModule;
+  }
+  
+  updateSidebarNav();
+  updateBreadcrumb();
+}
+
+// ============================================
+// Core Functions
+// ============================================
+async function sha256(msg) {
+  var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
+}
+
+function calcMoyModule(emd1, emd2, td, tp) {
+  var pts = 0, div = 0, emdVals = [];
+  if (emd1 !== null && emd1 !== undefined && emd1 !== "Abs") emdVals.push(parseFloat(emd1));
+  if (emd2 !== null && emd2 !== undefined && emd2 !== "Abs") emdVals.push(parseFloat(emd2));
+  if (emdVals.length > 0) { pts += (emdVals.reduce(function(a, b) { return a + b; }, 0) / emdVals.length) * 1; div += 1; }
+  if (td !== null && td !== undefined && td !== "Abs") { pts += parseFloat(td) * 2; div += 2; }
+  if (tp !== null && tp !== undefined && tp !== "Abs") { pts += parseFloat(tp) * 2; div += 2; }
+  if (div === 0) return null;
+  return Math.round((pts / div) * 10000) / 10000;
+}
+
+function calcMoyGenerale(et) {
+  var total = 0, coefs = 0;
+  MODULES.forEach(function(mod) {
+    var moy = et["moy_" + mod.key];
+    if (moy !== null && moy !== undefined && moy !== "Abs") {
+      var n = parseFloat(moy);
+      if (!isNaN(n)) { total += n * mod.coef; coefs += mod.coef; }
+    }
+  });
+  if (coefs === 0) return null;
+  return Math.round((total / coefs) * 10000) / 10000;
+}
+
+var SB_HEADERS = {
+  "apikey": SUPABASE_KEY,
+  "Authorization": "Bearer " + SUPABASE_KEY,
+  "Content-Type": "application/json",
+  "Prefer": "return=representation"
+};
+
+function fsGet(col, id) {
+  return fetch(SUPABASE_URL + "/rest/v1/" + col + "?numero=eq." + id + "&limit=1", { headers: SB_HEADERS })
+    .then(function(r) { return r.json(); })
+    .then(function(d) { return (Array.isArray(d) && d.length > 0) ? d[0] : null; });
+}
+
+function fsList(col) {
+  var all = [];
+  function page(offset) {
+    return fetch(SUPABASE_URL + "/rest/v1/" + col + "?select=*&limit=500&offset=" + offset, { headers: SB_HEADERS })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (!Array.isArray(d)) return { documents: all };
+        all = all.concat(d);
+        if (d.length === 500) return page(offset + 500);
+        return { documents: all };
+      });
+  }
+  return page(0);
+}
+
+function fsPatch(col, id, fields) {
+  return fetch(SUPABASE_URL + "/rest/v1/" + col + "?numero=eq." + id, {
+    method: "PATCH",
+    headers: SB_HEADERS,
+    body: JSON.stringify(fields)
+  }).then(function(r) { return r.json(); });
+}
+
+function fsCreate(col, data) {
+  return fetch(SUPABASE_URL + "/rest/v1/" + col, {
+    method: "POST",
+    headers: SB_HEADERS,
+    body: JSON.stringify(data)
+  }).then(function(r) { return r.json(); });
+}
+
+function saveSession(v) { localStorage.setItem(SESSION_KEY, String(v)); }
+function clearSession() { localStorage.removeItem(SESSION_KEY); }
+
+function t(key) {
+  return TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key] ? TRANSLATIONS[currentLang][key] : key;
+}
+
+function checkSession() {
+  var s = localStorage.getItem(SESSION_KEY);
+  if (!s) return;
+  if (s === "ADMIN") {
+    isAdmin = true; isAdminLite = false;
+    showView("admin"); loadAdmin();
+    return;
+  }
+  if (s === "ADMINLITE") {
+    isAdmin = true; isAdminLite = true;
+    showView("admin"); loadAdmin();
+    logConnection("Admin Lite", "N/A", t("pageRefresh"));
+    return;
+  }
+  var num = parseInt(s);
+  if (!num) return;
+  fsGet("etudiants", String(num)).then(function(et) {
+    if (!et) { clearSession(); return; }
+    currentStudent = et; showView("student"); renderStudent(et);
+    logConnection(et.nom + " " + et.prenom, et.numero, t("pageRefresh"));
+  }).catch(function() { clearSession(); });
+}
+
+async function doLogin() {
+  var id = document.getElementById("inputNom").value.trim();
+  var mdp = document.getElementById("inputMdp").value.trim();
+  if (!id || !mdp) { showLoginError(t("fillAllFields")); return; }
+  var inputHash = await sha256(mdp);
+  
+  if (id === ADMIN_ID && inputHash === ADMIN_MDP_HASH) {
+    saveSession("ADMIN"); isAdmin = true; isAdminLite = false;
+    showView("admin"); loadAdmin();
+    return;
+  }
+  
+  if (id === ADMIN_LITE_ID && inputHash === ADMIN_LITE_MDP_HASH) {
+    saveSession("ADMINLITE"); isAdmin = true; isAdminLite = true;
+    showView("admin"); loadAdmin();
+    logConnection("Admin Lite", "N/A", t("adminLiteLogin"));
+    return;
+  }
+  
+  setLoginLoading(true); hideLoginError();
+  findEtudiant(id, mdp).then(function(et) {
+    setLoginLoading(false);
+    if (!et) { showLoginError(t("invalidCredentials")); return; }
+    currentStudent = et; saveSession(et.numero); showView("student"); renderStudent(et);
+    logConnection(et.nom + " " + et.prenom, et.numero, t("studentLogin"));
+  }).catch(function() { setLoginLoading(false); showLoginError(t("connectionError")); });
+}
+
+function logConnection(nom, numero, type) {
+  var now = new Date().toLocaleString("fr-FR");
+  var isAdminLiteConn = type.indexOf("Admin Lite") !== -1;
+  var deviceProf = getFullDeviceProfile();
+  var deviceShort = getDeviceShortString();
+  var deviceFull = getDeviceDisplayString();
+  var fingerprint = getDeviceFingerprint();
+  
+  fsCreate("notifications", {
+    etudiant_nom: nom,
+    etudiant_numero: String(numero),
+    module: t("system"),
+    type: t("connection"),
+    message: type,
+    date: now,
+    lu: false,
+    admin_only: isAdminLiteConn,
+    device_info: deviceShort,
+    device_full: deviceFull,
+    device_type: deviceProf.type,
+    device_model: deviceProf.model,
+    device_os: deviceProf.os,
+    device_browser: deviceProf.browser,
+    device_screen: deviceProf.screenRes,
+    device_dpr: deviceProf.dpr,
+    device_ram: deviceProf.ram,
+    device_cores: deviceProf.cores,
+    device_fingerprint: fingerprint
+  });
+  
+  if (isAdminLiteConn) {
+    emailjs.init(EMAILJS_KEY);
+    emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      etudiant_nom: nom,
+      etudiant_numero: String(numero),
+      module: t("system"),
+      type_signalement: type,
+      message: type + " — " + now + " | " + t("device") + ": " + deviceFull,
+      date: now
     });
   }
-  return page(null);
-}
-function fsPatch(col,id,fields){
-  var url=FS_BASE+"/"+col+"/"+id+"?key="+FIREBASE_API_KEY;
-  var mask=Object.keys(fields).map(function(k){return "updateMask.fieldPaths="+encodeURIComponent(k);}).join("&");
-  url+="&"+mask;
-  return fetch(url,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:toFs(fields)})}).then(function(r){return r.json();});
-}
-function fsCreate(col,data){
-  return fetch(FS_BASE+"/"+col+"?key="+FIREBASE_API_KEY,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:toFs(data)})}).then(function(r){return r.json();});
-}
-function toFs(obj){
-  var f={};
-  for(var k in obj){
-    var v=obj[k];
-    if(v===null||v===undefined)f[k]={nullValue:null};
-    else if(typeof v==="boolean")f[k]={booleanValue:v};
-    else if(typeof v==="number")f[k]={doubleValue:v};
-    else f[k]={stringValue:String(v)};
-  }
-  return f;
-}
-function fromFs(doc){
-  if(!doc||!doc.fields)return null;
-  var obj={};
-  for(var k in doc.fields){
-    var f=doc.fields[k];
-    if(f.doubleValue!==undefined)obj[k]=f.doubleValue;
-    else if(f.integerValue!==undefined)obj[k]=parseInt(f.integerValue);
-    else if(f.stringValue!==undefined)obj[k]=f.stringValue;
-    else if(f.booleanValue!==undefined)obj[k]=f.booleanValue;
-    else if(f.nullValue!==undefined)obj[k]=null;
-  }
-  if(doc.name)obj._id=doc.name.split("/").pop();
-  return obj;
 }
 
-function saveSession(v){localStorage.setItem(SESSION_KEY,String(v));}
-function clearSession(){localStorage.removeItem(SESSION_KEY);}
-function checkSession(){
-  var s=localStorage.getItem(SESSION_KEY);
-  if(!s)return;
-  if(s==="ADMIN"){isAdmin=true;isAdminLite=false;showView("admin");loadAdmin();return;}
-  if(s==="ADMINLITE"){isAdmin=true;isAdminLite=true;showView("admin");loadAdmin();return;}
-  var num=parseInt(s);
-  if(!num)return;
-  fsGet("etudiants",String(num)).then(function(doc){
-    var et=fromFs(doc);
-    if(!et){clearSession();return;}
-    currentStudent=et;showView("student");renderStudent(et);
-  }).catch(function(){clearSession();});
-}
-
-function doLogin(){
-  var id=document.getElementById("inputNom").value.trim();
-  var mdp=document.getElementById("inputMdp").value.trim();
-  if(!id||!mdp){showLoginError("Veuillez remplir tous les champs.");return;}
-  if(id===ADMIN_ID&&mdp===ADMIN_MDP){saveSession("ADMIN");isAdmin=true;isAdminLite=false;showView("admin");loadAdmin();return;}
-  if(id===ADMIN_LITE_ID&&mdp===ADMIN_LITE_MDP){saveSession("ADMINLITE");isAdmin=true;isAdminLite=true;showView("admin");loadAdmin();return;}
-  setLoginLoading(true);hideLoginError();
-  findEtudiant(id,mdp).then(function(et){
-    setLoginLoading(false);
-    if(!et){showLoginError("Identifiant ou mot de passe incorrect.");return;}
-    currentStudent=et;saveSession(et.numero);showView("student");renderStudent(et);
-  }).catch(function(){setLoginLoading(false);showLoginError("Erreur de connexion. Réessayez.");});
-}
-
-function findEtudiant(id,mdp){
-  return fsList("etudiants").then(function(data){
-    if(!data.documents)return null;
-    var all=data.documents.map(fromFs).filter(Boolean);
-    for(var i=0;i<all.length;i++){
-      var et=all[i];
-      if(et.custom_id&&et.custom_mdp&&et.custom_id===id&&et.custom_mdp===mdp)return et;
-      var nom=(et.nom+" "+et.prenom).trim();
-      if(nom===id.trim()&&String(et.numero)===String(mdp))return et;
+function findEtudiant(id, mdp) {
+  return fsList("etudiants").then(function(data) {
+    if (!data.documents) return null;
+    var all = data.documents;
+    for (var i = 0; i < all.length; i++) {
+      var et = all[i];
+      if (et.custom_id && et.custom_mdp && et.custom_id === id && et.custom_mdp === mdp) return et;
+      var nom = (et.nom + " " + et.prenom).trim();
+      if (nom === id.trim() && String(et.numero) === String(mdp)) return et;
     }
     return null;
   });
 }
 
-function setLoginLoading(on){
-  var btn=document.getElementById("loginBtn");
-  btn.innerHTML=on?"<div class=\"spinner\"></div> Vérification...":"<i class=\"ph-bold ph-sign-in\"></i> Accéder à mes résultats";
-  btn.disabled=on;
+function setLoginLoading(on) {
+  var btn = document.getElementById("loginBtn");
+  btn.innerHTML = on ? '<div class="spinner"></div> ' + t("verifying") : '<i class="ph-bold ph-sign-in"></i> ' + t("accessResults");
+  btn.disabled = on;
 }
-function showLoginError(msg){document.getElementById("loginErrorMsg").textContent=msg;document.getElementById("loginError").classList.add("show");}
-function hideLoginError(){document.getElementById("loginError").classList.remove("show");}
 
-function renderStudent(et){
-  document.getElementById("studentName").textContent=et.nom+" "+et.prenom;
-  document.getElementById("studentMeta").textContent="N° "+et.numero+" | 3ème Année";
-  var moy=et.moyenne_generale;
-  document.getElementById("statMoy").textContent=moy?parseFloat(moy).toFixed(3):"—";
-  document.getElementById("statRank").textContent=et.classement||"—";
-  var badge=document.getElementById("studentBadge");
-  var res=et.resultat||"";
-  if(res.indexOf("admis")!==-1||res.indexOf("Félicitations")!==-1)
-    badge.innerHTML='<span class="badge badge-success"><i class="ph-fill ph-check-circle"></i> Admis(e)</span>';
-  else if(res.indexOf("Rattrapage")!==-1)
-    badge.innerHTML='<span class="badge badge-warning"><i class="ph-fill ph-warning"></i> '+res+'</span>';
+function showLoginError(msg) {
+  document.getElementById("loginErrorMsg").textContent = msg;
+  document.getElementById("loginError").classList.add("show");
+}
+
+function hideLoginError() {
+  document.getElementById("loginError").classList.remove("show");
+}
+
+function renderStudent(et) {
+  document.getElementById("studentName").textContent = et.nom + " " + et.prenom;
+  document.getElementById("studentMeta").textContent = "N° " + et.numero + " | 3" + (currentLang === "ar" ? "" : "ème") + " " + t("year");
+  var moy = et.moyenne_generale;
+  document.getElementById("statMoy").textContent = moy ? parseFloat(moy).toFixed(3) : "—";
+  document.getElementById("statRank").textContent = et.classement || "—";
+  
+  var badge = document.getElementById("studentBadge");
+  var res = et.resultat || "";
+  if (res.indexOf("admis") !== -1 || res.indexOf("Félicitations") !== -1)
+    badge.innerHTML = '<span class="badge badge-success"><i class="ph-fill ph-check-circle"></i> ' + t("admitted") + '</span>';
+  else if (res.indexOf("Rattrapage") !== -1)
+    badge.innerHTML = '<span class="badge badge-warning"><i class="ph-fill ph-warning"></i> ' + t("catchup") + '</span>';
   else
-    badge.innerHTML='<span class="badge badge-danger"><i class="ph-fill ph-x-circle"></i> '+(res||"—")+'</span>';
-  var tbody=document.getElementById("modulesBody");
-  tbody.innerHTML="";
-  var sel=document.getElementById("signalModule");
-  sel.innerHTML='<option value="">— Choisir un module —</option>';
-  MODULES.forEach(function(mod){
-    var k=mod.key;
-    var e1=et[k+"_emd1"],e2=et[k+"_emd2"],td=et[k+"_td"],tp=et[k+"_tp"];
-    var mm=et[k+"_moy_module"]!==undefined?et[k+"_moy_module"]:et["moy_"+k];
-    var tr=document.createElement("tr");
-    tr.innerHTML=
-      "<td><span style=\"font-weight:600;\">"+mod.nom+"</span><span class=\"coef-badge\">x"+mod.coef+"</span></td>"+
-      "<td class=\"mono\">"+mod.coef+"</td>"+
-      "<td class=\"mono "+nc(e1)+"\">"+fn(e1)+"</td>"+
-      "<td class=\"mono "+nc(e2)+"\">"+fn(e2)+"</td>"+
-      "<td class=\"mono "+nc(et[k+"_moy_emd"])+"\">"+fn(et[k+"_moy_emd"])+"</td>"+
-      "<td class=\"mono "+nc(td)+"\">"+fn(td)+"</td>"+
-      "<td class=\"mono "+nc(tp)+"\">"+fn(tp)+"</td>"+
-      "<td class=\"mono "+nc(mm)+"\" style=\"font-weight:700;\">"+fn(mm)+"</td>";
+    badge.innerHTML = '<span class="badge badge-danger"><i class="ph-fill ph-x-circle"></i> ' + (res || "—") + '</span>';
+  
+  var tbody = document.getElementById("modulesBody");
+  tbody.innerHTML = "";
+  var sel = document.getElementById("signalModule");
+  sel.innerHTML = '<option value="">' + t("chooseModule") + '</option>';
+  
+  MODULES.forEach(function(mod) {
+    var k = mod.key;
+    var e1 = et[k + "_emd1"], e2 = et[k + "_emd2"], td = et[k + "_td"], tp = et[k + "_tp"];
+    var mm = et[k + "_moy_module"] !== undefined ? et[k + "_moy_module"] : et["moy_" + k];
+    var tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td><span style="font-weight:600;">' + mod.nom + '</span><span class="coef-badge">x' + mod.coef + '</span></td>' +
+      '<td class="mono">' + mod.coef + '</td>' +
+      '<td class="mono ' + nc(e1) + '">' + fn(e1) + '</td>' +
+      '<td class="mono ' + nc(e2) + '">' + fn(e2) + '</td>' +
+      '<td class="mono ' + nc(et[k + "_moy_emd"]) + '">' + fn(et[k + "_moy_emd"]) + '</td>' +
+      '<td class="mono ' + nc(td) + '">' + fn(td) + '</td>' +
+      '<td class="mono ' + nc(tp) + '">' + fn(tp) + '</td>' +
+      '<td class="mono ' + nc(mm) + '" style="font-weight:700;">' + fn(mm) + '</td>';
     tbody.appendChild(tr);
-    var opt=document.createElement("option");opt.value=mod.nom;opt.textContent=mod.nom;
+    
+    var opt = document.createElement("option");
+    opt.value = mod.nom;
+    opt.textContent = mod.nom;
     sel.appendChild(opt);
   });
 }
 
-function fn(v){
-  if(v===null||v===undefined)return '<span class="note-abs">—</span>';
-  if(v==="Abs")return '<span class="note-abs">Abs</span>';
-  var n=parseFloat(v);if(isNaN(n))return v;
+function fn(v) {
+  if (v === null || v === undefined) return '<span class="note-abs">—</span>';
+  if (v === "Abs") return '<span class="note-abs">Abs</span>';
+  var n = parseFloat(v);
+  if (isNaN(n)) return v;
   return n.toFixed(2);
 }
-function nc(v){
-  if(v==="Abs"||v===null||v===undefined)return "note-abs";
-  var n=parseFloat(v);if(isNaN(n))return "";
-  return n<5?"note-bad":n<10?"note-mid":"note-good";
+
+function nc(v) {
+  if (v === "Abs" || v === null || v === undefined) return "note-abs";
+  var n = parseFloat(v);
+  if (isNaN(n)) return "";
+  return n < 5 ? "note-bad" : n < 10 ? "note-mid" : "note-good";
 }
 
-function showAccount(){
-  if(!currentStudent)return;
-  document.getElementById("accountSubtitle").textContent=currentStudent.nom+" "+currentStudent.prenom+" — N° "+currentStudent.numero;
-  document.getElementById("newIdentifiant").value=currentStudent.custom_id||(currentStudent.nom+" "+currentStudent.prenom);
-  document.getElementById("newMdp").value="";
-  document.getElementById("confirmMdp").value="";
+function showAccount() {
+  if (!currentStudent) return;
+  document.getElementById("accountSubtitle").textContent = currentStudent.nom + " " + currentStudent.prenom + " — N° " + currentStudent.numero;
+  document.getElementById("newIdentifiant").value = currentStudent.custom_id || (currentStudent.nom + " " + currentStudent.prenom);
+  document.getElementById("newMdp").value = "";
+  document.getElementById("confirmMdp").value = "";
   showView("account");
 }
 
-function saveAccount(){
-  var newId=document.getElementById("newIdentifiant").value.trim();
-  var newMdp=document.getElementById("newMdp").value.trim();
-  var conf=document.getElementById("confirmMdp").value.trim();
-  if(!newId){showToast("L'identifiant ne peut pas être vide.","danger");return;}
-  if(newMdp&&newMdp!==conf){showToast("Les mots de passe ne correspondent pas.","danger");return;}
-  var btn=document.getElementById("saveAccountBtn");
-  btn.innerHTML='<div class="spinner"></div> Sauvegarde...';btn.disabled=true;
-  var fields={custom_id:newId};
-  if(newMdp)fields.custom_mdp=newMdp;
-  var changes="Identifiant: "+newId+(newMdp?" | Mot de passe modifie":"");
-  var now=new Date().toLocaleString("fr-FR");
-  fsPatch("etudiants",String(currentStudent.numero),fields).then(function(){
-    currentStudent.custom_id=newId;
-    if(newMdp)currentStudent.custom_mdp=newMdp;
-    return fsCreate("notifications",{
-      etudiant_nom:currentStudent.nom+" "+currentStudent.prenom,
-      etudiant_numero:currentStudent.numero,module:"—",
-      type:"Modification de compte",message:changes,date:now,lu:false
+function saveAccount() {
+  var newId = document.getElementById("newIdentifiant").value.trim();
+  var newMdp = document.getElementById("newMdp").value.trim();
+  var conf = document.getElementById("confirmMdp").value.trim();
+  if (!newId) { showToast(t("identifierEmpty"), "danger"); return; }
+  if (newMdp && newMdp !== conf) { showToast(t("passwordMismatch"), "danger"); return; }
+  
+  var btn = document.getElementById("saveAccountBtn");
+  btn.innerHTML = '<div class="spinner"></div> ' + t("saving"); btn.disabled = true;
+  
+  var fields = { custom_id: newId };
+  if (newMdp) fields.custom_mdp = newMdp;
+  var changes = "Identifiant: " + newId + (newMdp ? " | Mot de passe modifie" : "");
+  var now = new Date().toLocaleString("fr-FR");
+  var deviceProf = getFullDeviceProfile();
+  var deviceShort = getDeviceShortString();
+  var deviceFull = getDeviceDisplayString();
+  var fingerprint = getDeviceFingerprint();
+  
+  fsPatch("etudiants", String(currentStudent.numero), fields).then(function() {
+    currentStudent.custom_id = newId;
+    if (newMdp) currentStudent.custom_mdp = newMdp;
+    return fsCreate("notifications", {
+      etudiant_nom: currentStudent.nom + " " + currentStudent.prenom,
+      etudiant_numero: currentStudent.numero,
+      module: "—",
+      type: t("accountModification"),
+      message: changes,
+      date: now,
+      lu: false,
+      admin_only: true,
+      device_info: deviceShort,
+      device_full: deviceFull,
+      device_type: deviceProf.type,
+      device_model: deviceProf.model,
+      device_os: deviceProf.os,
+      device_browser: deviceProf.browser,
+      device_screen: deviceProf.screenRes,
+      device_dpr: deviceProf.dpr,
+      device_ram: deviceProf.ram,
+      device_cores: deviceProf.cores,
+      device_fingerprint: fingerprint
     });
-  }).then(function(){
+  }).then(function() {
     emailjs.init(EMAILJS_KEY);
-    return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
-      etudiant_nom:currentStudent.nom+" "+currentStudent.prenom,
-      etudiant_numero:String(currentStudent.numero),
-      module:"Compte",type_signalement:"Modification de compte",
-      message:changes,date:now
+    return emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      etudiant_nom: currentStudent.nom + " " + currentStudent.prenom,
+      etudiant_numero: String(currentStudent.numero),
+      module: t("myAccount"),
+      type_signalement: t("accountModification"),
+      message: changes + " | " + t("device") + ": " + deviceFull,
+      date: now
     });
-  }).then(function(){
-    btn.innerHTML='<i class="ph-bold ph-floppy-disk"></i> Sauvegarder les modifications';
-    btn.disabled=false;showToast("Compte mis à jour !","success");showView("student");
-  }).catch(function(){
-    btn.innerHTML='<i class="ph-bold ph-floppy-disk"></i> Sauvegarder les modifications';
-    btn.disabled=false;showToast("Modifications sauvegardées.","success");showView("student");
+  }).then(function() {
+    btn.innerHTML = '<i class="ph-bold ph-floppy-disk"></i> ' + t("saveChanges");
+    btn.disabled = false;
+    showToast(t("accountUpdated"), "success");
+    showView("student");
+  }).catch(function() {
+    btn.innerHTML = '<i class="ph-bold ph-floppy-disk"></i> ' + t("saveChanges");
+    btn.disabled = false;
+    showToast(t("accountUpdated"), "success");
+    showView("student");
   });
 }
 
-function envoyerSignalement(){
-  var module=document.getElementById("signalModule").value;
-  var type=document.getElementById("signalType").value;
-  var comment=document.getElementById("signalComment").value.trim();
-  if(!module){showToast("Choisissez un module.","warning");return;}
-  var btn=document.getElementById("signalBtn");
-  btn.innerHTML='<div class="spinner"></div> Envoi...';btn.disabled=true;
-  var now=new Date().toLocaleString("fr-FR");
-  var nom=currentStudent.nom+" "+currentStudent.prenom;
-  fsCreate("notifications",{
-    etudiant_nom:nom,etudiant_numero:currentStudent.numero,
-    module:module,type:type,message:comment||"(aucun commentaire)",date:now,lu:false
-  }).then(function(){
+function envoyerSignalement() {
+  var module = document.getElementById("signalModule").value;
+  var type = document.getElementById("signalType").value;
+  var comment = document.getElementById("signalComment").value.trim();
+  if (!module) { showToast(t("chooseModuleWarning"), "warning"); return; }
+  
+  var btn = document.getElementById("signalBtn");
+  btn.innerHTML = '<div class="spinner"></div> ' + t("sending"); btn.disabled = true;
+  
+  var now = new Date().toLocaleString("fr-FR");
+  var nom = currentStudent.nom + " " + currentStudent.prenom;
+  var deviceProf = getFullDeviceProfile();
+  var deviceShort = getDeviceShortString();
+  var deviceFull = getDeviceDisplayString();
+  var fingerprint = getDeviceFingerprint();
+  
+  fsCreate("notifications", {
+    etudiant_nom: nom,
+    etudiant_numero: currentStudent.numero,
+    module: module,
+    type: type,
+    message: comment || t("noComment"),
+    date: now,
+    lu: false,
+    admin_only: false,
+    device_info: deviceShort,
+    device_full: deviceFull,
+    device_type: deviceProf.type,
+    device_model: deviceProf.model,
+    device_os: deviceProf.os,
+    device_browser: deviceProf.browser,
+    device_screen: deviceProf.screenRes,
+    device_dpr: deviceProf.dpr,
+    device_ram: deviceProf.ram,
+    device_cores: deviceProf.cores,
+    device_fingerprint: fingerprint
+  }).then(function() {
     emailjs.init(EMAILJS_KEY);
-    return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
-      etudiant_nom:nom,etudiant_numero:String(currentStudent.numero),
-      module:module,type_signalement:type,message:comment||"(aucun commentaire)",date:now
+    return emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      etudiant_nom: nom,
+      etudiant_numero: String(currentStudent.numero),
+      module: module,
+      type_signalement: type,
+      message: (comment || t("noComment")) + " | " + t("device") + ": " + deviceFull,
+      date: now
     });
-  }).then(function(){
-    btn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> Envoyer le signalement';
-    btn.disabled=false;
-    document.getElementById("signalModule").value="";
-    document.getElementById("signalComment").value="";
-    showToast("Signalement envoyé !","success");
-  }).catch(function(){
-    btn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> Envoyer le signalement';
-    btn.disabled=false;showToast("Signalement enregistré.","warning");
+  }).then(function() {
+    btn.innerHTML = '<i class="ph-bold ph-paper-plane-right"></i> ' + t("sendReport");
+    btn.disabled = false;
+    document.getElementById("signalModule").value = "";
+    document.getElementById("signalComment").value = "";
+    showToast(t("reportSent"), "success");
+  }).catch(function() {
+    btn.innerHTML = '<i class="ph-bold ph-paper-plane-right"></i> ' + t("sendReport");
+    btn.disabled = false;
+    document.getElementById("signalModule").value = "";
+    document.getElementById("signalComment").value = "";
+    showToast(t("reportSaved"), "warning");
   });
 }
 
-function loadAdmin(){
-  var badge=document.getElementById("adminLiteBadge");
-  if(isAdminLite)badge.classList.remove("hidden");else badge.classList.add("hidden");
-  document.getElementById("adminBody").innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Chargement...</td></tr>';
-  fsList("etudiants").then(function(data){
-    if(!data.documents){adminData=[];renderAdminTable([]);return;}
-    adminData=data.documents.map(fromFs).filter(Boolean);
-    adminData.sort(function(a,b){return a.numero-b.numero;});
+function loadAdmin() {
+  var badge = document.getElementById("adminLiteBadge");
+  if (isAdminLite) badge.classList.remove("hidden"); else badge.classList.add("hidden");
+  document.getElementById("adminBody").innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">' + t("loading") + '</td></tr>';
+  
+  fsList("etudiants").then(function(data) {
+    if (!data.documents) { adminData = []; renderAdminTable([]); return; }
+    adminData = data.documents.filter(Boolean);
+    adminData.sort(function(a, b) { return a.numero - b.numero; });
     renderAdminTable(adminData);
   });
-  loadNotifs();loadComptes();
+  loadNotifs(); loadComptes(); loadDeviceAnalytics();
 }
 
-function renderAdminTable(data){
-  var tbody=document.getElementById("adminBody");
-  if(!data.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Aucun résultat</td></tr>';return;}
-  tbody.innerHTML="";
-  data.forEach(function(et){
-    var moy=et.moyenne_generale?parseFloat(et.moyenne_generale).toFixed(3):"—";
-    var res=et.resultat||"—";
-    var resBadge=res.indexOf("admis")!==-1||res.indexOf("Félicitations")!==-1
-      ?'<span class="badge badge-success" style="font-size:0.72rem;padding:2px 8px;">Admis</span>'
-      :res.indexOf("Rattrapage")!==-1
-        ?'<span class="badge badge-warning" style="font-size:0.72rem;padding:2px 8px;">Rattrapage</span>'
-        :'<span style="color:var(--text-muted);font-size:0.85rem;">'+res+'</span>';
-    var actionBtn=isAdminLite
-      ?'<button class="btn-sm btn-ghost-sm" onclick="viewNotes('+et.numero+')"><i class="ph-bold ph-eye"></i> Voir</button> <button class="btn-sm btn-ghost-sm" onclick="suggestEdit('+et.numero+')"><i class="ph-bold ph-pencil-simple"></i> Suggérer</button>'
-      :'<button class="btn-sm btn-success-sm" onclick="openEditNotes('+et.numero+')"><i class="ph-bold ph-pencil"></i> Notes</button>';
-    var tr=document.createElement("tr");
-    tr.innerHTML=
-      '<td class="mono" style="font-weight:700;">'+et.numero+'</td>'+
-      '<td style="font-weight:600;">'+et.nom+'</td>'+
-      '<td>'+et.prenom+'</td>'+
-      '<td class="mono '+nc(et.moyenne_generale)+'" style="font-weight:700;">'+moy+'</td>'+
-      '<td class="mono">'+(et.classement||"—")+'</td>'+
-      '<td>'+resBadge+'</td>'+
-      '<td>'+actionBtn+'</td>';
+function renderAdminTable(data) {
+  var tbody = document.getElementById("adminBody");
+  if (!data.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">' + t("noResults") + '</td></tr>'; return; }
+  tbody.innerHTML = "";
+  
+  data.forEach(function(et) {
+    var moy = et.moyenne_generale ? parseFloat(et.moyenne_generale).toFixed(3) : "—";
+    var res = et.resultat || "—";
+    var resBadge = res.indexOf("admis") !== -1 || res.indexOf("Félicitations") !== -1
+      ? '<span class="badge badge-success" style="font-size:0.72rem;padding:2px 8px;">' + t("admitted") + '</span>'
+      : res.indexOf("Rattrapage") !== -1
+        ? '<span class="badge badge-warning" style="font-size:0.72rem;padding:2px 8px;">' + t("catchup") + '</span>'
+        : '<span style="color:var(--text-muted);font-size:0.85rem;">' + res + '</span>';
+    
+    var actionBtn = isAdminLite
+      ? '<button class="btn-sm btn-ghost-sm" onclick="viewNotes(' + et.numero + ')"><i class="ph-bold ph-eye"></i> ' + t("view") + '</button>'
+      : '<button class="btn-sm btn-success-sm" onclick="openEditNotes(' + et.numero + ')"><i class="ph-bold ph-pencil"></i> ' + t("notes") + '</button>';
+    
+    var tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td class="mono" style="font-weight:700;">' + et.numero + '</td>' +
+      '<td style="font-weight:600;">' + et.nom + '</td>' +
+      '<td>' + et.prenom + '</td>' +
+      '<td class="mono ' + nc(et.moyenne_generale) + '" style="font-weight:700;">' + moy + '</td>' +
+      '<td class="mono">' + (et.classement || "—") + '</td>' +
+      '<td>' + resBadge + '</td>' +
+      '<td>' + actionBtn + '</td>';
     tbody.appendChild(tr);
   });
 }
 
-function openEditNotes(num){
-  var et=adminData.find(function(e){return e.numero===num;});
-  if(!et)return;
-  var d=document.createElement("div");
-  d.id="editModal";d.className="modal-overlay";
-  var inner=document.createElement("div");
-  inner.className="modal-box";
-  var hdr=document.createElement("div");
-  hdr.style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
-  hdr.innerHTML='<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">'+et.nom+' '+et.prenom+' — Notes</div>';
-  var closeBtn=document.createElement("button");
-  closeBtn.className="btn-ghost";closeBtn.style="padding:0.4rem 0.8rem;";
-  closeBtn.innerHTML='<i class="ph-bold ph-x"></i>';
-  closeBtn.onclick=function(){d.remove();};
-  hdr.appendChild(closeBtn);inner.appendChild(hdr);
-  var tableWrap=document.createElement("div");tableWrap.style="overflow-x:auto;";
-  var table=document.createElement("table");table.className="res-table";
-  var thead=document.createElement("thead");
-  thead.innerHTML='<tr><th>Module</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th>Moy Module</th></tr>';
-  table.appendChild(thead);
-  var tbody=document.createElement("tbody");
-  MODULES.forEach(function(mod){
-    var tr=document.createElement("tr");
-    var td0=document.createElement("td");td0.style="font-weight:600;";td0.textContent=mod.nom;tr.appendChild(td0);
-    ["emd1","emd2","td","tp","moy_module"].forEach(function(sub){
-      var fk=mod.key+"_"+sub;
-      var v=et[fk];
-      var cell=document.createElement("td");
-      var inp=document.createElement("input");
-      inp.className="calc-input";inp.id="edit_"+fk;
-      inp.value=(v!==null&&v!==undefined)?v:"";
-      inp.placeholder="—";inp.style="padding:0.4rem 0.6rem;width:80px;";
-      cell.appendChild(inp);tr.appendChild(cell);
+function loadNotifs() {
+  fetch(SUPABASE_URL + "/rest/v1/notifications?select=*&order=created_at.desc&limit=100", { headers: SB_HEADERS })
+    .then(function(r) { return r.json(); })
+    .then(function(notifs) {
+      if (!Array.isArray(notifs)) { renderNotifs([]); return; }
+      
+      if (isAdminLite) {
+        notifs = notifs.filter(function(n) { 
+          if (n.admin_only) return false;
+          if (n.type === "Connexion" || n.type === "Connection" || n.type === "اتصال") return false;
+          if (n.type === "Modification de compte" || n.type === "Account modification" || n.type === "تعديل الحساب") return false;
+          return true;
+        });
+      }
+      
+      var unread = notifs.filter(function(n) { return !n.lu; }).length;
+      if (unread > 0) {
+        document.getElementById("notifCount").textContent = unread;
+        document.getElementById("notifCount").classList.remove("hidden");
+      }
+      renderNotifs(notifs);
     });
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);tableWrap.appendChild(table);inner.appendChild(tableWrap);
-  var footer=document.createElement("div");
-  footer.style="margin-top:1.25rem;display:flex;gap:0.75rem;justify-content:flex-end;";
-  var cancelBtn=document.createElement("button");cancelBtn.className="btn-ghost";cancelBtn.textContent="Annuler";
-  cancelBtn.onclick=function(){d.remove();};
-  var saveBtn=document.createElement("button");saveBtn.className="btn-main";
-  saveBtn.style="width:auto;padding:0.6rem 1.5rem;";
-  saveBtn.innerHTML='<i class="ph-bold ph-floppy-disk"></i> Sauvegarder';
-  saveBtn.onclick=function(){saveEditNotes(num,d);};
-  footer.appendChild(cancelBtn);footer.appendChild(saveBtn);
-  inner.appendChild(footer);d.appendChild(inner);document.body.appendChild(d);
 }
 
-function saveEditNotes(num,modal){
-  var et=adminData.find(function(e){return e.numero===num;});
-  if(!et)return;
-  var fields={};
-  MODULES.forEach(function(mod){
-    ["emd1","emd2","td","tp","moy_module"].forEach(function(sub){
-      var fk=mod.key+"_"+sub;
-      var el=document.getElementById("edit_"+fk);
-      if(!el)return;
-      var v=el.value.trim();
-      if(v===""||v==="Abs")fields[fk]=v==="Abs"?"Abs":null;
-      else{var n=parseFloat(v);fields[fk]=isNaN(n)?v:n;}
-    });
-  });
-  fsPatch("etudiants",String(num),fields).then(function(){
-    for(var k in fields)et[k]=fields[k];
-    if(modal)modal.remove();
-    showToast("Notes sauvegardées pour N°"+num,"success");
-    renderAdminTable(adminData);
-  }).catch(function(){showToast("Erreur sauvegarde.","danger");});
-}
-
-
-function viewNotes(num){
-  var et=adminData.find(function(e){return e.numero===num;});
-  if(!et)return;
-  var d=document.createElement("div");
-  d.id="viewNotesModal";d.className="modal-overlay";
-  var inner=document.createElement("div");inner.className="modal-box";
-  var hdr=document.createElement("div");
-  hdr.style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
-  hdr.innerHTML='<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">'+et.nom+' '+et.prenom+' — Notes</div>';
-  var closeBtn=document.createElement("button");
-  closeBtn.className="btn-ghost";closeBtn.style="padding:0.4rem 0.8rem;";
-  closeBtn.innerHTML='<i class="ph-bold ph-x"></i>';
-  closeBtn.onclick=function(){d.remove();};
-  hdr.appendChild(closeBtn);inner.appendChild(hdr);
-  var tableWrap=document.createElement("div");tableWrap.style="overflow-x:auto;";
-  var table=document.createElement("table");table.className="res-table";
-  var thead=document.createElement("thead");
-  thead.innerHTML='<tr><th>Module</th><th>Coef</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th>Moy Module</th></tr>';
-  table.appendChild(thead);
-  var tbody=document.createElement("tbody");
-  MODULES.forEach(function(mod){
-    var k=mod.key;
-    var tr=document.createElement("tr");
-    var vals=[et[k+"_emd1"],et[k+"_emd2"],et[k+"_td"],et[k+"_tp"],et[k+"_moy_module"]!==undefined?et[k+"_moy_module"]:et["moy_"+k]];
-    var td0=document.createElement("td");td0.style="font-weight:600;";td0.textContent=mod.nom;tr.appendChild(td0);
-    var td1=document.createElement("td");td1.className="mono";td1.textContent=mod.coef;tr.appendChild(td1);
-    vals.forEach(function(v){
-      var cell=document.createElement("td");
-      cell.className="mono "+nc(v);
-      cell.innerHTML=fn(v);
-      tr.appendChild(cell);
-    });
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);tableWrap.appendChild(table);inner.appendChild(tableWrap);
-  var footer=document.createElement("div");
-  footer.style="margin-top:1.25rem;display:flex;justify-content:flex-end;";
-  var closeBtn2=document.createElement("button");closeBtn2.className="btn-ghost";closeBtn2.textContent="Fermer";
-  closeBtn2.onclick=function(){d.remove();};
-  footer.appendChild(closeBtn2);inner.appendChild(footer);
-  d.appendChild(inner);document.body.appendChild(d);
-}
-
-function suggestEdit(num){
-  var et=adminData.find(function(e){return e.numero===num;});
-  if(!et)return;
-  var d=document.createElement("div");
-  d.id="suggestModal";d.className="modal-overlay";
-  var inner=document.createElement("div");inner.className="modal-box";
-  var hdr=document.createElement("div");
-  hdr.style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
-  hdr.innerHTML='<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">Suggérer — '+et.nom+' '+et.prenom+'</div>';
-  var closeBtn=document.createElement("button");closeBtn.className="btn-ghost";
-  closeBtn.style="padding:0.4rem 0.8rem;";closeBtn.innerHTML='<i class="ph-bold ph-x"></i>';
-  closeBtn.onclick=function(){d.remove();};
-  hdr.appendChild(closeBtn);inner.appendChild(hdr);
-
-  var modDiv=document.createElement("div");modDiv.className="mb-4";
-  modDiv.innerHTML='<label class="field-label">Module concerné</label>';
-  var modSel=document.createElement("select");modSel.className="glass-select";modSel.id="suggestModule";
-  modSel.innerHTML='<option value="">— Choisir —</option>';
-  MODULES.forEach(function(m){var o=document.createElement("option");o.value=m.nom;o.textContent=m.nom;modSel.appendChild(o);});
-  modDiv.appendChild(modSel);inner.appendChild(modDiv);
-
-  var fieldDiv=document.createElement("div");fieldDiv.className="mb-4";
-  fieldDiv.innerHTML='<label class="field-label">Champ à modifier</label>';
-  var fieldSel=document.createElement("select");fieldSel.className="glass-select";fieldSel.id="suggestField";
-  fieldSel.innerHTML='<option value="emd1">EMD 1</option><option value="emd2">EMD 2</option><option value="td">TD</option><option value="tp">TP</option><option value="moy_module">Moy Module</option>';
-  fieldDiv.appendChild(fieldSel);inner.appendChild(fieldDiv);
-
-  var valDiv=document.createElement("div");valDiv.className="mb-4";
-  valDiv.innerHTML='<label class="field-label">Valeur suggérée</label>';
-  var valInp=document.createElement("input");valInp.type="text";valInp.className="calc-input";
-  valInp.id="suggestVal";valInp.placeholder="Ex: 12.5";
-  valDiv.appendChild(valInp);inner.appendChild(valDiv);
-
-  var reasonDiv=document.createElement("div");reasonDiv.className="mb-5";
-  reasonDiv.innerHTML='<label class="field-label">Justification</label>';
-  var reasonTa=document.createElement("textarea");reasonTa.className="calc-input";
-  reasonTa.id="suggestReason";reasonTa.placeholder="Pourquoi cette modification ?";
-  reasonTa.style="min-height:70px;resize:vertical;";
-  reasonDiv.appendChild(reasonTa);inner.appendChild(reasonDiv);
-
-  var footer=document.createElement("div");
-  footer.style="display:flex;gap:0.75rem;justify-content:flex-end;";
-  var cancelBtn=document.createElement("button");cancelBtn.className="btn-ghost";cancelBtn.textContent="Annuler";
-  cancelBtn.onclick=function(){d.remove();};
-  var sendBtn=document.createElement("button");sendBtn.className="btn-main";
-  sendBtn.style="width:auto;padding:0.6rem 1.5rem;";
-  sendBtn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> Envoyer';
-  sendBtn.onclick=function(){sendSuggestion(num,d);};
-  footer.appendChild(cancelBtn);footer.appendChild(sendBtn);
-  inner.appendChild(footer);d.appendChild(inner);document.body.appendChild(d);
-}
-
-function sendSuggestion(num,modal){
-  var et=adminData.find(function(e){return e.numero===num;});
-  var module=document.getElementById("suggestModule").value;
-  var field=document.getElementById("suggestField").value;
-  var val=document.getElementById("suggestVal").value.trim();
-  var reason=document.getElementById("suggestReason").value.trim();
-  if(!module||!val){showToast("Remplissez tous les champs.","warning");return;}
-  var now=new Date().toLocaleString("fr-FR");
-  var msg="Suggestion: "+module+" / "+field+" = "+val+(reason?" | Raison: "+reason:"");
-  fsCreate("notifications",{
-    etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:et.numero,
-    module:module,type:"Suggestion de modification (Admin Lite)",
-    message:msg,date:now,lu:false
-  }).then(function(){
-    emailjs.init(EMAILJS_KEY);
-    return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{
-      etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:String(et.numero),
-      module:module,type_signalement:"Suggestion Admin Lite",message:msg,date:now
-    });
-  }).then(function(){
-    if(modal)modal.remove();
-    showToast("Suggestion envoyée !","success");
-  }).catch(function(){
-    if(modal)modal.remove();
-    showToast("Suggestion enregistrée.","warning");
-  });
-}
-
-function filterAdmin(){
-  var q=document.getElementById("adminSearch").value.toLowerCase();
-  renderAdminTable(adminData.filter(function(et){
-    return (et.nom||"").toLowerCase().includes(q)||(et.prenom||"").toLowerCase().includes(q)||String(et.numero).includes(q);
-  }));
-}
-function sortAdmin(key){
-  if(adminSortKey===key)adminSortAsc=!adminSortAsc;else{adminSortKey=key;adminSortAsc=true;}
-  adminData.sort(function(a,b){
-    var av=a[key],bv=b[key];
-    if(av===null||av===undefined)av=-Infinity;if(bv===null||bv===undefined)bv=-Infinity;
-    if(typeof av==="string")return adminSortAsc?av.localeCompare(bv):bv.localeCompare(av);
-    return adminSortAsc?av-bv:bv-av;
-  });
-  renderAdminTable(adminData);
-}
-
-function loadNotifs(){
-  fetch(FS_BASE+"/notifications?key="+FIREBASE_API_KEY+"&pageSize=100").then(function(r){return r.json();}).then(function(data){
-    if(!data.documents){renderNotifs([]);return;}
-    var notifs=data.documents.map(fromFs).filter(Boolean);
-    notifs.sort(function(a,b){return (b.date||"").localeCompare(a.date||"");});
-    var unread=notifs.filter(function(n){return !n.lu||n.lu==="false";}).length;
-    if(unread>0){document.getElementById("notifCount").textContent=unread;document.getElementById("notifCount").classList.remove("hidden");}
-    renderNotifs(notifs);
-  });
-}
-function renderNotifs(notifs){
-  var el=document.getElementById("notifsList");
-  if(!notifs.length){el.innerHTML='<p class="text-center py-8" style="color:var(--text-muted);">Aucun signalement reçu.</p>';return;}
-  el.innerHTML="";
-  notifs.forEach(function(n){
-    var isCompte=n.type==="Modification de compte";
-    var div=document.createElement("div");
-    div.className="notif-card "+(!n.lu||n.lu==="false"?"notif-unread":"notif-read");
-    div.innerHTML=
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;flex-wrap:wrap;">'+
-      '<div><div style="font-weight:700;">'+n.etudiant_nom+' <span style="color:var(--text-muted);font-size:0.85rem;">N°'+n.etudiant_numero+'</span></div>'+
-      '<div style="margin-top:0.3rem;font-size:0.88rem;"><span style="color:#a5b4fc;">'+n.module+'</span> — '+
-      '<span style="color:'+(isCompte?'var(--success)':'var(--warning)')+';">'+n.type+'</span></div>'+
-      (n.message&&n.message!=="(aucun commentaire)"?'<div style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-muted);font-style:italic;">"'+n.message+'"</div>':'')+
-      '</div><div style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap;">'+n.date+'</div></div>';
+function renderNotifs(notifs) {
+  var el = document.getElementById("notifsList");
+  if (!notifs.length) { el.innerHTML = '<p class="text-center py-8" style="color:var(--text-muted);">' + t("noReports") + '</p>'; return; }
+  el.innerHTML = "";
+  
+  notifs.forEach(function(n) {
+    var isCompte = n.type === t("accountModification") || n.type === "Modification de compte";
+    var isConnexion = n.type === t("connection") || n.type === "Connexion";
+    var typeColor = isConnexion || isCompte ? "var(--success)" : "var(--warning)";
+    
+    var deviceBadge = "";
+    if (n.device_type) {
+      var deviceClass = n.device_type === "mobile" ? "device-mobile" : n.device_type === "tablet" ? "device-tablet" : "device-pc";
+      var deviceIcon = n.device_type === "mobile" ? "ph-device-mobile" : n.device_type === "tablet" ? "ph-device-tablet" : "ph-desktop";
+      var tooltipText = (n.device_model || "—") + " | " + (n.device_os || "—") + " | " + (n.device_browser || "—") + " | " + (n.device_screen || "—");
+      deviceBadge = '<div class="device-badge ' + deviceClass + '" title="' + tooltipText + '"><i class="ph-bold ' + deviceIcon + '"></i> ' + (n.device_info || "Unknown") + '<div class="device-tooltip">' + tooltipText + '</div></div>';
+    }
+    
+    var div = document.createElement("div");
+    div.className = "notif-card " + (n.lu ? "notif-read" : "notif-unread");
+    div.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;flex-wrap:wrap;">' +
+      '<div><div style="font-weight:700;">' + n.etudiant_nom + ' <span style="color:var(--text-muted);font-size:0.85rem;">N°' + n.etudiant_numero + '</span></div>' +
+      '<div style="margin-top:0.3rem;font-size:0.88rem;"><span style="color:#a5b4fc;">' + n.module + '</span> — ' +
+      '<span style="color:' + typeColor + ';">' + n.type + '</span></div>' +
+      (n.message && n.message !== t("noComment") && n.message !== "(aucun commentaire)" ? '<div style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-muted);font-style:italic;">"' + n.message + '"</div>' : '') +
+      deviceBadge +
+      '</div><div style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap;">' + n.date + '</div></div>';
     el.appendChild(div);
   });
 }
 
-function loadComptes(){
-  fsList("etudiants").then(function(data){
-    if(!data.documents){renderComptes([]);return;}
-    var modifies=data.documents.map(fromFs).filter(Boolean).filter(function(et){return et.custom_id||et.custom_mdp;});
+function loadComptes() {
+  fsList("etudiants").then(function(data) {
+    if (!data.documents) { renderComptes([]); return; }
+    var modifies = data.documents.filter(function(et) { return et && (et.custom_id || et.custom_mdp); });
     renderComptes(modifies);
   });
 }
-function renderComptes(data){
-  var el=document.getElementById("comptesList");
-  if(!data.length){el.innerHTML='<p class="text-center py-8" style="color:var(--text-muted);">Aucun étudiant n\'a modifié son compte.</p>';return;}
-  var html='<div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;"><table class="res-table"><thead><tr><th>N°</th><th>Nom</th><th>Prénom</th><th>Identifiant perso</th><th>MDP perso</th><th>Action</th></tr></thead><tbody>';
-  data.forEach(function(et){
-    html+='<tr>'+
-      '<td class="mono" style="font-weight:700;">'+et.numero+'</td>'+
-      '<td style="font-weight:600;">'+et.nom+'</td><td>'+et.prenom+'</td>'+
-      '<td class="mono">'+(et.custom_id||"—")+'</td>'+
-      '<td class="mono">'+(isAdminLite?(et.custom_mdp?"••••••":"—"):(et.custom_mdp?et.custom_mdp:"—"))+'</td>'+
-      '<td>'+(isAdminLite?'—':'<button class="btn-sm btn-danger-sm" onclick="resetCompte('+et.numero+')"><i class="ph-bold ph-arrow-counter-clockwise"></i> Reset</button>')+'</td>'+
+
+function renderComptes(data) {
+  var el = document.getElementById("comptesList");
+  if (!data.length) { el.innerHTML = '<p class="text-center py-8" style="color:var(--text-muted);">' + t("noAccountChanges") + '</p>'; return; }
+  
+  var html = '<div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;"><table class="res-table"><thead><tr><th>' + t("number") + '</th><th>' + t("lastName") + '</th><th>' + t("firstName") + '</th><th>' + t("customIdentifier") + '</th><th>' + t("customPassword") + '</th><th>' + t("actions") + '</th></tr></thead><tbody>';
+  data.forEach(function(et) {
+    html += '<tr>' +
+      '<td class="mono" style="font-weight:700;">' + et.numero + '</td>' +
+      '<td style="font-weight:600;">' + et.nom + '</td><td>' + et.prenom + '</td>' +
+      '<td class="mono">' + (et.custom_id || "—") + '</td>' +
+      '<td class="mono">' + (isAdminLite ? (et.custom_mdp ? "••••••" : "—") : (et.custom_mdp ? et.custom_mdp : "—")) + '</td>' +
+      '<td>' + (isAdminLite ? "—" : '<button class="btn-sm btn-danger-sm" onclick="resetCompte(' + et.numero + ')"><i class="ph-bold ph-arrow-counter-clockwise"></i> ' + t("reset") + '</button>') + '</td>' +
       '</tr>';
   });
-  html+='</tbody></table></div></div>';
-  el.innerHTML=html;
+  html += '</tbody></table></div></div>';
+  el.innerHTML = html;
 }
-function resetCompte(num){
-  if(!confirm("Réinitialiser le compte de N°"+num+" ?"))return;
-  fsPatch("etudiants",String(num),{custom_id:null,custom_mdp:null}).then(function(){
-    showToast("Compte réinitialisé pour N°"+num,"success");loadComptes();
-  }).catch(function(){showToast("Erreur.","danger");});
+
+function loadDeviceAnalytics() {
+  fetch(SUPABASE_URL + "/rest/v1/notifications?select=*", { headers: SB_HEADERS })
+    .then(function(r) { return r.json(); })
+    .then(function(notifs) {
+      if (!Array.isArray(notifs)) { renderDeviceAnalytics([]); return; }
+      renderDeviceAnalytics(notifs);
+    });
 }
-function switchTab(tab){
-  ["etudiants","notifs","comptes"].forEach(function(t){
-    var T=t.charAt(0).toUpperCase()+t.slice(1);
-    document.getElementById("tab"+T).classList.toggle("active",t===tab);
-    document.getElementById("panel"+T).classList.toggle("hidden",t!==tab);
+
+function renderDeviceAnalytics(notifs) {
+  var el = document.getElementById("deviceAnalyticsContent");
+  
+  var deviceMap = {}, typeMap = {}, osMap = {}, browserMap = {}, totalLogins = notifs.length;
+  
+  notifs.forEach(function(n) {
+    if (!n.device_fingerprint) return;
+    
+    if (!deviceMap[n.device_fingerprint]) {
+      deviceMap[n.device_fingerprint] = {
+        model: n.device_model || "Unknown",
+        type: n.device_type || "unknown",
+        os: n.device_os || "Unknown",
+        browser: n.device_browser || "Unknown",
+        screen: n.device_screen || "Unknown",
+        count: 0,
+        lastSeen: n.date
+      };
+    }
+    deviceMap[n.device_fingerprint].count++;
+    deviceMap[n.device_fingerprint].lastSeen = n.date;
+    
+    if (!typeMap[n.device_type]) typeMap[n.device_type] = 0;
+    typeMap[n.device_type]++;
+    
+    if (!osMap[n.device_os]) osMap[n.device_os] = 0;
+    osMap[n.device_os]++;
+    
+    if (!browserMap[n.device_browser]) browserMap[n.device_browser] = 0;
+    browserMap[n.device_browser]++;
+  });
+  
+  var uniqueDevices = Object.keys(deviceMap).length;
+  
+  var html = '';
+  
+  html += '<div class="device-stat-grid">';
+  html += '<div class="device-stat-item"><div class="device-stat-val">' + totalLogins + '</div><div class="device-stat-lbl">' + t("totalLogins") + '</div></div>';
+  html += '<div class="device-stat-item"><div class="device-stat-val">' + uniqueDevices + '</div><div class="device-stat-lbl">' + t("uniqueDevices") + '</div></div>';
+  html += '</div>';
+  
+  html += '<h4 style="font-weight:700;margin:1.5rem 0 0.75rem 0;color:var(--text-main);">' + t("deviceType") + '</h4>';
+  html += '<div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;">';
+  for (var type in typeMap) {
+    var pct = ((typeMap[type] / totalLogins) * 100).toFixed(1);
+    var icon = type === "mobile" ? "📱" : type === "tablet" ? "📲" : "💻";
+    html += '<div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:0.75rem 1rem;flex:1;min-width:140px;"><div style="font-weight:700;margin-bottom:0.3rem;">' + icon + ' ' + type.charAt(0).toUpperCase() + type.slice(1) + '</div><div style="font-size:0.9rem;color:var(--text-muted);">' + typeMap[type] + ' (' + pct + '%)</div></div>';
+  }
+  html += '</div>';
+  
+  html += '<h4 style="font-weight:700;margin:1.5rem 0 0.75rem 0;color:var(--text-main);">' + t("deviceDetails") + '</h4>';
+  html += '<div style="overflow-x:auto;"><table class="res-table"><thead><tr><th>' + t("deviceModel") + '</th><th>' + t("deviceType") + '</th><th>' + t("os") + '</th><th>' + t("browser") + '</th><th>' + t("screenRes") + '</th><th>' + t("totalLogins") + '</th></tr></thead><tbody>';
+  
+  var sorted = Object.values(deviceMap).sort(function(a, b) { return b.count - a.count; });
+  sorted.slice(0, 20).forEach(function(dev) {
+    var typeIcon = dev.type === "mobile" ? "📱" : dev.type === "tablet" ? "📲" : "💻";
+    html += '<tr style="font-size:0.82rem;"><td style="font-weight:600;">' + dev.model + '</td><td>' + typeIcon + ' ' + dev.type + '</td><td>' + dev.os + '</td><td>' + dev.browser + '</td><td class="mono">' + dev.screen + '</td><td class="mono" style="color:#818cf8;font-weight:700;">' + dev.count + '</td></tr>';
+  });
+  
+  html += '</tbody></table></div>';
+  
+  el.innerHTML = html;
+}
+
+function resetCompte(num) {
+  if (!confirm(t("resetAccount") + num + t("confirmReset"))) return;
+  fsPatch("etudiants", String(num), { custom_id: null, custom_mdp: null }).then(function() {
+    showToast(t("accountReset") + num, "success");
+    loadComptes();
+  }).catch(function() { showToast(t("saveError"), "danger"); });
+}
+
+function openEditNotes(num) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  if (!et) return;
+  
+  var d = document.createElement("div");
+  d.id = "editModal"; d.className = "modal-overlay";
+  var inner = document.createElement("div"); inner.className = "modal-box";
+  
+  var hdr = document.createElement("div");
+  hdr.style = "display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
+  hdr.innerHTML = '<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">' + et.nom + ' ' + et.prenom + ' — ' + t("notes") + '</div>';
+  var closeBtn = document.createElement("button"); closeBtn.className = "btn-ghost"; closeBtn.style = "padding:0.4rem 0.8rem;";
+  closeBtn.innerHTML = '<i class="ph-bold ph-x"></i>'; closeBtn.onclick = function() { d.remove(); };
+  hdr.appendChild(closeBtn); inner.appendChild(hdr);
+  
+  var tableWrap = document.createElement("div"); tableWrap.style = "overflow-x:auto;";
+  var table = document.createElement("table"); table.className = "res-table";
+  var thead = document.createElement("thead");
+  thead.innerHTML = '<tr><th>' + t("module") + '</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th style="color:#818cf8;">' + t("calculatedMoy") + '</th></tr>';
+  table.appendChild(thead);
+  
+  var tbody = document.createElement("tbody");
+  MODULES.forEach(function(mod) {
+    var k = mod.key;
+    var tr = document.createElement("tr");
+    var td0 = document.createElement("td"); td0.style = "font-weight:600;"; td0.textContent = mod.nom; tr.appendChild(td0);
+    
+    ["emd1", "emd2", "td", "tp"].forEach(function(sub) {
+      var fk = k + "_" + sub;
+      var v = et[fk];
+      var cell = document.createElement("td");
+      var inp = document.createElement("input");
+      inp.className = "calc-input"; inp.id = "edit_" + fk;
+      inp.value = (v !== null && v !== undefined) ? v : "";
+      inp.placeholder = "—"; inp.style = "padding:0.4rem 0.6rem;width:80px;";
+      inp.oninput = function() { updateMoyPreview(k, mod); };
+      cell.appendChild(inp); tr.appendChild(cell);
+    });
+    
+    var moyCell = document.createElement("td");
+    moyCell.id = "preview_moy_" + k;
+    moyCell.className = "mono";
+    moyCell.style = "font-weight:700;color:#818cf8;";
+    var mm = et[k + "_moy_module"] !== undefined ? et[k + "_moy_module"] : et["moy_" + k];
+    moyCell.textContent = (mm !== null && mm !== undefined) ? parseFloat(mm).toFixed(2) : "—";
+    tr.appendChild(moyCell);
+    tbody.appendChild(tr);
+  });
+  
+  table.appendChild(tbody); tableWrap.appendChild(table); inner.appendChild(tableWrap);
+  
+  var footer = document.createElement("div");
+  footer.style = "margin-top:1.25rem;display:flex;gap:0.75rem;justify-content:flex-end;";
+  var cancelBtn = document.createElement("button"); cancelBtn.className = "btn-ghost"; cancelBtn.textContent = t("cancel");
+  cancelBtn.onclick = function() { d.remove(); };
+  var saveBtn = document.createElement("button"); saveBtn.className = "btn-main";
+  saveBtn.style = "width:auto;padding:0.6rem 1.5rem;";
+  saveBtn.innerHTML = '<i class="ph-bold ph-floppy-disk"></i> ' + t("save");
+  saveBtn.onclick = function() { saveEditNotes(num, d); };
+  footer.appendChild(cancelBtn); footer.appendChild(saveBtn);
+  inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
+}
+
+function updateMoyPreview(key, mod) {
+  var getVal = function(sub) {
+    var el = document.getElementById("edit_" + key + "_" + sub);
+    if (!el || el.value.trim() === "") return null;
+    if (el.value.trim() === "Abs") return "Abs";
+    return parseFloat(el.value.replace(",", "."));
+  };
+  var e1 = getVal("emd1"), e2 = getVal("emd2"), td = getVal("td"), tp = getVal("tp");
+  var moy = calcMoyModule(e1, e2, td, tp);
+  var preview = document.getElementById("preview_moy_" + key);
+  if (preview) {
+    preview.textContent = moy !== null ? parseFloat(moy).toFixed(2) : "—";
+    preview.style.color = moy === null ? "var(--text-muted)" : moy < 5 ? "var(--danger)" : moy < 10 ? "var(--warning)" : "var(--success)";
+  }
+}
+
+function saveEditNotes(num, modal) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  if (!et) return;
+  
+  var fields = {};
+  var tempEt = Object.assign({}, et);
+  var hasChanges = false;
+  
+  MODULES.forEach(function(mod) {
+    var k = mod.key;
+    var modChanged = false;
+    
+    ["emd1", "emd2", "td", "tp"].forEach(function(sub) {
+      var fk = k + "_" + sub;
+      var el = document.getElementById("edit_" + fk);
+      if (!el) return;
+      var v = el.value.trim();
+      var val;
+      if (v === "") { val = et[fk]; }
+      else if (v === "Abs") { val = "Abs"; }
+      else { var n = parseFloat(v); val = isNaN(n) ? et[fk] : n; }
+      
+      var oldVal = et[fk];
+      if (String(val) !== String(oldVal)) {
+        fields[fk] = val;
+        hasChanges = true;
+        modChanged = true;
+      }
+      tempEt[fk] = val;
+    });
+    
+    if (modChanged) {
+      var e1 = tempEt[k + "_emd1"], e2 = tempEt[k + "_emd2"];
+      var emdVals = [];
+      if (e1 !== null && e1 !== undefined && e1 !== "Abs") emdVals.push(parseFloat(e1));
+      if (e2 !== null && e2 !== undefined && e2 !== "Abs") emdVals.push(parseFloat(e2));
+      var moyEmd = emdVals.length > 0 ? Math.round((emdVals.reduce(function(a, b) { return a + b; }, 0) / emdVals.length) * 10000) / 10000 : null;
+      fields[k + "_moy_emd"] = moyEmd;
+      tempEt[k + "_moy_emd"] = moyEmd;
+      
+      var moyMod = calcMoyModule(tempEt[k + "_emd1"], tempEt[k + "_emd2"], tempEt[k + "_td"], tempEt[k + "_tp"]);
+      fields["moy_" + k] = moyMod;
+      fields[k + "_moy_module"] = moyMod;
+      tempEt["moy_" + k] = moyMod;
+      tempEt[k + "_moy_module"] = moyMod;
+    }
+  });
+  
+  if (!hasChanges) {
+    if (modal) modal.remove();
+    showToast(t("noChanges"), "info");
+    return;
+  }
+  
+  var moyGen = calcMoyGenerale(tempEt);
+  fields["moyenne_generale"] = moyGen;
+  
+  fsPatch("etudiants", String(num), fields).then(function() {
+    for (var k in fields) et[k] = fields[k];
+    if (modal) modal.remove();
+    showToast(t("notesSaved"), "success");
+    renderAdminTable(adminData);
+  }).catch(function() { showToast(t("saveError"), "danger"); });
+}
+
+function viewNotes(num) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  if (!et) return;
+  
+  var d = document.createElement("div");
+  d.id = "viewNotesModal"; d.className = "modal-overlay";
+  var inner = document.createElement("div"); inner.className = "modal-box";
+  
+  var hdr = document.createElement("div");
+  hdr.style = "display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
+  hdr.innerHTML = '<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">' + et.nom + ' ' + et.prenom + ' — ' + t("notes") + '</div>';
+  var closeBtn = document.createElement("button"); closeBtn.className = "btn-ghost"; closeBtn.style = "padding:0.4rem 0.8rem;";
+  closeBtn.innerHTML = '<i class="ph-bold ph-x"></i>'; closeBtn.onclick = function() { d.remove(); };
+  hdr.appendChild(closeBtn); inner.appendChild(hdr);
+  
+  var tableWrap = document.createElement("div"); tableWrap.style = "overflow-x:auto;";
+  var table = document.createElement("table"); table.className = "res-table";
+  var thead = document.createElement("thead");
+  thead.innerHTML = '<tr><th>' + t("module") + '</th><th>' + t("coef") + '</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th>' + t("moyModule") + '</th></tr>';
+  table.appendChild(thead);
+  
+  var tbody = document.createElement("tbody");
+  MODULES.forEach(function(mod) {
+    var k = mod.key;
+    var tr = document.createElement("tr");
+    var vals = [et[k + "_emd1"], et[k + "_emd2"], et[k + "_td"], et[k + "_tp"], et[k + "_moy_module"] !== undefined ? et[k + "_moy_module"] : et["moy_" + k]];
+    
+    var td0 = document.createElement("td"); td0.style = "font-weight:600;"; td0.textContent = mod.nom; tr.appendChild(td0);
+    var td1 = document.createElement("td"); td1.className = "mono"; td1.textContent = mod.coef; tr.appendChild(td1);
+    vals.forEach(function(v) {
+      var cell = document.createElement("td"); cell.className = "mono " + nc(v); cell.innerHTML = fn(v); tr.appendChild(cell);
+    });
+    tbody.appendChild(tr);
+  });
+  
+  table.appendChild(tbody); tableWrap.appendChild(table); inner.appendChild(tableWrap);
+  
+  var footer = document.createElement("div"); footer.style = "margin-top:1.25rem;display:flex;justify-content:flex-end;";
+  var closeBtn2 = document.createElement("button"); closeBtn2.className = "btn-ghost"; closeBtn2.textContent = t("close");
+  closeBtn2.onclick = function() { d.remove(); };
+  footer.appendChild(closeBtn2); inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
+}
+
+function filterAdmin() {
+  var q = document.getElementById("adminSearch").value.toLowerCase();
+  renderAdminTable(adminData.filter(function(et) {
+    return (et.nom || "").toLowerCase().includes(q) || (et.prenom || "").toLowerCase().includes(q) || String(et.numero).includes(q);
+  }));
+}
+
+function sortAdmin(key) {
+  if (adminSortKey === key) adminSortAsc = !adminSortAsc;
+  else { adminSortKey = key; adminSortAsc = true; }
+  adminData.sort(function(a, b) {
+    var av = a[key], bv = b[key];
+    if (av === null || av === undefined) av = -Infinity;
+    if (bv === null || bv === undefined) bv = -Infinity;
+    if (typeof av === "string") return adminSortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+    return adminSortAsc ? av - bv : bv - av;
+  });
+  renderAdminTable(adminData);
+}
+
+function switchTab(tab) {
+  ["etudiants", "notifs", "comptes", "devices"].forEach(function(t) {
+    var T = t.charAt(0).toUpperCase() + t.slice(1);
+    document.getElementById("tab" + T).classList.toggle("active", t === tab);
+    document.getElementById("panel" + T).classList.toggle("hidden", t !== tab);
   });
 }
 
-function showView(v){
-  ["Login","Student","Account","Admin"].forEach(function(n){
-    document.getElementById("view"+n).classList.add("hidden");
+function showView(v) {
+  ["Login", "Student", "Account", "Admin"].forEach(function(n) {
+    document.getElementById("view" + n).classList.add("hidden");
   });
-  document.getElementById("view"+v.charAt(0).toUpperCase()+v.slice(1)).classList.remove("hidden");
-  currentView=v;updateSidebarNav();updateBreadcrumb();
+  document.getElementById("view" + v.charAt(0).toUpperCase() + v.slice(1)).classList.remove("hidden");
+  currentView = v;
+  updateSidebarNav();
+  updateBreadcrumb();
 }
-function logout(){
-  currentStudent=null;isAdmin=false;isAdminLite=false;adminData=[];
+
+function logout() {
+  currentStudent = null; isAdmin = false; isAdminLite = false; adminData = [];
   clearSession();
-  document.getElementById("inputNom").value="";
-  document.getElementById("inputMdp").value="";
-  hideLoginError();showView("login");
+  document.getElementById("inputNom").value = "";
+  document.getElementById("inputMdp").value = "";
+  hideLoginError();
+  showView("login");
 }
-function goHome(){window.location.href="dental-guide.html#year-3";}
 
-function updateSidebarNav(){
-  var nav=document.getElementById("sidebarNav");if(!nav)return;
-  var h='<button onclick="goHome();closeMenu();" class="nav-link glass"><i class="ph-bold ph-house text-xl"></i><span>Accueil</span></button>';
-  if(currentView==="student"||currentView==="account"){
-    h+='<button onclick="showView(\'student\');closeMenu();" class="nav-link glass '+(currentView==="student"?"active":"")+'"><i class="ph-bold ph-chart-bar text-xl"></i><span>Mes Résultats</span></button>';
-    h+='<button onclick="showAccount();closeMenu();" class="nav-link glass '+(currentView==="account"?"active":"")+'"><i class="ph-bold ph-user-circle text-xl"></i><span>Mon Compte</span></button>';
-  }
-  if(currentView==="admin")
-    h+='<button onclick="showView(\'admin\');closeMenu();" class="nav-link glass active"><i class="ph-bold ph-shield text-xl"></i><span>Admin</span></button>';
-  h+='<div class="w-full h-px my-2" style="background:var(--glass-border);"></div>';
-  if(currentView!=="login")
-    h+='<button onclick="logout();closeMenu();" class="nav-link glass"><i class="ph-bold ph-sign-out text-xl"></i><span>Déconnexion</span></button>';
-  nav.innerHTML=h;
+function goHome() {
+  window.location.href = "dental-guide.html#year-3";
 }
-function updateBreadcrumb(){
-  var bc=document.getElementById("breadcrumb");
-  if(currentView==="login"){bc.style.display="none";bc.innerHTML="";return;}
-  bc.style.display="flex";
-  var p=['<button class="breadcrumb-btn" onclick="goHome()"><i class="ph-bold ph-house" style="font-size:0.65rem;"></i> Accueil</button>'];
+
+function updateSidebarNav() {
+  var nav = document.getElementById("sidebarNav");
+  if (!nav) return;
+  
+  var h = '<button onclick="goHome();closeMenu();" class="nav-link glass"><i class="ph-bold ph-house text-xl"></i><span>' + t("home") + '</span></button>';
+  
+  if (currentView === "student" || currentView === "account") {
+    h += '<button onclick="showView(\'student\');closeMenu();" class="nav-link glass ' + (currentView === "student" ? "active" : "") + '"><i class="ph-bold ph-chart-bar text-xl"></i><span>' + t("myResults") + '</span></button>';
+    h += '<button onclick="showAccount();closeMenu();" class="nav-link glass ' + (currentView === "account" ? "active" : "") + '"><i class="ph-bold ph-user-circle text-xl"></i><span>' + t("myAccount") + '</span></button>';
+  }
+  if (currentView === "admin")
+    h += '<button onclick="showView(\'admin\');closeMenu();" class="nav-link glass active"><i class="ph-bold ph-shield text-xl"></i><span>' + t("adminInterface") + '</span></button>';
+  
+  h += '<div class="w-full h-px my-2" style="background:var(--glass-border);"></div>';
+  if (currentView !== "login")
+    h += '<button onclick="logout();closeMenu();" class="nav-link glass"><i class="ph-bold ph-sign-out text-xl"></i><span>' + t("logout") + '</span></button>';
+  
+  nav.innerHTML = h;
+}
+
+function updateBreadcrumb() {
+  var bc = document.getElementById("breadcrumb");
+  if (currentView === "login") { bc.style.display = "none"; bc.innerHTML = ""; return; }
+  bc.style.display = "flex";
+  
+  var p = ['<button class="breadcrumb-btn" onclick="goHome()"><i class="ph-bold ph-house" style="font-size:0.65rem;"></i> ' + t("home") + '</button>'];
   p.push('<span class="breadcrumb-sep">›</span>');
-  if(currentView==="student")p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">Résultats</span>');
-  else if(currentView==="account"){
-    p.push('<button class="breadcrumb-btn" onclick="showView(\'student\')">Résultats</button>');
+  
+  if (currentView === "student") p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">' + t("results") + '</span>');
+  else if (currentView === "account") {
+    p.push('<button class="breadcrumb-btn" onclick="showView(\'student\')">' + t("results") + '</button>');
     p.push('<span class="breadcrumb-sep">›</span>');
-    p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">Mon Compte</span>');
+    p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">' + t("myAccount") + '</span>');
   }
-  else if(currentView==="admin")p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">Admin</span>');
-  bc.innerHTML=p.join('');
+  else if (currentView === "admin") p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">' + t("adminInterface") + '</span>');
+  
+  bc.innerHTML = p.join('');
 }
 
-var langPill=document.getElementById("langPill");
-var langBtns=document.querySelectorAll(".lang-btn");
-function getLang(){return localStorage.getItem("lang")||"fr";}
-function setLangPill(lang){
-  var idx=lang==="fr"?0:lang==="en"?1:2;
-  langPill.style.transform="translateX("+(idx*100)+"%)";
-  for(var i=0;i<langBtns.length;i++)langBtns[i].classList.toggle("active",langBtns[i].getAttribute("data-lang")===lang);
+var langPill = document.getElementById("langPill");
+var langBtns = document.querySelectorAll(".lang-btn");
+
+function getLang() { return localStorage.getItem("lang") || "fr"; }
+
+function setLangPill(lang) {
+  var idx = lang === "fr" ? 0 : lang === "en" ? 1 : 2;
+  langPill.style.transform = "translateX(" + (idx * 100) + "%)";
+  for (var i = 0; i < langBtns.length; i++) {
+    langBtns[i].classList.toggle("active", langBtns[i].getAttribute("data-lang") === lang);
+  }
 }
-function initLang(){
-  var lang=getLang();
-  document.documentElement.setAttribute("lang",lang);
-  document.documentElement.setAttribute("dir",lang==="ar"?"rtl":"ltr");
+
+function initLang() {
+  var lang = getLang();
+  currentLang = lang;
+  document.documentElement.setAttribute("lang", lang);
+  document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
   setLangPill(lang);
+  translatePage(lang);
 }
-for(var _i=0;_i<langBtns.length;_i++){
-  (function(btn){btn.addEventListener("click",function(){
-    var lang=btn.getAttribute("data-lang");
-    document.body.classList.add("switching-lang");
-    setLangPill(lang);
-    setTimeout(function(){
-      document.documentElement.setAttribute("lang",lang);
-      document.documentElement.setAttribute("dir",lang==="ar"?"rtl":"ltr");
-      localStorage.setItem("lang",lang);
-      requestAnimationFrame(function(){document.body.classList.remove("switching-lang");});
-    },300);
-  });})(langBtns[_i]);
-}
-function initTheme(){
-  var t=localStorage.getItem("theme")||"dark";
-  document.documentElement.setAttribute("data-theme",t);
-}
-document.getElementById("themeBtn").addEventListener("click",function(){
-  var cur=document.documentElement.getAttribute("data-theme");
-  var next=cur==="dark"?"light":"dark";
-  document.documentElement.setAttribute("data-theme",next);
-  localStorage.setItem("theme",next);
-});
-var sidebar=document.getElementById("sidebar");
-var overlay=document.getElementById("overlay");
-var menuBtn=document.getElementById("menuBtn");
-menuBtn.onclick=function(e){
-  e.stopPropagation();sidebar.classList.toggle("open");
-  overlay.classList.toggle("hidden",!sidebar.classList.contains("open"));
-};
-window.closeMenu=function(){sidebar.classList.remove("open");overlay.classList.add("hidden");};
-window.showToast=function(msg,type){
-  type=type||"info";
-  var colors={success:"var(--success)",danger:"var(--danger)",warning:"var(--warning)",info:"#a5b4fc"};
-  var icons={success:"ph-check-circle",danger:"ph-x-circle",warning:"ph-warning",info:"ph-info"};
-  var c=document.getElementById("toastContainer");
-  var t=document.createElement("div");
-  t.className="toast-item glass";
-  t.innerHTML='<i class="ph-fill '+icons[type]+'" style="color:'+colors[type]+';font-size:1.1rem;"></i> '+msg;
-  c.appendChild(t);
-  requestAnimationFrame(function(){t.classList.add("show");});
-  setTimeout(function(){t.classList.remove("show");setTimeout(function(){t.remove();},400);},3500);
-};
-document.getElementById("inputMdp").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
-document.getElementById("inputNom").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
-initTheme();initLang();updateSidebarNav();updateBreadcrumb();checkSession();
-</script>
-</body>
-</html>
+
+for (var _i = 0; _i < langBtns.length; _i++) {
+  (function(btn) {
+    btn.addEventListener("click", function() {
+      var lang = btn.getAttribute("data-lang");
+      document.body.classList.add("switching-lang");
+      setLangPill(lang);
+      setTimeout(function() {
+        document.documentElement.setAttribute("lang", lang);
+        document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
+        localStorage.setItem("lang", lang
