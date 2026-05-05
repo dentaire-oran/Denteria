@@ -1,21 +1,4 @@
 <!DOCTYPE html>
-<!--
-=======================================================
-PROPOSITIONS MOTIVATION ÉTUDIANTS (non implémentées)
-=======================================================
-1. LEADERBOARD ANONYMISÉ : top 10/20 avec initiales
-2. OBJECTIF PERSONNEL : fixer un objectif de rang/moyenne
-3. BADGES DE PROGRESSION : amélioration entre sessions
-4. CLASSEMENT PAR GROUPE : rang dans le sous-groupe TD/TP
-5. COURBE DE PROGRESSION : évolution multi-sessions
-6. MODULE FAIBLE EN ÉVIDENCE : mise en rouge du plus faible
-=======================================================
-ACTION REQUISE SUPABASE :
-Ajouter colonne "peer_view" (type: text, nullable: true)
-dans la table "etudiants".
-Sans cette colonne, la sauvegarde des autorisations échoue.
-=======================================================
--->
 <html lang="fr" data-theme="dark" dir="ltr">
 <head>
   <meta charset="UTF-8"/>
@@ -73,7 +56,7 @@ Sans cette colonne, la sauvegarde des autorisations échoue.
     [data-theme="light"] .ph-sun  { transform:translate(-50%,-50%) scale(1) rotate(0deg); opacity:1; }
     [data-theme="light"] .ph-moon { transform:translate(-50%,-50%) scale(0.5) rotate(-90deg); opacity:0; }
     html[dir="rtl"] #sidebar { right:0; left:auto; transform:translateX(100%); border-left:1px solid var(--glass-border); border-right:none; }
-    html[dir="ltr"] #sidebar  { left:0; right:auto; transform:translateX(-100%); border-right:1px solid var(--glass-border); border-left:none; }
+    html[dir="ltr"]  #sidebar  { left:0; right:auto; transform:translateX(-100%); border-right:1px solid var(--glass-border); border-left:none; }
     #sidebar.open { transform:translateX(0) !important; }
     html[dir="rtl"] #menuBtn { right:2rem; left:auto; }
     html[dir="ltr"]  #menuBtn { left:2rem; right:auto; }
@@ -153,15 +136,11 @@ Sans cette colonne, la sauvegarde des autorisations échoue.
     .hidden { display:none !important; }
     .modal-overlay { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(4px); }
     .modal-box { background:var(--glass-bg); backdrop-filter:blur(20px); border:1px solid var(--glass-border); border-radius:24px; padding:1.75rem; width:100%; max-width:700px; max-height:90vh; overflow-y:auto; }
-    /* Progress bar */
     .progress-bar-wrap { width:100%; height:5px; background:rgba(255,255,255,0.1); border-radius:99px; margin-top:0.5rem; overflow:hidden; }
     .progress-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#818cf8,#c084fc,#f472b6); transition:width 1s cubic-bezier(0.4,0,0.2,1); }
     [data-theme="light"] .progress-bar-wrap { background:rgba(0,0,0,0.08); }
-    /* Motivational banner */
     .motiv-banner { border-radius:14px; padding:0.65rem 1rem; font-size:0.83rem; font-weight:600; display:flex; align-items:center; gap:0.6rem; margin-bottom:1.5rem; }
-    /* Peer chip */
     .peer-chip { display:inline-flex; align-items:center; gap:0.5rem; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:99px; padding:0.3rem 0.75rem; font-size:0.82rem; margin:0.2rem; }
-    /* Toggle switch */
     .toggle-wrap { display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1rem; border-radius:12px; cursor:pointer; border:1px solid var(--glass-border); background:var(--glass-bg); transition:all 0.2s; user-select:none; }
     .toggle-wrap:hover { border-color:#818cf8; }
     .toggle-wrap.active-all { border-color:rgba(255,201,74,0.5); background:rgba(255,201,74,0.08); }
@@ -169,6 +148,8 @@ Sans cette colonne, la sauvegarde des autorisations échoue.
     .toggle-knob-track.on { background:rgba(255,201,74,0.4); border-color:rgba(255,201,74,0.6); }
     .toggle-knob { position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,0.6); transition:transform 0.3s; }
     .toggle-knob-track.on .toggle-knob { transform:translateX(20px); background:#ffc94a; }
+    .detail-row { background:rgba(255,255,255,0.02); }
+    .detail-row td { border-bottom:1px solid rgba(255,255,255,0.04); padding:0.4rem 1rem; font-size:0.8rem; }
     @media(max-width:640px) { .stat-val { font-size:1.1rem; } }
   </style>
 </head>
@@ -200,7 +181,6 @@ Sans cette colonne, la sauvegarde des autorisations échoue.
 <div id="breadcrumb" class="fixed top-8 z-40 left-1/2 -translate-x-1/2 flex items-center gap-1 glass rounded-full" style="max-width:90vw;display:none;"></div>
 <div id="toastContainer"></div>
 
-<!-- LOGIN -->
 <div id="viewLogin" class="pt-28 pb-32 px-6 max-w-lg mx-auto flex flex-col items-center justify-center min-h-screen">
   <h1 class="text-5xl font-bold text-gradient animate-float mb-4 text-center" data-i18n="results">Résultats</h1>
   <p class="text-xl mb-10 font-light text-center" style="color:var(--text-muted);" data-i18n="year3Subtitle">3ème Année — Dental Guide Oran</p>
@@ -224,7 +204,6 @@ Sans cette colonne, la sauvegarde des autorisations échoue.
   </div>
 </div>
 
-<!-- STUDENT -->
 <div id="viewStudent" class="hidden pt-28 pb-32 px-6 max-w-5xl mx-auto">
   <div class="glass rounded-3xl p-6 mb-6">
     <div class="flex items-start justify-between flex-wrap gap-4">
@@ -236,6 +215,9 @@ Sans cette colonne, la sauvegarde des autorisations échoue.
         <div id="studentBadge"></div>
         <button class="btn-ghost" onclick="showView('account')">
           <i class="ph-bold ph-user-circle"></i> <span data-i18n="myAccount">Mon Compte</span>
+        </button>
+        <button class="btn-ghost" id="btnAdminLiteAccess" style="display:none;" onclick="enterAdminLiteMode()">
+          <i class="ph-bold ph-shield"></i> <span>Admin Lite</span>
         </button>
       </div>
     </div>
@@ -257,6 +239,7 @@ Sans cette colonne, la sauvegarde des autorisations échoue.
     </div>
   </div>
   <div id="motivMsg" class="motiv-banner hidden"></div>
+  <div id="peerComparisonSection" class="glass rounded-3xl p-6 mb-6 hidden"></div>
   <div class="glass rounded-3xl overflow-hidden mb-6">
     <div class="px-6 py-4 flex items-center justify-between" style="border-bottom:1px solid var(--glass-border);">
       <span class="font-bold text-sm uppercase tracking-widest" style="color:var(--text-muted);" data-i18n="detailedGrades">Notes détaillées</span>
@@ -302,23 +285,8 @@ Sans cette colonne, la sauvegarde des autorisations échoue.
       <i class="ph-bold ph-paper-plane-right"></i> <span data-i18n="sendReport">Envoyer le signalement</span>
     </button>
   </div>
-  <!-- PEER COMPARISON -->
-  <div id="peerComparisonSection" class="glass rounded-3xl p-6 mb-6 hidden">
-    <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-      <i class="ph-fill ph-users-three" style="color:#818cf8;"></i>
-      <span data-i18n="peerComparison">Comparer avec un étudiant</span>
-    </h3>
-    <div class="mb-4">
-      <label class="field-label" data-i18n="selectPeerPrompt">Sélectionner un étudiant autorisé</label>
-      <select class="glass-select" id="peerSelect" onchange="loadPeerComparison(this.value)">
-        <option value="">— Choisir —</option>
-      </select>
-    </div>
-    <div id="peerComparisonTable"></div>
-  </div>
 </div>
 
-<!-- MON COMPTE -->
 <div id="viewAccount" class="hidden pt-28 pb-32 px-6 max-w-lg mx-auto">
   <button class="flex items-center gap-2 mb-6 font-semibold" style="color:var(--text-muted);background:none;border:none;cursor:pointer;" onclick="showView('student')">
     <i class="ph-bold ph-arrow-left"></i> <span data-i18n="back">Retour</span>
@@ -340,7 +308,6 @@ Sans cette colonne, la sauvegarde des autorisations échoue.
   </div>
 </div>
 
-<!-- ADMIN -->
 <div id="viewAdmin" class="hidden pt-28 pb-32 px-6 max-w-6xl mx-auto">
   <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
     <div>
@@ -352,6 +319,7 @@ Sans cette colonne, la sauvegarde des autorisations échoue.
         <i class="ph-bold ph-magnifying-glass" style="color:var(--text-muted);"></i>
         <input type="text" id="adminSearch" data-i18n-placeholder="search" placeholder="Rechercher..." oninput="filterAdmin()" style="background:none;border:none;outline:none;padding:0.65rem 0.75rem;color:var(--text-main);width:200px;">
       </div>
+      <button class="btn-ghost" id="leaveAdminLiteBtn" style="display:none;" onclick="leaveAdminLiteMode()"><i class="ph-bold ph-arrow-left"></i> <span>Retour à mon compte</span></button>
       <button class="btn-ghost" onclick="logout()"><i class="ph-bold ph-sign-out"></i> <span data-i18n="logout">Déconnexion</span></button>
     </div>
   </div>
@@ -359,7 +327,7 @@ Sans cette colonne, la sauvegarde des autorisations échoue.
     <button class="tab active" id="tabEtudiants" onclick="switchTab('etudiants')"><i class="ph-bold ph-users"></i> <span data-i18n="studentsTab">Étudiants</span></button>
     <button class="tab" id="tabNotifs" onclick="switchTab('notifs')"><i class="ph-bold ph-bell"></i> <span data-i18n="reports">Signalements</span> <span class="notif-badge hidden" id="notifCount">0</span></button>
     <button class="tab" id="tabComptes" onclick="switchTab('comptes')"><i class="ph-bold ph-key"></i> <span data-i18n="accounts">Comptes</span></button>
-    <button class="tab" id="tabClassement" onclick="switchTab('classement')"><i class="ph-bold ph-trophy"></i> <span data-i18n="moduleRanking">Classement par module</span></button>
+    <button class="tab" id="tabClassement" onclick="switchTab('classement')"><i class="ph-bold ph-trophy"></i> <span data-i18n="moduleRanking">Classement</span></button>
   </div>
   <div id="panelEtudiants">
     <div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;">
@@ -384,7 +352,17 @@ Sans cette colonne, la sauvegarde des autorisations échoue.
     <div class="glass rounded-3xl p-6 mb-4">
       <div class="mb-3">
         <label class="field-label" data-i18n="selectModuleRanking">Sélectionner un module</label>
-        <select class="glass-select" id="rankModuleSelect" onchange="renderModuleRanking()"><option value="">—</option></select>
+        <select class="glass-select" id="rankModuleSelect" onchange="rankModuleChanged()"><option value="">—</option></select>
+      </div>
+      <div class="mb-3 hidden" id="rankSubSelectWrap">
+        <label class="field-label" data-i18n="selectSubCriteria">Critère de classement</label>
+        <select class="glass-select" id="rankSubSelect" onchange="renderModuleRanking()">
+          <option value="moy_module">Moyenne module</option>
+          <option value="emd1">EMD 1</option>
+          <option value="emd2">EMD 2</option>
+          <option value="td">TD</option>
+          <option value="tp">TP</option>
+        </select>
       </div>
       <div>
         <label class="field-label" data-i18n="searchStudent">Rechercher un étudiant</label>
@@ -417,6 +395,18 @@ var ADMIN_MDP_HASH = "2e3c969e2e9b367ade00279743f88ea0e32f283152223e3d9aaf1c1466
 var ADMIN_LITE_ID       = "user";
 var ADMIN_LITE_MDP_HASH = "90d06112d5dc4274afd6ba187432cbf203586566e2ffe87b7494e9b1e1268187";
 
+(function loadStoredAdminCredentials() {
+  var storedAdminId = localStorage.getItem("admin_id_v2");
+  var storedAdminHash = localStorage.getItem("admin_hash_v2");
+  if (storedAdminId) ADMIN_ID = storedAdminId;
+  if (storedAdminHash) ADMIN_MDP_HASH = storedAdminHash;
+
+  var storedLiteId = localStorage.getItem("admin_lite_id_v2");
+  var storedLiteHash = localStorage.getItem("admin_lite_hash_v2");
+  if (storedLiteId) ADMIN_LITE_ID = storedLiteId;
+  if (storedLiteHash) ADMIN_LITE_MDP_HASH = storedLiteHash;
+})();
+
 var SESSION_KEY = "dg_session";
 var MODULES = [
   {key:"oce",nom:"OCE",coef:5},{key:"odf",nom:"ODF",coef:5},
@@ -429,6 +419,7 @@ var MODULES = [
 var currentStudent=null, isAdmin=false, isAdminLite=false;
 var adminData=[], adminSortKey="numero", adminSortAsc=true, currentView="login";
 var currentLang = "fr";
+var viewingAsAdminLite = false;
 
 var MOTIV_MSGS = {
   fr: { ex:"🏆 Performance exceptionnelle ! Vous êtes parmi les meilleurs !", gr:"⭐ Excellent travail ! Continuez sur cette lancée !", gd:"👍 Très bien ! Encore un effort pour l'excellence !", ok:"💪 Admis(e) ! Vous pouvez encore améliorer votre rang !", ef:"📚 Ne lâchez pas — chaque point compte !", lo:"🌟 Courage ! Chaque session est une nouvelle chance !" },
@@ -500,7 +491,12 @@ var TRANSLATIONS = {
     seeAllDesc:"Cet étudiant pourra se connecter à l'interface Admin Lite et consulter les notes de tous les étudiants.",
     accessAll:"TOUT", accessNone:"—", accessCount:"voit",
     peerColumnHint:"Étudiants que cet étudiant peut voir",
-    peerViewColMissing:"⚠️ Créez la colonne 'peer_view' (text) dans Supabase !"
+    peerViewColMissing:"⚠️ Créez la colonne 'peer_view' (text) dans Supabase !",
+    editAccount:"Modifier le compte",
+    editSuperAdmin:"Modifier les super-admins",
+    editAdminCreds:"Modifier les identifiants Admin/Admin Lite",
+    detailExpandAll:"Tout développer", detailCollapseAll:"Tout réduire",
+    selectSubCriteria:"Critère de classement"
   },
   en: {
     results:"Results", year3Subtitle:"3rd Year — Dental Guide Oran",
@@ -560,7 +556,12 @@ var TRANSLATIONS = {
     seeAllDesc:"This student will be able to log into Admin Lite and view all students' grades.",
     accessAll:"ALL", accessNone:"—", accessCount:"sees",
     peerColumnHint:"Students this student can view",
-    peerViewColMissing:"⚠️ Create the 'peer_view' column (text) in Supabase!"
+    peerViewColMissing:"⚠️ Create the 'peer_view' column (text) in Supabase!",
+    editAccount:"Edit account",
+    editSuperAdmin:"Edit Super Admins",
+    editAdminCreds:"Edit Admin/Admin Lite credentials",
+    detailExpandAll:"Expand all", detailCollapseAll:"Collapse all",
+    selectSubCriteria:"Ranking criteria"
   },
   ar: {
     results:"النتائج", year3Subtitle:"السنة الثالثة — دليل طب الأسنان وهران",
@@ -620,7 +621,12 @@ var TRANSLATIONS = {
     seeAllDesc:"سيتمكن هذا الطالب من تسجيل الدخول إلى واجهة المشرف المحدود ورؤية نقاط جميع الطلاب.",
     accessAll:"الكل", accessNone:"—", accessCount:"يرى",
     peerColumnHint:"الطلاب الذين يمكن لهذا الطالب رؤيتهم",
-    peerViewColMissing:"⚠️ أضف العمود 'peer_view' (نوع text) في Supabase!"
+    peerViewColMissing:"⚠️ أضف العمود 'peer_view' (نوع text) في Supabase!",
+    editAccount:"تعديل الحساب",
+    editSuperAdmin:"تعديل المشرفين العامين",
+    editAdminCreds:"تعديل بيانات المشرف/المشرف المحدود",
+    detailExpandAll:"توسيع الكل", detailCollapseAll:"طي الكل",
+    selectSubCriteria:"معيار الترتيب"
   }
 };
 
@@ -771,7 +777,6 @@ var SB_HEADERS = {
   "Prefer": "return=representation"
 };
 
-// Fixed fsPatch — properly throws on HTTP error so saves don't silently fail
 function fsGet(col, id) {
   return fetch(SUPABASE_URL+"/rest/v1/"+col+"?numero=eq."+id+"&limit=1", {headers:SB_HEADERS})
     .then(function(r){return r.json();})
@@ -797,7 +802,6 @@ function fsPatch(col, id, fields) {
   return fetch(SUPABASE_URL+"/rest/v1/"+col+"?numero=eq."+id, {
     method:"PATCH", headers:SB_HEADERS, body:JSON.stringify(fields)
   }).then(function(r) {
-    // Properly detect errors — HTTP 4xx/5xx
     if (!r.ok) {
       return r.json().then(function(err) {
         throw new Error((err&&err.message)||("HTTP "+r.status));
@@ -820,7 +824,6 @@ function t(key) {
   return TRANSLATIONS[currentLang]&&TRANSLATIONS[currentLang][key] ? TRANSLATIONS[currentLang][key] : key;
 }
 
-// Check if student has admin lite access (peer_view === "ALL")
 function studentHasAllAccess(et) {
   return et && et.peer_view === "ALL";
 }
@@ -840,15 +843,8 @@ function checkSession() {
   fsGet("etudiants", String(num)).then(function(et) {
     if (!et) { clearSession(); return; }
     currentStudent = et;
-    if (studentHasAllAccess(et)) {
-      // Student with "voir tout" → Admin Lite
-      isAdmin=true; isAdminLite=true;
-      showView("admin"); loadAdmin();
-      logConnection(et.nom+" "+et.prenom, et.numero, t("pageRefresh")+" (Admin Lite)");
-    } else {
-      showView("student"); renderStudent(et);
-      logConnection(et.nom+" "+et.prenom, et.numero, t("pageRefresh"));
-    }
+    showView("student"); renderStudent(et);
+    logConnection(et.nom+" "+et.prenom, et.numero, t("pageRefresh"));
   }).catch(function(){clearSession();});
 }
 
@@ -871,28 +867,20 @@ async function doLogin() {
     setLoginLoading(false);
     if (!et) { showLoginError(t("invalidCredentials")); return; }
     currentStudent = et; saveSession(et.numero);
-    if (studentHasAllAccess(et)) {
-      // Student authorized to see all → Admin Lite view
-      isAdmin=true; isAdminLite=true;
-      showView("admin"); loadAdmin();
-      logConnection(et.nom+" "+et.prenom, et.numero, t("studentLogin")+" → Admin Lite");
-    } else {
-      showView("student"); renderStudent(et);
-      logConnection(et.nom+" "+et.prenom, et.numero, t("studentLogin"));
-    }
+    showView("student"); renderStudent(et);
+    logConnection(et.nom+" "+et.prenom, et.numero, t("studentLogin"));
   }).catch(function(){setLoginLoading(false); showLoginError(t("connectionError"));});
 }
 
 function logConnection(nom, numero, type) {
   var now = new Date().toLocaleString("fr-FR");
-  var isAL = type.indexOf("Admin Lite")!==-1;
   var deviceInfo = getDeviceShortString(), deviceFull = getDeviceDisplayString();
   fsCreate("notifications",{
     etudiant_nom:nom, etudiant_numero:String(numero),
     module:t("system"), type:t("connection"), message:type,
-    date:now, lu:false, admin_only:isAL, device_info:deviceInfo, device_full:deviceFull
+    date:now, lu:false, admin_only: (type.indexOf("Admin Lite")!==-1), device_info:deviceInfo, device_full:deviceFull
   });
-  if (isAL) {
+  if (type.indexOf("Admin Lite")!==-1) {
     emailjs.init(EMAILJS_KEY);
     emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
       etudiant_nom:nom, etudiant_numero:String(numero),
@@ -994,7 +982,34 @@ function renderStudent(et) {
     var opt=document.createElement("option"); opt.value=mod.nom; opt.textContent=mod.nom; sel.appendChild(opt);
   });
 
+  var btnAdminLite = document.getElementById("btnAdminLiteAccess");
+  if (studentHasAllAccess(et)) {
+    btnAdminLite.style.display = "inline-flex";
+  } else {
+    btnAdminLite.style.display = "none";
+  }
+
   initPeerComparison(et);
+}
+
+function enterAdminLiteMode() {
+  if (!currentStudent || !studentHasAllAccess(currentStudent)) return;
+  viewingAsAdminLite = true;
+  isAdmin = true;
+  isAdminLite = true;
+  showView("admin");
+  loadAdmin();
+  document.getElementById("leaveAdminLiteBtn").style.display = "inline-flex";
+  document.getElementById("adminLiteBadge").classList.remove("hidden");
+}
+
+function leaveAdminLiteMode() {
+  viewingAsAdminLite = false;
+  isAdmin = false;
+  isAdminLite = false;
+  document.getElementById("leaveAdminLiteBtn").style.display = "none";
+  showView("student");
+  if (currentStudent) renderStudent(currentStudent);
 }
 
 function fn(v) {
@@ -1009,62 +1024,158 @@ function nc(v) {
   return n<5?"note-bad":n<10?"note-mid":"note-good";
 }
 
-// ===== PEER COMPARISON — STUDENT SIDE =====
+function loadAllStudentsCache() {
+  if (window._allStudentsCache) return Promise.resolve(window._allStudentsCache);
+  return fetch(SUPABASE_URL+"/rest/v1/etudiants?select=numero,nom,prenom&limit=1000", {headers:SB_HEADERS})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      window._allStudentsCache = data.filter(Boolean);
+      return window._allStudentsCache;
+    });
+}
+
+function searchAllStudents() {
+  var q = document.getElementById("peerSearchInput").value.toLowerCase().trim();
+  var resDiv = document.getElementById("peerSearchResults");
+  if (!resDiv) return;
+  if (!q) { resDiv.innerHTML = ""; return; }
+
+  if (!window._allStudentsCache) {
+    resDiv.innerHTML = '<div style="text-align:center;padding:0.5rem;"><div class="spinner" style="margin:0 auto;"></div></div>';
+    loadAllStudentsCache().then(function(){
+      showFilteredResults(q);
+    });
+    return;
+  }
+  showFilteredResults(q);
+}
+
+function showFilteredResults(q) {
+  var resDiv = document.getElementById("peerSearchResults");
+  if (!resDiv) return;
+  var all = window._allStudentsCache || [];
+  var results = all.filter(function(s){
+    var full = (s.nom+" "+s.prenom).toLowerCase();
+    return full.includes(q) || String(s.numero).includes(q);
+  }).slice(0, 10);
+  resDiv.innerHTML = "";
+  if (results.length === 0) {
+    resDiv.innerHTML = '<span style="color:var(--text-muted);">Aucun résultat</span>';
+    return;
+  }
+  results.forEach(function(s){
+    var btn = document.createElement("button");
+    btn.className = "btn-sm btn-ghost-sm";
+    btn.style.display = "block";
+    btn.style.marginBottom = "4px";
+    btn.textContent = s.nom+" "+s.prenom+" (N°"+s.numero+")";
+    btn.onclick = function(){ loadPeerComparison(s.numero); };
+    resDiv.appendChild(btn);
+  });
+}
+
+function filterPeerSelect() {
+  var filter = document.getElementById("peerFilterInput").value.toLowerCase().trim();
+  var sel = document.getElementById("peerSelect");
+  if (!sel) return;
+  var options = sel.options;
+  for (var i = 1; i < options.length; i++) {
+    var opt = options[i];
+    if (filter === "" || opt.textContent.toLowerCase().includes(filter)) {
+      opt.style.display = "";
+    } else {
+      opt.style.display = "none";
+    }
+  }
+  sel.value = "";
+}
 
 function initPeerComparison(et) {
-  // If "ALL" → student goes to admin lite, not here. But just in case:
-  if (studentHasAllAccess(et)) {
-    document.getElementById("peerComparisonSection").classList.add("hidden");
-    return;
-  }
-
-  var peers;
-  try { peers = JSON.parse(et.peer_view || "[]"); } catch(e) { peers = []; }
-  if (!Array.isArray(peers)) peers = [];
-
   var section = document.getElementById("peerComparisonSection");
-  var selEl = document.getElementById("peerSelect");
-  var tableEl = document.getElementById("peerComparisonTable");
-
-  if (!peers.length) {
-    section.classList.add("hidden");
-    return;
-  }
   section.classList.remove("hidden");
-  tableEl.innerHTML = "";
-  selEl.innerHTML = '<option value="">'+t("selectPeerPrompt")+'</option>';
 
-  // Batch fetch peer names for the dropdown labels
-  fetch(SUPABASE_URL+"/rest/v1/etudiants?numero=in.("+peers.join(",")+")&select=numero,nom,prenom", {headers:SB_HEADERS})
-    .then(function(r){return r.json();})
-    .then(function(peerData) {
-      selEl.innerHTML = '<option value="">'+t("selectPeerPrompt")+'</option>';
-      peers.forEach(function(pNum) {
-        var pd = Array.isArray(peerData) ? peerData.find(function(p){return Number(p.numero)===Number(pNum);}) : null;
-        var opt = document.createElement("option");
-        opt.value = pNum;
-        opt.textContent = pd ? pd.nom+" "+pd.prenom : "N°"+pNum;
-        selEl.appendChild(opt);
-      });
-    })
-    .catch(function() {
-      selEl.innerHTML = '<option value="">'+t("selectPeerPrompt")+'</option>';
-      peers.forEach(function(pNum) {
-        var opt=document.createElement("option"); opt.value=pNum; opt.textContent="N°"+pNum; selEl.appendChild(opt);
-      });
+  if (studentHasAllAccess(et)) {
+    section.innerHTML = '<div class="text-center py-4"><div class="spinner" style="margin:0 auto;"></div></div>';
+    loadAllStudentsCache().then(function(){
+      section.innerHTML = '';
+      var html = '';
+      html += '<h3 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="ph-fill ph-users-three" style="color:#818cf8;"></i> ' + t("peerComparison") + '</h3>';
+      html += '<div class="mb-4"><label class="field-label">' + t("searchStudent") + '</label>';
+      html += '<input type="text" class="calc-input" id="peerSearchInput" placeholder="Nom ou N°..." oninput="searchAllStudents()"></div>';
+      html += '<div id="peerSearchResults" style="margin-bottom:1rem;"></div>';
+      html += '<div id="peerComparisonTable"></div>';
+      section.innerHTML = html;
     });
+  } else {
+    var peers;
+    try { peers = JSON.parse(et.peer_view || "[]"); } catch(e) { peers = []; }
+    if (!Array.isArray(peers)) peers = [];
+    if (!peers.length) {
+      section.classList.add("hidden");
+      return;
+    }
+    section.innerHTML = '<div class="text-center py-4"><div class="spinner" style="margin:0 auto;"></div></div>';
+    fetch(SUPABASE_URL+"/rest/v1/etudiants?numero=in.("+peers.join(",")+")&select=numero,nom,prenom", {headers:SB_HEADERS})
+      .then(function(r){return r.json();})
+      .then(function(peerData){
+        peerData = peerData || [];
+        section.innerHTML = '';
+        var html = '';
+        html += '<h3 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="ph-fill ph-users-three" style="color:#818cf8;"></i> ' + t("peerComparison") + '</h3>';
+        html += '<div class="mb-4"><label class="field-label">'+t("searchStudent")+'</label>';
+        html += '<input type="text" class="calc-input" id="peerFilterInput" placeholder="Nom ou N°..." oninput="filterPeerSelect()"></div>';
+        html += '<div class="mb-4"><label class="field-label">'+t("selectPeerPrompt")+'</label>';
+        html += '<select class="glass-select" id="peerSelect" onchange="loadPeerComparison(this.value)"><option value="">— Choisir —</option></select></div>';
+        html += '<div id="peerComparisonTable"></div>';
+        section.innerHTML = html;
+        var sel = document.getElementById("peerSelect");
+        if (sel) {
+          peerData.forEach(function(p){
+            var opt = document.createElement("option");
+            opt.value = p.numero;
+            opt.textContent = p.nom+" "+p.prenom+" (N°"+p.numero+")";
+            sel.appendChild(opt);
+          });
+        }
+      })
+      .catch(function(){
+        section.innerHTML = '';
+        var html = '';
+        html += '<h3 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="ph-fill ph-users-three" style="color:#818cf8;"></i> ' + t("peerComparison") + '</h3>';
+        html += '<div class="mb-4"><label class="field-label">'+t("searchStudent")+'</label>';
+        html += '<input type="text" class="calc-input" id="peerFilterInput" placeholder="Nom ou N°..." oninput="filterPeerSelect()"></div>';
+        html += '<div class="mb-4"><label class="field-label">'+t("selectPeerPrompt")+'</label>';
+        html += '<select class="glass-select" id="peerSelect" onchange="loadPeerComparison(this.value)"><option value="">— Choisir —</option></select></div>';
+        html += '<div id="peerComparisonTable"></div>';
+        section.innerHTML = html;
+        var sel = document.getElementById("peerSelect");
+        if (sel) {
+          peers.forEach(function(pNum){
+            var opt = document.createElement("option");
+            opt.value = pNum;
+            opt.textContent = "N°"+pNum;
+            sel.appendChild(opt);
+          });
+        }
+      });
+  }
 }
 
 function loadPeerComparison(peerNum) {
   var tableEl = document.getElementById("peerComparisonTable");
   if (!peerNum) { tableEl.innerHTML = ""; return; }
   tableEl.innerHTML = '<div style="text-align:center;padding:1.5rem;"><div class="spinner" style="margin:0 auto;"></div></div>';
-  fsGet("etudiants", String(peerNum)).then(function(peer) {
-    if (!peer) { tableEl.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:1rem;">'+t("noResults")+'</p>'; return; }
-    renderPeerComparisonTable(peer, tableEl);
-  }).catch(function(){
-    tableEl.innerHTML='<p style="color:var(--danger);text-align:center;padding:1rem;">'+t("connectionError")+'</p>';
-  });
+  var url = SUPABASE_URL+"/rest/v1/etudiants?numero=eq." + peerNum + "&limit=1";
+  fetch(url, {headers:SB_HEADERS})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var peer = (Array.isArray(d) && d.length>0) ? d[0] : null;
+      if (!peer) { tableEl.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:1rem;">'+t("noResults")+'</p>'; return; }
+      renderPeerComparisonTable(peer, tableEl);
+    })
+    .catch(function(){
+      tableEl.innerHTML='<p style="color:var(--danger);text-align:center;padding:1rem;">'+t("connectionError")+'</p>';
+    });
 }
 
 function renderPeerComparisonTable(peer, container) {
@@ -1074,7 +1185,6 @@ function renderPeerComparisonTable(peer, container) {
   var peerRank = parseInt(peer.classement)||null;
 
   var html = '';
-  // Summary bar
   html += '<div class="glass rounded-2xl p-4 mb-3" style="display:flex;gap:1.25rem;flex-wrap:wrap;align-items:center;justify-content:space-between;">';
   html += '<div style="font-weight:700;">'+t("comparisonWith")+' : '+peer.nom+' '+peer.prenom+' <span style="color:var(--text-muted);font-size:0.82rem;">N°'+peer.numero+'</span></div>';
   html += '<div style="display:flex;gap:1.5rem;">';
@@ -1083,14 +1193,17 @@ function renderPeerComparisonTable(peer, container) {
   if (peerRank) { var pTop=Math.ceil((peerRank/444)*100); html+='<div style="text-align:center;"><div class="mono" style="font-weight:800;font-size:1rem;color:#a5b4fc;">Top '+pTop+'%</div><div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;">'+t("topPercent")+'</div></div>'; }
   html += '</div></div>';
 
-  html += '<div style="overflow-x:auto;"><table class="res-table"><thead><tr>'+
+  var expandId = "peer_expand_" + Date.now();
+  html += '<div style="margin-bottom:0.75rem;text-align:right;"><button class="btn-ghost btn-sm" id="btn_toggle_' + expandId + '" onclick="toggleAllPeerDetails(\''+expandId+'\')">' + t("detailExpandAll") + '</button></div>';
+
+  html += '<div style="overflow-x:auto;"><table class="res-table" id="tbl_'+expandId+'"><thead><tr>'+
     '<th>'+t("module")+'</th><th>'+t("coef")+'</th>'+
     '<th style="color:#818cf8;">'+t("yourGrade")+'</th>'+
     '<th style="color:#a5b4fc;">'+peer.nom.split(" ")[0]+'</th>'+
     '<th>'+t("diff")+'</th>'+
     '</tr></thead><tbody>';
 
-  MODULES.forEach(function(mod) {
+  MODULES.forEach(function(mod, idx) {
     var k = mod.key;
     var myVal   = me[k+"_moy_module"]!==undefined   ? me[k+"_moy_module"]   : me["moy_"+k];
     var peerVal = peer[k+"_moy_module"]!==undefined ? peer[k+"_moy_module"] : peer["moy_"+k];
@@ -1099,13 +1212,32 @@ function renderPeerComparisonTable(peer, container) {
     var diff = (myN!==null&&peerN!==null) ? (myN-peerN) : null;
     var diffStr = diff===null?"—":((diff>=0?"+":"")+diff.toFixed(2));
     var diffColor = diff===null?"var(--text-muted)":diff>0.005?"var(--success)":diff<-0.005?"var(--danger)":"var(--text-muted)";
-    html += '<tr>'+
+    html += '<tr style="cursor:pointer;" onclick="togglePeerDetail(\''+expandId+'\',\''+k+'\')">'+
       '<td style="font-weight:600;">'+mod.nom+'<span class="coef-badge">x'+mod.coef+'</span></td>'+
       '<td class="mono">'+mod.coef+'</td>'+
       '<td class="mono '+nc(myVal)+'">'+fn(myVal)+'</td>'+
       '<td class="mono '+nc(peerVal)+'">'+fn(peerVal)+'</td>'+
       '<td class="mono" style="font-weight:700;color:'+diffColor+';">'+diffStr+'</td>'+
       '</tr>';
+    html += '<tr class="detail-row" id="peer_detail_'+expandId+'_'+k+'" style="display:none;"><td colspan="5"><div class="detail-content"><table class="res-table" style="width:100%;">';
+    var subFields = [
+      {label:"EMD 1",my:me[k+"_emd1"],peer:peer[k+"_emd1"]},
+      {label:"EMD 2",my:me[k+"_emd2"],peer:peer[k+"_emd2"]},
+      {label:"TD",my:me[k+"_td"],peer:peer[k+"_td"]},
+      {label:"TP",my:me[k+"_tp"],peer:peer[k+"_tp"]},
+    ];
+    subFields.forEach(function(sf){
+      var myN = (sf.my!=null&&sf.my!==undefined&&sf.my!=="Abs")?parseFloat(sf.my):null;
+      var peerN = (sf.peer!=null&&sf.peer!==undefined&&sf.peer!=="Abs")?parseFloat(sf.peer):null;
+      var d = (myN!==null&&peerN!==null)?(myN-peerN):null;
+      var dStr = d===null?"—":((d>=0?"+":"")+d.toFixed(2));
+      var dColor = d===null?"var(--text-muted)":d>0.005?"var(--success)":d<-0.005?"var(--danger)":"var(--text-muted)";
+      html += '<tr><td style="font-weight:500; padding:0.35rem 1rem;">'+sf.label+'</td>'+
+        '<td class="mono '+nc(sf.my)+'" style="color:#818cf8;">'+fn(sf.my)+'</td>'+
+        '<td class="mono '+nc(sf.peer)+'" style="color:#a5b4fc;">'+fn(sf.peer)+'</td>'+
+        '<td class="mono" style="font-weight:700;color:'+dColor+';">'+dStr+'</td></tr>';
+    });
+    html += '</table></div></td></tr>';
   });
 
   var overallDiff = (myMoy!==null&&peerMoy!==null) ? (myMoy-peerMoy) : null;
@@ -1119,9 +1251,48 @@ function renderPeerComparisonTable(peer, container) {
     '</tr>';
   html += '</tbody></table></div>';
   container.innerHTML = html;
+
+  window["_expandedState_"+expandId] = {};
 }
 
-// ===== PEER MANAGEMENT — ADMIN SIDE =====
+function togglePeerDetail(parentId, moduleKey) {
+  var row = document.getElementById("peer_detail_"+parentId+"_"+moduleKey);
+  if (!row) return;
+  var state = window["_expandedState_"+parentId] || {};
+  if (row.style.display === "none" || row.style.display === "") {
+    row.style.display = "table-row";
+    state[moduleKey] = true;
+  } else {
+    row.style.display = "none";
+    state[moduleKey] = false;
+  }
+  window["_expandedState_"+parentId] = state;
+  updateToggleButton(parentId);
+}
+
+function toggleAllPeerDetails(parentId) {
+  var state = window["_expandedState_"+parentId] || {};
+  var allExpanded = MODULES.length > 0 && MODULES.every(function(m){ return state[m.key] === true; });
+  var rows = document.querySelectorAll('[id^="peer_detail_'+parentId+'_"]');
+  if (allExpanded) {
+    rows.forEach(function(r){ r.style.display = "none"; });
+    window["_expandedState_"+parentId] = {};
+  } else {
+    rows.forEach(function(r){ r.style.display = "table-row"; });
+    MODULES.forEach(function(m){ state[m.key] = true; });
+    window["_expandedState_"+parentId] = state;
+  }
+  updateToggleButton(parentId);
+}
+
+function updateToggleButton(parentId) {
+  var state = window["_expandedState_"+parentId] || {};
+  var allExpanded = MODULES.length > 0 && MODULES.every(function(m){ return state[m.key] === true; });
+  var btn = document.getElementById("btn_toggle_"+parentId);
+  if (btn) {
+    btn.textContent = allExpanded ? t("detailCollapseAll") : t("detailExpandAll");
+  }
+}
 
 function openManagePeers(num) {
   var et = adminData.find(function(e){return e.numero===num;});
@@ -1139,14 +1310,12 @@ function openManagePeers(num) {
   d.id = "peersModal"; d.className = "modal-overlay";
   var inner = document.createElement("div"); inner.className = "modal-box";
 
-  // Header
   inner.innerHTML =
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">'+
     '<div><div style="font-weight:800;font-size:1.1rem;">'+t("managePeers")+'</div>'+
     '<div style="font-size:0.85rem;color:var(--text-muted);">'+et.nom+' '+et.prenom+' — N°'+num+'</div></div>'+
     '<button class="btn-ghost" style="padding:0.4rem 0.8rem;" onclick="document.getElementById(\'peersModal\').remove()"><i class="ph-bold ph-x"></i></button>'+
     '</div>'+
-    // ALL access toggle
     '<div style="margin-bottom:1rem;">'+
     '<div class="toggle-wrap '+(isAll?"active-all":"")+'" id="allAccessWrap" onclick="toggleAllAccess()">'+
     '<div class="toggle-knob-track '+(isAll?"on":"")+'" id="allAccessTrack"><div class="toggle-knob"></div></div>'+
@@ -1154,7 +1323,6 @@ function openManagePeers(num) {
     '<div style="font-weight:700;font-size:0.88rem;">'+(isAll?'⭐ ':'')+t("seeAllLabel")+'</div>'+
     '<div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;" id="allAccessSubtext">'+(isAll?t("seeAllDesc"):"")+'</div>'+
     '</div></div></div>'+
-    // Specific peers section
     '<div id="peerSpecificSection" class="'+(isAll?"hidden":"")+'">'+
     '<div style="margin-bottom:0.5rem;font-size:0.8rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">'+t("authorizedPeers")+'</div>'+
     '<div id="peerChipsArea" style="min-height:40px;display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem;"></div>'+
@@ -1245,12 +1413,11 @@ function savePeerView() {
     var et = adminData.find(function(e){return e.numero===num;});
     if (et) et.peer_view = val;
     showToast(t("peerSaved"),"success");
-    renderAdminTable(adminData); // refresh to update access column
+    renderAdminTable(adminData);
     var modal = document.getElementById("peersModal");
     if (modal) modal.remove();
   }).catch(function(err) {
     var msg = String(err&&err.message ? err.message : err);
-    // Give a helpful message if the column doesn't exist yet
     if (msg.indexOf("does not exist")!==-1||msg.indexOf("column")!==-1||msg.indexOf("204")!==-1||msg.indexOf("PGRST")!==-1) {
       showToast(t("peerViewColMissing"),"danger");
     } else {
@@ -1258,8 +1425,6 @@ function savePeerView() {
     }
   });
 }
-
-// ===== ACCOUNT =====
 
 function showAccount() {
   if (!currentStudent) return;
@@ -1322,22 +1487,40 @@ function envoyerSignalement() {
   });
 }
 
-// ===== ADMIN =====
-
 function loadAdmin() {
   var badge = document.getElementById("adminLiteBadge");
   if (isAdminLite) badge.classList.remove("hidden"); else badge.classList.add("hidden");
+  var leaveBtn = document.getElementById("leaveAdminLiteBtn");
+  leaveBtn.style.display = viewingAsAdminLite ? "inline-flex" : "none";
   document.getElementById("adminBody").innerHTML='<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);">'+t("loading")+'</td></tr>';
-  fsList("etudiants").then(function(data) {
-    if (!data.documents) { adminData=[]; renderAdminTable([]); return; }
-    adminData = data.documents.filter(Boolean);
-    adminData.sort(function(a,b){return a.numero-b.numero;});
-    renderAdminTable(adminData);
-    var sel=document.getElementById("rankModuleSelect");
-    sel.innerHTML='<option value="">—</option>';
-    MODULES.forEach(function(m){var opt=document.createElement("option");opt.value=m.key;opt.textContent=m.nom;sel.appendChild(opt);});
-  });
+  fsList("etudiants")
+    .then(function(data) {
+      if (!data.documents) { adminData=[]; renderAdminTable([]); return; }
+      adminData = data.documents.filter(Boolean);
+      adminData.sort(function(a,b){return a.numero-b.numero;});
+      renderAdminTable(adminData);
+      var sel=document.getElementById("rankModuleSelect");
+      sel.innerHTML='<option value="">—</option>';
+      var generalOpt = document.createElement("option");
+      generalOpt.value = "general";
+      generalOpt.textContent = "Moyenne Générale";
+      sel.appendChild(generalOpt);
+      MODULES.forEach(function(m){var opt=document.createElement("option");opt.value=m.key;opt.textContent=m.nom;sel.appendChild(opt);});
+      switchTab('etudiants');
+    })
+    .catch(function(err) {
+      console.error(err);
+      document.getElementById("adminBody").innerHTML='<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--danger);">Erreur de chargement des étudiants.</td></tr>';
+    });
+  if (isAdminLite) {
+    document.getElementById("tabNotifs").classList.add("hidden");
+    document.getElementById("tabComptes").classList.add("hidden");
+  } else {
+    document.getElementById("tabNotifs").classList.remove("hidden");
+    document.getElementById("tabComptes").classList.remove("hidden");
+  }
   loadNotifs(); loadComptes();
+  rankModuleChanged();
 }
 
 function renderAdminTable(data) {
@@ -1356,15 +1539,12 @@ function renderAdminTable(data) {
         ? '<span class="badge badge-warning" style="font-size:0.72rem;padding:2px 8px;">'+t("catchup")+'</span>'
         : '<span style="color:var(--text-muted);font-size:0.85rem;">'+res+'</span>';
 
-    // Access column — only admin (not lite) can see manage button, but count visible to all
     var accessInfo = getPeerAccessInfo(et);
     var accessCell = accessInfo.html;
 
     var actionBtn;
     if (isAdminLite) {
-      actionBtn =
-        '<button class="btn-sm btn-ghost-sm" onclick="viewNotes('+et.numero+')"><i class="ph-bold ph-eye"></i> '+t("view")+'</button> '+
-        '<button class="btn-sm btn-ghost-sm" onclick="suggestEdit('+et.numero+')"><i class="ph-bold ph-pencil-simple"></i> '+t("suggest")+'</button>';
+      actionBtn = '<button class="btn-sm btn-ghost-sm" onclick="viewNotes('+et.numero+')"><i class="ph-bold ph-eye"></i> '+t("view")+'</button>';
     } else {
       actionBtn =
         '<button class="btn-sm btn-success-sm" onclick="openEditNotes('+et.numero+')"><i class="ph-bold ph-pencil"></i> '+t("notes")+'</button> '+
@@ -1385,43 +1565,96 @@ function renderAdminTable(data) {
   });
 }
 
+function rankModuleChanged() {
+  var val = document.getElementById("rankModuleSelect").value;
+  var subWrap = document.getElementById("rankSubSelectWrap");
+  if (val === "" || val === "general") {
+    subWrap.classList.add("hidden");
+  } else {
+    subWrap.classList.remove("hidden");
+  }
+  renderModuleRanking();
+}
+
 function renderModuleRanking() {
   var sel = document.getElementById("rankModuleSelect");
   var moduleKey = sel.value;
   var container = document.getElementById("moduleRankingTable");
   var searchEl  = document.getElementById("rankSearchInput");
   var searchQ   = searchEl ? searchEl.value.toLowerCase().trim() : "";
+  var subSel    = document.getElementById("rankSubSelect");
+  var subCrit   = subSel ? subSel.value : "moy_module";
 
   if (!moduleKey) {
     container.innerHTML='<p style="padding:2rem;text-align:center;color:var(--text-muted);">'+t("selectModuleRanking")+'</p>';
     return;
   }
-  var mod = MODULES.find(function(m){return m.key===moduleKey;});
-  if (!mod) return;
 
-  // Build globally ranked list first
-  var allRanked = adminData.map(function(et) {
-    var mm = et["moy_"+moduleKey];
-    if (mm!==null&&mm!==undefined&&mm!=="Abs") return {numero:et.numero,nom:et.nom,prenom:et.prenom,moy:parseFloat(mm)};
-    return null;
-  }).filter(Boolean).sort(function(a,b){return b.moy-a.moy;});
-  allRanked.forEach(function(r,i){r.globalRank=i+1;});
-
-  // Apply search filter
-  var results = searchQ ? allRanked.filter(function(r){
-    return (r.nom+" "+r.prenom).toLowerCase().includes(searchQ)||String(r.numero).includes(searchQ);
-  }) : allRanked;
-
-  if (!results.length) {
-    container.innerHTML='<p style="padding:2rem;text-align:center;color:var(--text-muted);">'+(searchQ?t("noResults"):t("noStudentsForModule"))+'</p>';
+  if (moduleKey === "general") {
+    var allRanked = adminData.map(function(et) {
+      var moy = et.moyenne_generale ? parseFloat(et.moyenne_generale) : null;
+      if (moy !== null && !isNaN(moy)) return {numero:et.numero, nom:et.nom, prenom:et.prenom, val:moy};
+      return null;
+    }).filter(Boolean).sort(function(a,b){ return b.val - a.val; });
+    allRanked.forEach(function(r,i){ r.globalRank = i+1; });
+    var results = searchQ ? allRanked.filter(function(r){
+      return (r.nom+" "+r.prenom).toLowerCase().includes(searchQ) || String(r.numero).includes(searchQ);
+    }) : allRanked;
+    if (!results.length) {
+      container.innerHTML='<p style="padding:2rem;text-align:center;color:var(--text-muted);">'+(searchQ?t("noResults"):"Aucun étudiant")+'</p>';
+      return;
+    }
+    var html = '';
+    if (searchQ) html='<div style="padding:0.5rem 1rem;font-size:0.8rem;color:var(--text-muted);border-bottom:1px solid var(--glass-border);">'+results.length+' / '+allRanked.length+' étudiants</div>';
+    html += '<table class="res-table"><thead><tr>'+
+      '<th>Rang</th><th>'+t("number")+'</th><th>'+t("lastName")+'</th><th>'+t("firstName")+'</th>'+
+      '<th>Moyenne Générale</th>'+
+      '</tr></thead><tbody>';
+    results.forEach(function(r) {
+      var topBadge = r.globalRank<=3?'<span class="badge badge-diamond" style="margin-left:6px;padding:2px 6px;font-size:0.7rem;">'+t("diamond")+'</span>':'';
+      html += '<tr>'+
+        '<td class="mono" style="font-weight:700;">'+r.globalRank+topBadge+'</td>'+
+        '<td class="mono">'+r.numero+'</td>'+
+        '<td style="font-weight:600;">'+r.nom+'</td>'+
+        '<td>'+r.prenom+'</td>'+
+        '<td class="mono '+nc(r.val)+'" style="font-weight:700;">'+r.val.toFixed(3)+getGradeBadge(r.val)+'</td>'+
+        '</tr>';
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
     return;
   }
 
+  var mod = MODULES.find(function(m){return m.key===moduleKey;});
+  if (!mod) return;
+
+  var fieldKey;
+  if (subCrit === "moy_module") fieldKey = "moy_"+moduleKey;
+  else fieldKey = moduleKey+"_"+subCrit;
+
+  var allRanked = adminData.map(function(et) {
+    var val = et[fieldKey];
+    if (val !== null && val !== undefined && val !== "Abs") return {numero:et.numero, nom:et.nom, prenom:et.prenom, val:parseFloat(val)};
+    return null;
+  }).filter(Boolean).sort(function(a,b){ return b.val - a.val; });
+  allRanked.forEach(function(r,i){ r.globalRank = i+1; });
+
+  var results = searchQ ? allRanked.filter(function(r){
+    return (r.nom+" "+r.prenom).toLowerCase().includes(searchQ) || String(r.numero).includes(searchQ);
+  }) : allRanked;
+
+  if (!results.length) {
+    var subLabel = subCrit === "emd1" ? "EMD 1" : subCrit === "emd2" ? "EMD 2" : subCrit.toUpperCase();
+    container.innerHTML='<p style="padding:2rem;text-align:center;color:var(--text-muted);">'+(searchQ?t("noResults"):"Aucun étudiant pour "+mod.nom+" ("+subLabel+")")+'</p>';
+    return;
+  }
+
+  var subLabel = subCrit === "moy_module" ? "Moyenne module" : subCrit.toUpperCase();
   var html = '';
   if (searchQ) html='<div style="padding:0.5rem 1rem;font-size:0.8rem;color:var(--text-muted);border-bottom:1px solid var(--glass-border);">'+results.length+' / '+allRanked.length+' étudiants</div>';
   html += '<table class="res-table"><thead><tr>'+
-    '<th>'+t("rankModule")+'</th><th>'+t("number")+'</th><th>'+t("lastName")+'</th><th>'+t("firstName")+'</th>'+
-    '<th>'+t("moduleAvg")+' ('+mod.nom+')</th>'+
+    '<th>Rang</th><th>'+t("number")+'</th><th>'+t("lastName")+'</th><th>'+t("firstName")+'</th>'+
+    '<th>'+mod.nom+' — '+subLabel+'</th>'+
     '</tr></thead><tbody>';
   results.forEach(function(r) {
     var topBadge = r.globalRank<=3?'<span class="badge badge-diamond" style="margin-left:6px;padding:2px 6px;font-size:0.7rem;">'+t("diamond")+'</span>':'';
@@ -1430,7 +1663,7 @@ function renderModuleRanking() {
       '<td class="mono">'+r.numero+'</td>'+
       '<td style="font-weight:600;">'+r.nom+'</td>'+
       '<td>'+r.prenom+'</td>'+
-      '<td class="mono '+nc(r.moy)+'" style="font-weight:700;">'+r.moy.toFixed(2)+getGradeBadge(r.moy)+'</td>'+
+      '<td class="mono '+nc(r.val)+'" style="font-weight:700;">'+r.val.toFixed(2)+getGradeBadge(r.val)+'</td>'+
       '</tr>';
   });
   html += '</tbody></table>';
@@ -1442,14 +1675,6 @@ function loadNotifs() {
   .then(function(r){return r.json();})
   .then(function(notifs) {
     if (!Array.isArray(notifs)) { renderNotifs([]); return; }
-    if (isAdminLite) {
-      notifs = notifs.filter(function(n){
-        if (n.admin_only) return false;
-        if (n.type==="Connexion"||n.type==="Connection"||n.type==="اتصال") return false;
-        if (n.type==="Modification de compte"||n.type==="Account modification"||n.type==="تعديل الحساب") return false;
-        return true;
-      });
-    }
     var unread = notifs.filter(function(n){return !n.lu;}).length;
     if (unread>0) { document.getElementById("notifCount").textContent=unread; document.getElementById("notifCount").classList.remove("hidden"); }
     renderNotifs(notifs);
@@ -1485,31 +1710,99 @@ function renderNotifs(notifs) {
 }
 
 function loadComptes() {
-  fsList("etudiants").then(function(data) {
-    if (!data.documents) { renderComptes([]); return; }
-    var modifies = data.documents.filter(function(et){return et&&(et.custom_id||et.custom_mdp);});
-    renderComptes(modifies);
-  });
+  if (!adminData.length) {
+    fsList("etudiants").then(function(data) {
+      if (!data.documents) { renderComptes([]); return; }
+      var all = data.documents.filter(Boolean);
+      renderComptes(all);
+    });
+  } else {
+    renderComptes(adminData);
+  }
 }
 
 function renderComptes(data) {
   var el = document.getElementById("comptesList");
-  if (!data.length) { el.innerHTML='<p class="text-center py-8" style="color:var(--text-muted);">'+t("noAccountChanges")+'</p>'; return; }
+  if (!data.length) { el.innerHTML='<p class="text-center py-8" style="color:var(--text-muted);">'+t("noResults")+'</p>'; return; }
   var html='<div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;"><table class="res-table"><thead><tr>'+
     '<th>'+t("number")+'</th><th>'+t("lastName")+'</th><th>'+t("firstName")+'</th>'+
     '<th>'+t("customIdentifier")+'</th><th>'+t("customPassword")+'</th><th>'+t("actions")+'</th>'+
     '</tr></thead><tbody>';
   data.forEach(function(et){
+    var identifiant = et.custom_id || "—";
+    var motdepasse = "—";
+    if (isAdminLite) {
+      motdepasse = et.custom_mdp ? "••••••" : "—";
+    } else {
+      motdepasse = et.custom_mdp ? et.custom_mdp : "—";
+    }
+    var actionCell = "";
+    if (!isAdminLite) {
+      actionCell = '<button class="btn-sm btn-info-sm" onclick="editStudentAccount('+et.numero+')"><i class="ph-bold ph-pencil"></i> '+t("editAccount")+'</button> '+
+        '<button class="btn-sm btn-danger-sm" onclick="resetCompte('+et.numero+')"><i class="ph-bold ph-arrow-counter-clockwise"></i> '+t("reset")+'</button>';
+    }
     html+='<tr>'+
       '<td class="mono" style="font-weight:700;">'+et.numero+'</td>'+
       '<td style="font-weight:600;">'+et.nom+'</td><td>'+et.prenom+'</td>'+
-      '<td class="mono">'+(et.custom_id||"—")+'</td>'+
-      '<td class="mono">'+(isAdminLite?(et.custom_mdp?"••••••":"—"):(et.custom_mdp||"—"))+'</td>'+
-      '<td>'+(isAdminLite?"—":'<button class="btn-sm btn-danger-sm" onclick="resetCompte('+et.numero+')"><i class="ph-bold ph-arrow-counter-clockwise"></i> '+t("reset")+'</button>')+'</td>'+
+      '<td class="mono">'+identifiant+'</td>'+
+      '<td class="mono" style="word-break:break-all;">'+motdepasse+'</td>'+
+      '<td>'+actionCell+'</td>'+
       '</tr>';
   });
   html+='</tbody></table></div></div>';
+
+  if (!isAdminLite) {
+    html += '<div class="glass rounded-3xl p-6 mt-6">';
+    html += '<h3 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="ph-bold ph-shield-check"></i> '+t("editSuperAdmin")+'</h3>';
+    html += '<div style="margin-bottom:1rem;"><label class="field-label">Admin ID</label><input type="text" class="calc-input" id="superAdminId" value="'+ADMIN_ID+'"></div>';
+    html += '<div style="margin-bottom:1rem;"><label class="field-label">Admin Password (laisser vide pour ne pas changer)</label><input type="password" class="calc-input" id="superAdminPass" placeholder="Nouveau mot de passe"></div>';
+    html += '<div style="margin-bottom:1rem;"><label class="field-label">Admin Lite ID</label><input type="text" class="calc-input" id="superAdminLiteId" value="'+ADMIN_LITE_ID+'"></div>';
+    html += '<div style="margin-bottom:1rem;"><label class="field-label">Admin Lite Password (laisser vide pour ne pas changer)</label><input type="password" class="calc-input" id="superAdminLitePass" placeholder="Nouveau mot de passe"></div>';
+    html += '<button class="btn-main" style="width:auto;padding:0.6rem 1.8rem;" onclick="saveSuperAdmins()"><i class="ph-bold ph-floppy-disk"></i> '+t("saveChanges")+'</button>';
+    html += '</div>';
+  }
+
   el.innerHTML=html;
+}
+
+function editStudentAccount(num) {
+  var et = adminData.find(function(e){return e.numero===num;});
+  if (!et) return;
+  var d=document.createElement("div"); d.id="editAccountModal"; d.className="modal-overlay";
+  var inner=document.createElement("div"); inner.className="modal-box";
+  inner.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">'+
+    '<div style="font-weight:800;font-size:1.1rem;">'+et.nom+' '+et.prenom+' — '+t("editAccount")+'</div>'+
+    '<button class="btn-ghost" style="padding:0.4rem 0.8rem;" onclick="document.getElementById(\'editAccountModal\').remove()"><i class="ph-bold ph-x"></i></button>'+
+    '</div>'+
+    '<div class="mb-4"><label class="field-label">'+t("newIdentifier")+'</label><input type="text" class="calc-input" id="editAccountId" value="'+(et.custom_id||"")+'"></div>'+
+    '<div class="mb-4"><label class="field-label">'+t("newPassword")+'</label><input type="text" class="calc-input" id="editAccountPass" value="'+(et.custom_mdp||"")+'"></div>'+
+    '<div style="display:flex;gap:0.75rem;justify-content:flex-end;">'+
+    '<button class="btn-ghost" onclick="document.getElementById(\'editAccountModal\').remove()">'+t("cancel")+'</button>'+
+    '<button class="btn-main" style="width:auto;padding:0.6rem 1.5rem;" onclick="saveStudentAccount('+num+')"><i class="ph-bold ph-floppy-disk"></i> '+t("save")+'</button>'+
+    '</div>';
+  d.appendChild(inner); document.body.appendChild(d);
+}
+
+function saveStudentAccount(num) {
+  var newId = document.getElementById("editAccountId").value.trim();
+  var newPass = document.getElementById("editAccountPass").value;
+  var fields = {};
+  if (newId !== "") fields.custom_id = newId;
+  else fields.custom_id = null;
+  if (newPass !== "") fields.custom_mdp = newPass;
+  else fields.custom_mdp = null;
+
+  fsPatch("etudiants", String(num), fields).then(function() {
+    var et = adminData.find(function(e){return e.numero===num;});
+    if (et) {
+      et.custom_id = fields.custom_id;
+      et.custom_mdp = fields.custom_mdp;
+    }
+    document.getElementById("editAccountModal").remove();
+    showToast(t("accountUpdated"),"success");
+    loadComptes();
+  }).catch(function(){showToast(t("saveError"),"danger");});
 }
 
 function resetCompte(num) {
@@ -1517,6 +1810,32 @@ function resetCompte(num) {
   fsPatch("etudiants",String(num),{custom_id:null,custom_mdp:null}).then(function(){
     showToast(t("accountReset")+num,"success"); loadComptes();
   }).catch(function(){showToast(t("saveError"),"danger");});
+}
+
+async function saveSuperAdmins() {
+  var newAdminId = document.getElementById("superAdminId").value.trim();
+  var newAdminPass = document.getElementById("superAdminPass").value.trim();
+  var newLiteId = document.getElementById("superAdminLiteId").value.trim();
+  var newLitePass = document.getElementById("superAdminLitePass").value.trim();
+
+  if (!newAdminId || !newLiteId) {
+    showToast(t("fillAllFields"),"danger");
+    return;
+  }
+
+  if (newAdminPass) {
+    ADMIN_MDP_HASH = await sha256(newAdminPass);
+    localStorage.setItem("admin_hash_v2", ADMIN_MDP_HASH);
+  }
+  if (newLitePass) {
+    ADMIN_LITE_MDP_HASH = await sha256(newLitePass);
+    localStorage.setItem("admin_lite_hash_v2", ADMIN_LITE_MDP_HASH);
+  }
+  ADMIN_ID = newAdminId;
+  ADMIN_LITE_ID = newLiteId;
+  localStorage.setItem("admin_id_v2", ADMIN_ID);
+  localStorage.setItem("admin_lite_id_v2", ADMIN_LITE_ID);
+  showToast(t("accountUpdated"),"success");
 }
 
 function openEditNotes(num) {
@@ -1624,50 +1943,6 @@ function viewNotes(num) {
   footer.appendChild(closeBtn2); inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
 }
 
-function suggestEdit(num) {
-  var et=adminData.find(function(e){return e.numero===num;}); if(!et) return;
-  var d=document.createElement("div"); d.className="modal-overlay";
-  var inner=document.createElement("div"); inner.className="modal-box";
-  var hdr=document.createElement("div"); hdr.style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
-  hdr.innerHTML='<div style="font-weight:800;font-size:1.1rem;">'+t("suggestTitle")+' '+et.nom+' '+et.prenom+'</div>';
-  var closeBtn=document.createElement("button"); closeBtn.className="btn-ghost"; closeBtn.style="padding:0.4rem 0.8rem;";
-  closeBtn.innerHTML='<i class="ph-bold ph-x"></i>'; closeBtn.onclick=function(){d.remove();}; hdr.appendChild(closeBtn); inner.appendChild(hdr);
-  var modDiv=document.createElement("div"); modDiv.className="mb-4"; modDiv.innerHTML='<label class="field-label">'+t("concernedModule")+'</label>';
-  var modSel=document.createElement("select"); modSel.className="glass-select"; modSel.id="suggestModule";
-  modSel.innerHTML='<option value="">'+t("choose")+'</option>';
-  MODULES.forEach(function(m){var o=document.createElement("option");o.value=m.nom;o.textContent=m.nom;modSel.appendChild(o);});
-  modDiv.appendChild(modSel); inner.appendChild(modDiv);
-  var fieldDiv=document.createElement("div"); fieldDiv.className="mb-4"; fieldDiv.innerHTML='<label class="field-label">'+t("fieldToModify")+'</label>';
-  var fieldSel=document.createElement("select"); fieldSel.className="glass-select"; fieldSel.id="suggestField";
-  fieldSel.innerHTML='<option value="emd1">EMD 1</option><option value="emd2">EMD 2</option><option value="td">TD</option><option value="tp">TP</option><option value="moy_module">'+t("moyModule")+'</option>';
-  fieldDiv.appendChild(fieldSel); inner.appendChild(fieldDiv);
-  var valDiv=document.createElement("div"); valDiv.className="mb-4"; valDiv.innerHTML='<label class="field-label">'+t("suggestedValue")+'</label>';
-  var valInp=document.createElement("input"); valInp.type="text"; valInp.className="calc-input"; valInp.id="suggestVal"; valInp.placeholder=t("suggestedValuePlaceholder");
-  valDiv.appendChild(valInp); inner.appendChild(valDiv);
-  var reasonDiv=document.createElement("div"); reasonDiv.className="mb-5"; reasonDiv.innerHTML='<label class="field-label">'+t("justification")+'</label>';
-  var reasonTa=document.createElement("textarea"); reasonTa.className="calc-input"; reasonTa.id="suggestReason"; reasonTa.placeholder=t("justificationPlaceholder"); reasonTa.style="min-height:70px;resize:vertical;";
-  reasonDiv.appendChild(reasonTa); inner.appendChild(reasonDiv);
-  var footer=document.createElement("div"); footer.style="display:flex;gap:0.75rem;justify-content:flex-end;";
-  var cancelBtn=document.createElement("button"); cancelBtn.className="btn-ghost"; cancelBtn.textContent=t("cancel"); cancelBtn.onclick=function(){d.remove();};
-  var sendBtn=document.createElement("button"); sendBtn.className="btn-main"; sendBtn.style="width:auto;padding:0.6rem 1.5rem;";
-  sendBtn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> '+t("send"); sendBtn.onclick=function(){sendSuggestion(num,d);};
-  footer.appendChild(cancelBtn); footer.appendChild(sendBtn); inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
-}
-
-function sendSuggestion(num, modal) {
-  var et=adminData.find(function(e){return e.numero===num;});
-  var module=document.getElementById("suggestModule").value, field=document.getElementById("suggestField").value;
-  var val=document.getElementById("suggestVal").value.trim(), reason=document.getElementById("suggestReason").value.trim();
-  if(!module||!val){showToast(t("fillAllFields"),"warning");return;}
-  var now=new Date().toLocaleString("fr-FR");
-  var msg=t("suggestModule")+module+" / "+field+" = "+val+(reason?t("reason")+reason:"");
-  var deviceInfo=getDeviceShortString(), deviceFull=getDeviceDisplayString();
-  fsCreate("notifications",{etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:et.numero,module:module,type:t("suggestion"),message:msg,date:now,lu:false,admin_only:false,device_info:deviceInfo,device_full:deviceFull})
-  .then(function(){emailjs.init(EMAILJS_KEY);return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:String(et.numero),module:module,type_signalement:t("suggestion"),message:msg+" | "+t("device")+": "+deviceFull,date:now});})
-  .then(function(){if(modal)modal.remove();showToast(t("suggestionSent"),"success");})
-  .catch(function(){if(modal)modal.remove();showToast(t("suggestionSaved"),"warning");});
-}
-
 function filterAdmin() {
   var q=document.getElementById("adminSearch").value.toLowerCase().trim();
   if(!adminData.length)return;
@@ -1691,19 +1966,24 @@ function sortAdmin(key) {
 function switchTab(tabName) {
   ["etudiants","notifs","comptes","classement"].forEach(function(tabId){
     var cap=tabId.charAt(0).toUpperCase()+tabId.slice(1);
-    document.getElementById("tab"+cap).classList.toggle("active",tabId===tabName);
-    document.getElementById("panel"+cap).classList.toggle("hidden",tabId!==tabName);
+    var tabBtn = document.getElementById("tab"+cap);
+    var panel = document.getElementById("panel"+cap);
+    if (tabBtn) tabBtn.classList.toggle("active", tabId===tabName);
+    if (panel) panel.classList.toggle("hidden", tabId!==tabName);
   });
-  if(tabName==="classement")renderModuleRanking();
+  if(tabName==="classement") renderModuleRanking();
 }
 
 function showView(v) {
   ["Login","Student","Account","Admin"].forEach(function(n){document.getElementById("view"+n).classList.add("hidden");});
   document.getElementById("view"+v.charAt(0).toUpperCase()+v.slice(1)).classList.remove("hidden");
   currentView=v; updateSidebarNav(); updateBreadcrumb();
+  var leaveBtn = document.getElementById("leaveAdminLiteBtn");
+  if (leaveBtn) leaveBtn.style.display = (viewingAsAdminLite && v==="admin") ? "inline-flex" : "none";
 }
 
 function logout() {
+  viewingAsAdminLite = false;
   currentStudent=null; isAdmin=false; isAdminLite=false; adminData=[];
   clearSession();
   document.getElementById("inputNom").value=""; document.getElementById("inputMdp").value="";
@@ -1719,7 +1999,12 @@ function updateSidebarNav() {
     h+='<button onclick="showView(\'student\');closeMenu();" class="nav-link glass '+(currentView==="student"?"active":"")+'"><i class="ph-bold ph-chart-bar text-xl"></i><span>'+t("myResults")+'</span></button>';
     h+='<button onclick="showAccount();closeMenu();" class="nav-link glass '+(currentView==="account"?"active":"")+'"><i class="ph-bold ph-user-circle text-xl"></i><span>'+t("myAccount")+'</span></button>';
   }
-  if(currentView==="admin") h+='<button onclick="showView(\'admin\');closeMenu();" class="nav-link glass active"><i class="ph-bold ph-shield text-xl"></i><span>'+t("adminInterface")+'</span></button>';
+  if(currentView==="admin") {
+    h+='<button onclick="showView(\'admin\');closeMenu();" class="nav-link glass active"><i class="ph-bold ph-shield text-xl"></i><span>'+t("adminInterface")+'</span></button>';
+    if (viewingAsAdminLite) {
+      h+='<button onclick="leaveAdminLiteMode();closeMenu();" class="nav-link glass"><i class="ph-bold ph-arrow-left text-xl"></i><span>Retour à mon compte</span></button>';
+    }
+  }
   h+='<div class="w-full h-px my-2" style="background:var(--glass-border);"></div>';
   if(currentView!=="login") h+='<button onclick="logout();closeMenu();" class="nav-link glass"><i class="ph-bold ph-sign-out text-xl"></i><span>'+t("logout")+'</span></button>';
   nav.innerHTML=h;
