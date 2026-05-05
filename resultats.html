@@ -1,1860 +1,385 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark" dir="ltr">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#6366f1"/>
-  <title>Résultats 3ème Année - Dental Guide</title>
-  <link rel="manifest" href="manifest.json"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/@phosphor-icons/web@2.1.2"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <style>
-    :root { --transition-speed: 0.5s; }
-    [data-theme="dark"] {
-      --bg-gradient: linear-gradient(135deg, #312e81 0%, #1e1b4b 50%, #4c0519 100%);
-      --glass-bg: rgba(255,255,255,0.08); --glass-border: rgba(255,255,255,0.15);
-      --text-main: #ffffff; --text-muted: rgba(255,255,255,0.7);
-      --btn-hover: rgba(255,255,255,0.15); --pill-bg: rgba(0,0,0,0.3); --pill-color: #ffffff;
-      --sidebar-bg: rgba(0,0,0,0.6); --input-bg: rgba(0,0,0,0.3);
-      --success: #2ad4a5; --danger: #ff647c; --warning: #ffc94a;
-      --nav-active-bg: rgba(129,140,248,0.2); --nav-active-text: #a5b4fc;
-      --table-header: rgba(0,0,0,0.3); --table-row-hover: rgba(255,255,255,0.05);
-    }
-    [data-theme="light"] {
-      --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
-      --glass-bg: rgba(255,255,255,0.65); --glass-border: rgba(255,255,255,0.8);
-      --text-main: #312e81; --text-muted: #6366f1;
-      --btn-hover: rgba(255,255,255,0.9); --pill-bg: rgba(255,255,255,0.5); --pill-color: #312e81;
-      --sidebar-bg: rgba(255,255,255,0.7); --input-bg: rgba(255,255,255,0.5);
-      --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
-      --nav-active-bg: rgba(79,70,229,0.1); --nav-active-text: #4f46e5;
-      --table-header: rgba(255,255,255,0.4); --table-row-hover: rgba(255,255,255,0.3);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg-gradient); color: var(--text-main); font-family: 'Inter', 'Noto Sans Arabic', sans-serif; overflow-x: hidden; transition: background 0.5s ease, color 0.5s ease, opacity 0.3s ease, filter 0.3s ease; min-height: 100vh; }
-    [lang="ar"] body { font-family: 'Noto Sans Arabic', 'Inter', sans-serif; }
-    body.switching-lang { opacity: 0; filter: blur(15px); pointer-events: none; }
-    body.switching-lang #sidebar { transition: none !important; }
-    .glass { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); transition: all 0.3s ease; }
-    .text-gradient { background-clip: text; -webkit-background-clip: text; color: transparent; background-image: linear-gradient(to right, #818cf8, #c084fc, #f472b6); }
-    [data-theme="light"] .text-gradient { background-image: linear-gradient(to right, #4f46e5, #9333ea, #db2777); }
-    @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
-    .animate-float { animation: float 6s ease-in-out infinite; }
-    .lang-container { position:relative; display:flex; background:var(--pill-bg); border-radius:99px; padding:4px; border:1px solid var(--glass-border); height:48px; width:100%; direction:ltr; }
-    [data-theme="light"] .lang-container { background:rgba(255,255,255,0.4); }
-    .lang-pill { position:absolute; top:4px; bottom:4px; left:4px; width:calc(33.33% - 5px); background:var(--pill-color); border-radius:99px; transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); z-index:0; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
-    .lang-btn { flex:1; position:relative; z-index:1; font-size:0.9rem; font-weight:600; color:var(--text-muted); transition:color 0.3s; cursor:pointer; background:none; border:none; }
-    [data-theme="dark"] .lang-btn.active { color:#333; font-weight:800; }
-    [data-theme="light"] .lang-btn.active { color:#fff; font-weight:800; }
-    .theme-toggle-btn { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; color:var(--text-main); flex-shrink:0; background:none; border:none; }
-    .theme-toggle-btn:hover { background:var(--btn-hover); }
-    .theme-toggle-btn i { position:absolute; top:50%; left:50%; transition:all 0.5s cubic-bezier(0.23,1,0.32,1); }
-    [data-theme="dark"] .ph-moon { transform:translate(-50%,-50%) scale(1) rotate(0deg); opacity:1; }
-    [data-theme="dark"] .ph-sun  { transform:translate(-50%,-50%) scale(0.5) rotate(90deg); opacity:0; }
-    [data-theme="light"] .ph-sun  { transform:translate(-50%,-50%) scale(1) rotate(0deg); opacity:1; }
-    [data-theme="light"] .ph-moon { transform:translate(-50%,-50%) scale(0.5) rotate(-90deg); opacity:0; }
-    html[dir="rtl"] #sidebar { right:0; left:auto; transform:translateX(100%); border-left:1px solid var(--glass-border); border-right:none; }
-    html[dir="ltr"] #sidebar  { left:0; right:auto; transform:translateX(-100%); border-right:1px solid var(--glass-border); border-left:none; }
-    #sidebar.open { transform:translateX(0) !important; }
-    html[dir="rtl"] #menuBtn { right:2rem; left:auto; }
-    html[dir="ltr"]  #menuBtn { left:2rem; right:auto; }
-    .nav-link { display:flex; align-items:center; gap:0.75rem; width:100%; padding:1rem 1.5rem; border-radius:1rem; font-weight:500; text-decoration:none; color:var(--text-main); border:1px solid transparent; transition:all 0.2s ease; cursor:pointer; background:none; }
-    .nav-link:hover { background:var(--btn-hover); transform:translateX(4px); }
-    html[dir="rtl"] .nav-link:hover { transform:translateX(-4px); }
-    .nav-link.active { background:var(--nav-active-bg); color:var(--nav-active-text); border-color:var(--glass-border); font-weight:600; }
-    .calc-input { width:100%; background:var(--input-bg); border:1px solid var(--glass-border); color:var(--text-main); border-radius:0.75rem; padding:0.75rem 1rem; outline:none; transition:border-color 0.3s; font-family:'Inter', 'Noto Sans Arabic', sans-serif; font-size:0.95rem; }
-    [lang="ar"] .calc-input { font-family: 'Noto Sans Arabic', 'Inter', sans-serif; }
-    .calc-input:focus { border-color:#818cf8; box-shadow:0 0 0 3px rgba(129,140,248,0.15); }
-    .field-label { display:block; font-size:0.8rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem; }
-    [lang="ar"] .field-label { text-transform: none; letter-spacing: 0; }
-    .btn-main { width:100%; padding:0.9rem 1.5rem; border-radius:99px; font-weight:700; font-size:0.95rem; cursor:pointer; border:none; display:flex; align-items:center; justify-content:center; gap:0.5rem; transition:all 0.25s; background:linear-gradient(135deg,#818cf8,#9333ea); color:white; box-shadow:0 4px 20px rgba(129,140,248,0.3); }
-    .btn-main:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(129,140,248,0.4); }
-    .btn-main:active { transform:scale(0.98); }
-    .btn-ghost { background:var(--btn-hover); color:var(--text-main); border:1px solid var(--glass-border); padding:0.6rem 1.2rem; border-radius:99px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:0.4rem; font-size:0.88rem; transition:all 0.2s; }
-    .btn-ghost:hover { background:rgba(255,255,255,0.25); }
-    .btn-sm { padding:0.5rem 1rem; border-radius:8px; font-size:0.82rem; font-weight:600; cursor:pointer; border:none; display:flex; align-items:center; gap:0.4rem; transition:all 0.2s; }
-    .btn-success-sm { background:rgba(42,212,165,0.15); color:var(--success); border:1px solid rgba(42,212,165,0.3); }
-    .btn-danger-sm  { background:rgba(255,100,124,0.15); color:var(--danger);  border:1px solid rgba(255,100,124,0.3); }
-    .btn-ghost-sm { background:var(--btn-hover); color:var(--text-muted); border:1px solid var(--glass-border); }
-    .error-msg { background:rgba(255,100,124,0.1); border:1px solid rgba(255,100,124,0.3); color:var(--danger); padding:0.75rem 1rem; border-radius:0.75rem; font-size:0.88rem; margin-bottom:1rem; display:none; align-items:center; gap:0.5rem; }
-    .error-msg.show { display:flex; }
-    .badge { display:inline-flex; align-items:center; gap:0.4rem; padding:0.4rem 0.9rem; border-radius:99px; font-size:0.82rem; font-weight:600; }
-    .badge-success { background:rgba(42,212,165,0.15); color:var(--success); border:1px solid rgba(42,212,165,0.3); }
-    .badge-warning { background:rgba(255,201,74,0.15); color:var(--warning); border:1px solid rgba(255,201,74,0.3); }
-    .badge-danger  { background:rgba(255,100,124,0.15); color:var(--danger);  border:1px solid rgba(255,100,124,0.3); }
-    .stat-card { border-radius:20px; padding:1.25rem; text-align:center; }
-    .stat-val { font-size:1.3rem; font-weight:800; font-family:'JetBrains Mono',monospace; }
-    .stat-lbl { font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-top:0.2rem; }
-    [lang="ar"] .stat-lbl { text-transform: none; letter-spacing: 0; }
-    .res-table { width:100%; border-collapse:collapse; font-size:0.88rem; }
-    .res-table th { padding:0.75rem 1rem; text-align:left; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); background:var(--table-header); border-bottom:1px solid var(--glass-border); white-space:nowrap; }
-    [lang="ar"] .res-table th { text-transform: none; letter-spacing: 0; text-align: right; }
-    .res-table td { padding:0.85rem 1rem; border-bottom:1px solid rgba(255,255,255,0.06); white-space:nowrap; }
-    [data-theme="light"] .res-table td { border-bottom:1px solid rgba(0,0,0,0.06); }
-    .res-table tr:last-child td { border-bottom:none; }
-    .res-table tr:hover td { background:var(--table-row-hover); }
-    .mono { font-family:'JetBrains Mono',monospace; font-size:0.9rem; }
-    .note-good { color:var(--success); font-weight:600; }
-    .note-mid  { color:var(--warning); font-weight:600; }
-    .note-bad  { color:var(--danger);  font-weight:600; }
-    .note-abs  { color:var(--text-muted); font-style:italic; }
-    .coef-badge { display:inline-block; background:rgba(255,255,255,0.1); border:1px solid var(--glass-border); border-radius:6px; padding:1px 6px; font-size:0.72rem; color:var(--text-muted); margin-left:6px; }
-    [dir="rtl"] .coef-badge { margin-left:0; margin-right:6px; }
-    [data-theme="light"] .coef-badge { background:rgba(0,0,0,0.06); }
-    .tabs { display:flex; gap:0.5rem; background:var(--input-bg); border:1px solid var(--glass-border); border-radius:14px; padding:4px; margin-bottom:1.5rem; }
-    .tab { flex:1; padding:0.6rem; border-radius:10px; font-size:0.85rem; font-weight:600; cursor:pointer; border:none; background:none; color:var(--text-muted); transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:0.4rem; }
-    .tab.active { background:var(--glass-bg); color:var(--text-main); border:1px solid var(--glass-border); box-shadow:0 2px 8px rgba(0,0,0,0.15); }
-    .glass-select { width:100%; padding:0.75rem 1rem; background:var(--input-bg); border:1px solid var(--glass-border); border-radius:0.75rem; color:var(--text-main); font-family:'Inter', 'Noto Sans Arabic', sans-serif; font-size:0.9rem; outline:none; cursor:pointer; transition:all 0.2s; }
-    [lang="ar"] .glass-select { font-family: 'Noto Sans Arabic', 'Inter', sans-serif; }
-    .glass-select:focus { border-color:#818cf8; }
-    .notif-badge { background:var(--danger); color:white; border-radius:99px; font-size:0.7rem; font-weight:700; padding:2px 7px; margin-left:6px; }
-    [dir="rtl"] .notif-badge { margin-left:0; margin-right:6px; }
-    .notif-card { border-radius:16px; padding:1rem 1.25rem; margin-bottom:0.75rem; }
-    .notif-unread { border:1px solid rgba(129,140,248,0.3); background:rgba(129,140,248,0.07); }
-    .notif-read { border:1px solid var(--glass-border); background:var(--glass-bg); }
-    .device-badge { display:inline-flex; align-items:center; gap:0.3rem; padding:0.25rem 0.6rem; border-radius:6px; font-size:0.72rem; font-weight:600; margin-top:0.3rem; }
-    .device-pc { background:rgba(99,102,241,0.15); color:#a5b4fc; border:1px solid rgba(99,102,241,0.3); }
-    .device-mobile { background:rgba(42,212,165,0.15); color:var(--success); border:1px solid rgba(42,212,165,0.3); }
-    .device-tablet { background:rgba(255,201,74,0.15); color:var(--warning); border:1px solid rgba(255,201,74,0.3); }
-    .spinner { width:20px; height:20px; border:2px solid var(--glass-border); border-top-color:#818cf8; border-radius:50%; animation:spin 0.7s linear infinite; }
-    @keyframes spin { to { transform:rotate(360deg); } }
-    #toastContainer { position:fixed; bottom:6rem; left:50%; transform:translateX(-50%); z-index:200; display:flex; flex-direction:column; gap:0.5rem; pointer-events:none; }
-    .toast-item { padding:0.75rem 1.25rem; border-radius:99px; font-size:0.88rem; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 8px 32px rgba(0,0,0,0.3); opacity:0; transform:translateY(10px); transition:all 0.3s; }
-    .toast-item.show { opacity:1; transform:translateY(0); }
-    #breadcrumb { padding:3px 8px !important; }
-    .breadcrumb-btn { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:99px; font-size:0.72rem; font-weight:500; color:var(--text-muted); transition:all 0.2s ease; cursor:pointer; background:none; border:none; }
-    .breadcrumb-btn:hover { color:var(--text-main); background:var(--btn-hover); }
-    .breadcrumb-sep { color:var(--text-muted); opacity:0.4; font-size:0.65rem; }
-    .hidden { display:none !important; }
-    .modal-overlay { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(4px); }
-    .modal-box { background:var(--glass-bg); backdrop-filter:blur(20px); border:1px solid var(--glass-border); border-radius:24px; padding:1.75rem; width:100%; max-width:700px; max-height:90vh; overflow-y:auto; }
-    @media(max-width:640px) { .stat-val { font-size:1.1rem; } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirection vers Oradent</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&family=Playfair+Display:wght@700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0e27;
+            --bg-secondary: #151d3b;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Gradient orb background animé */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.08;
+            filter: blur(60px);
+            animation: orbFloat 8s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--accent-cyan) 0%, transparent 70%);
+            top: -200px;
+            left: -150px;
+            animation: orbFloat1 12s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--accent-blue) 0%, transparent 70%);
+            bottom: -100px;
+            right: -50px;
+            animation: orbFloat2 10s ease-in-out infinite;
+        }
+
+        @keyframes orbFloat1 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -40px); }
+        }
+
+        @keyframes orbFloat2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-40px, 30px); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            animation: containerEnter 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes containerEnter {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Icon avec animation complexe */
+        .icon-wrapper {
+            height: 80px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .icon {
+            font-size: 3.5rem;
+            display: inline-block;
+            animation: iconBounce 2.5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+            filter: drop-shadow(0 8px 16px rgba(59, 130, 246, 0.2));
+        }
+
+        @keyframes iconBounce {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-12px) scale(1.05);
+            }
+        }
+
+        /* Titre avec accent coloré */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1.2rem;
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleSlideIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+            opacity: 0;
+        }
+
+        @keyframes titleSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Paragraphe avec fade-in progressif */
+        p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+            font-weight: 400;
+            animation: textFadeIn 0.9s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes textFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Bouton avec interactions premium */
+        .btn {
+            position: relative;
+            display: inline-block;
+            padding: 1rem 2.8rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+            font-family: 'Geist', sans-serif;
+            animation: buttonEnter 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+            opacity: 0;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        @keyframes buttonEnter {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Effets de ripple au survol */
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-text {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+        }
+
+        .btn-arrow {
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn:hover .btn-arrow {
+            transform: translateX(4px);
+        }
+
+        /* Animation de sortie */
+        .exit-animation {
+            animation: exitPage 0.6s cubic-bezier(0.7, 0, 0.84, 0) forwards !important;
+        }
+
+        @keyframes exitPage {
+            from {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+                filter: blur(10px);
+            }
+        }
+
+        /* Loading dots */
+        .loading-dots {
+            display: inline-block;
+            margin-left: 0.4rem;
+        }
+
+        .loading-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            margin: 0 3px;
+            animation: dotsAnimation 1.4s infinite;
+        }
+
+        .loading-dots span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .loading-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes dotsAnimation {
+            0%, 60%, 100% {
+                opacity: 0.4;
+                transform: translateY(0);
+            }
+            30% {
+                opacity: 1;
+                transform: translateY(-8px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .btn {
+                padding: 0.9rem 2.2rem;
+                font-size: 1rem;
+            }
+
+            .icon {
+                font-size: 2.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Orbs de fond -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
-<div id="sidebar" class="fixed inset-y-0 z-50 w-80 glass transition-transform duration-500 ease-out flex flex-col" style="background:var(--sidebar-bg);">
-  <div class="p-8 pt-24 flex flex-col h-full overflow-y-auto">
-    <h2 class="text-3xl font-bold text-gradient mb-10">Dental Guide</h2>
-    <div class="flex items-center gap-3 mb-10">
-      <div class="lang-container">
-        <div class="lang-pill" id="langPill"></div>
-        <button data-lang="fr" class="lang-btn active">FR</button>
-        <button data-lang="en" class="lang-btn">EN</button>
-        <button data-lang="ar" class="lang-btn">AR</button>
-      </div>
-      <div class="theme-toggle-btn glass" id="themeBtn">
-        <i class="ph-fill ph-moon text-xl"></i>
-        <i class="ph-fill ph-sun text-xl"></i>
-      </div>
-    </div>
-    <div class="space-y-3" id="sidebarNav"></div>
-  </div>
-</div>
+    <!-- Contenu principal -->
+    <div class="container" id="content">
+        <div class="icon-wrapper">
+            <div class="icon">✨</div>
+        </div>
 
-<div id="overlay" class="fixed inset-0 bg-black/40 z-40 hidden backdrop-blur-sm" onclick="closeMenu()"></div>
-<button id="menuBtn" class="fixed top-8 z-50 p-3 rounded-2xl glass hover:bg-white/20 transition active:scale-95 shadow-lg" style="color:var(--text-main);">
-  <i class="ph-bold ph-list text-3xl"></i>
-</button>
-<div id="breadcrumb" class="fixed top-8 z-40 left-1/2 -translate-x-1/2 flex items-center gap-1 glass rounded-full" style="max-width:90vw;display:none;"></div>
-<div id="toastContainer"></div>
+        <h1>Oups ! Ce site a déménagé.</h1>
 
-<!-- LOGIN -->
-<div id="viewLogin" class="pt-28 pb-32 px-6 max-w-lg mx-auto flex flex-col items-center justify-center min-h-screen">
-  <h1 class="text-5xl font-bold text-gradient animate-float mb-4 text-center" data-i18n="results">Résultats</h1>
-  <p class="text-xl mb-10 font-light text-center" style="color:var(--text-muted);" data-i18n="year3Subtitle">3ème Année — Dental Guide Oran</p>
-  <div class="glass w-full rounded-3xl p-8">
-    <div class="error-msg" id="loginError">
-      <i class="ph-fill ph-warning-circle"></i>
-      <span id="loginErrorMsg" data-i18n="invalidCredentials">Identifiants incorrects</span>
-    </div>
-    <div class="mb-5">
-      <label class="field-label" data-i18n="fullName">Nom et Prénom</label>
-      <input type="text" class="calc-input" id="inputNom" data-i18n-placeholder="namePlaceholder" placeholder="NOM PRENOM" autocomplete="off">
-      <p class="text-xs mt-1" style="color:var(--text-muted);"><i class="ph-fill ph-info"></i> <span data-i18n="nameHint">Nom et prénom en MAJUSCULES</span></p>
-    </div>
-    <div class="mb-6">
-      <label class="field-label" data-i18n="password">Mot de passe</label>
-      <input type="password" class="calc-input" id="inputMdp" data-i18n-placeholder="passwordPlaceholder" placeholder="Votre numéro de liste">
-    </div>
-    <button class="btn-main" id="loginBtn" onclick="doLogin()">
-      <i class="ph-bold ph-sign-in"></i> <span data-i18n="accessResults">Accéder à mes résultats</span>
-    </button>
-  </div>
-</div>
+        <p>Retrouvez-nous dès maintenant sur notre nouvelle plateforme.</p>
 
-<!-- STUDENT -->
-<div id="viewStudent" class="hidden pt-28 pb-32 px-6 max-w-5xl mx-auto">
-  <div class="glass rounded-3xl p-6 mb-6">
-    <div class="flex items-start justify-between flex-wrap gap-4">
-      <div>
-        <h2 class="text-3xl font-bold text-gradient" id="studentName">—</h2>
-        <p class="mt-1" style="color:var(--text-muted);" id="studentMeta">N° — | 3ème Année</p>
-      </div>
-      <div class="flex flex-col items-end gap-3">
-        <div id="studentBadge"></div>
-        <button class="btn-ghost" onclick="showView('account')">
-          <i class="ph-bold ph-user-circle"></i> <span data-i18n="myAccount">Mon Compte</span>
+        <button class="btn" id="redirectBtn" onclick="goToNewSite()">
+            <span class="btn-text">
+                Rejoindre la plateforme
+                <span class="btn-arrow">→</span>
+            </span>
         </button>
-      </div>
     </div>
-  </div>
-  <div class="grid grid-cols-3 gap-4 mb-6">
-    <div class="glass stat-card"><div class="stat-val text-gradient" id="statMoy">—</div><div class="stat-lbl" data-i18n="average">Moyenne</div></div>
-    <div class="glass stat-card"><div class="stat-val text-gradient" id="statRank">—</div><div class="stat-lbl" data-i18n="ranking">Classement</div></div>
-    <div class="glass stat-card"><div class="stat-val text-gradient">444</div><div class="stat-lbl" data-i18n="students">Étudiants</div></div>
-  </div>
-  <div class="glass rounded-3xl overflow-hidden mb-6">
-    <div class="px-6 py-4 flex items-center justify-between" style="border-bottom:1px solid var(--glass-border);">
-      <span class="font-bold text-sm uppercase tracking-widest" style="color:var(--text-muted);" data-i18n="detailedGrades">Notes détaillées</span>
-      <span class="text-sm" style="color:var(--text-muted);"><span data-i18n="modules">11 modules</span></span>
-    </div>
-    <div style="overflow-x:auto;">
-      <table class="res-table">
-        <thead><tr>
-          <th data-i18n="module">Module</th>
-          <th data-i18n="coef">Coef</th>
-          <th>EMD 1</th>
-          <th>EMD 2</th>
-          <th data-i18n="moyEMD">Moy EMD</th>
-          <th>TD</th>
-          <th>TP</th>
-          <th data-i18n="moyModule">Moy Module</th>
-        </tr></thead>
-        <tbody id="modulesBody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="glass rounded-3xl p-6 mb-6">
-    <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-      <i class="ph-fill ph-flag" style="color:var(--warning);"></i> <span data-i18n="reportError">Signaler une erreur</span>
-    </h3>
-    <div class="mb-4">
-      <label class="field-label" data-i18n="concernedModule">Module concerné</label>
-      <select class="glass-select" id="signalModule"><option value="" data-i18n="chooseModule">— Choisir un module —</option></select>
-    </div>
-    <div class="mb-4">
-      <label class="field-label" data-i18n="reportType">Type de signalement</label>
-      <select class="glass-select" id="signalType">
-        <option value="Erreur de note" data-i18n="gradeError">Erreur de note</option>
-        <option value="Note manquante" data-i18n="missingGrade">Note manquante</option>
-        <option value="Autre" data-i18n="other">Autre</option>
-      </select>
-    </div>
-    <div class="mb-5">
-      <label class="field-label" data-i18n="commentOptional">Commentaire (optionnel)</label>
-      <textarea class="calc-input" id="signalComment" data-i18n-placeholder="describeProblem" placeholder="Décrivez le problème..." style="min-height:80px;resize:vertical;"></textarea>
-    </div>
-    <button class="btn-main" onclick="envoyerSignalement()" id="signalBtn">
-      <i class="ph-bold ph-paper-plane-right"></i> <span data-i18n="sendReport">Envoyer le signalement</span>
-    </button>
-  </div>
-</div>
 
-<!-- MON COMPTE -->
-<div id="viewAccount" class="hidden pt-28 pb-32 px-6 max-w-lg mx-auto">
-  <button class="flex items-center gap-2 mb-6 font-semibold" style="color:var(--text-muted);background:none;border:none;cursor:pointer;" onclick="showView('student')">
-    <i class="ph-bold ph-arrow-left"></i> <span data-i18n="back">Retour</span>
-  </button>
-  <h1 class="text-4xl font-bold text-gradient mb-2" data-i18n="myAccount">Mon Compte</h1>
-  <p class="mb-8" style="color:var(--text-muted);" id="accountSubtitle"></p>
-  <div class="glass rounded-3xl p-8">
-    <div class="mb-5 p-4 rounded-2xl" style="background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);">
-      <p class="text-sm flex items-center gap-2" style="color:#a5b4fc;">
-        <i class="ph-fill ph-info"></i> <span data-i18n="accountHint">Choisissez un identifiant et mot de passe mémorables.</span>
-      </p>
-    </div>
-    <div class="mb-5"><label class="field-label" data-i18n="newIdentifier">Nouvel identifiant</label><input type="text" class="calc-input" id="newIdentifiant" data-i18n-placeholder="newIdentifierPlaceholder" placeholder="Votre nouvel identifiant"></div>
-    <div class="mb-5"><label class="field-label" data-i18n="newPassword">Nouveau mot de passe</label><input type="password" class="calc-input" id="newMdp" data-i18n-placeholder="newPasswordPlaceholder" placeholder="Nouveau mot de passe"></div>
-    <div class="mb-6"><label class="field-label" data-i18n="confirmPassword">Confirmer le mot de passe</label><input type="password" class="calc-input" id="confirmMdp" data-i18n-placeholder="confirmPasswordPlaceholder" placeholder="Répétez le mot de passe"></div>
-    <button class="btn-main" onclick="saveAccount()" id="saveAccountBtn">
-      <i class="ph-bold ph-floppy-disk"></i> <span data-i18n="saveChanges">Sauvegarder les modifications</span>
-    </button>
-  </div>
-</div>
+    <script>
+        function goToNewSite() {
+            const container = document.getElementById('content');
+            const btn = document.getElementById('redirectBtn');
 
-<!-- ADMIN -->
-<div id="viewAdmin" class="hidden pt-28 pb-32 px-6 max-w-6xl mx-auto">
-  <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
-    <div>
-      <h1 class="text-4xl font-bold text-gradient"><span data-i18n="adminInterface">Interface Admin</span> <span id="adminLiteBadge" class="hidden" style="font-size:0.75rem;background:rgba(255,201,74,0.15);color:var(--warning);border:1px solid rgba(255,201,74,0.3);padding:3px 10px;border-radius:99px;font-weight:600;vertical-align:middle;" data-i18n="readOnly">Lecture seule</span></h1>
-      <p style="color:var(--text-muted);">444 <span data-i18n="students">étudiants</span> — 3<sup>ème</sup> <span data-i18n="year">Année</span></p>
-    </div>
-    <div class="flex gap-3 flex-wrap items-center">
-      <div class="glass rounded-xl flex items-center px-3" style="border:1px solid var(--glass-border);">
-        <i class="ph-bold ph-magnifying-glass" style="color:var(--text-muted);"></i>
-        <input type="text" id="adminSearch" data-i18n-placeholder="search" placeholder="Rechercher..." oninput="filterAdmin()" style="background:none;border:none;outline:none;padding:0.65rem 0.75rem;color:var(--text-main);width:200px;">
-      </div>
-      <button class="btn-ghost" onclick="logout()"><i class="ph-bold ph-sign-out"></i> <span data-i18n="logout">Déconnexion</span></button>
-    </div>
-  </div>
-  <div class="tabs">
-    <button class="tab active" id="tabEtudiants" onclick="switchTab('etudiants')"><i class="ph-bold ph-users"></i> <span data-i18n="studentsTab">Étudiants</span></button>
-    <button class="tab" id="tabNotifs" onclick="switchTab('notifs')"><i class="ph-bold ph-bell"></i> <span data-i18n="reports">Signalements</span> <span class="notif-badge hidden" id="notifCount">0</span></button>
-    <button class="tab" id="tabComptes" onclick="switchTab('comptes')"><i class="ph-bold ph-key"></i> <span data-i18n="accounts">Comptes</span></button>
-  </div>
-  <div id="panelEtudiants">
-    <div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;">
-      <table class="res-table">
-        <thead><tr>
-          <th onclick="sortAdmin('numero')" style="cursor:pointer;" data-i18n="number">N° ↕</th>
-          <th onclick="sortAdmin('nom')" style="cursor:pointer;" data-i18n="lastName">Nom ↕</th>
-          <th data-i18n="firstName">Prénom</th>
-          <th onclick="sortAdmin('moyenne_generale')" style="cursor:pointer;" data-i18n="avg">Moy ↕</th>
-          <th onclick="sortAdmin('classement')" style="cursor:pointer;" data-i18n="rank">Rang ↕</th>
-          <th data-i18n="result">Résultat</th>
-          <th data-i18n="actions">Actions</th>
-        </tr></thead>
-        <tbody id="adminBody"></tbody>
-      </table>
-    </div></div>
-  </div>
-  <div id="panelNotifs" class="hidden"><div id="notifsList"><p class="text-center py-8" style="color:var(--text-muted);" data-i18n="loading">Chargement...</p></div></div>
-  <div id="panelComptes" class="hidden"><div id="comptesList"><p class="text-center py-8" style="color:var(--text-muted);" data-i18n="loading">Chargement...</p></div></div>
-</div>
+            // Désactiver le bouton
+            btn.disabled = true;
+            btn.style.cursor = 'wait';
 
-<a href="mailto:dentaireoranmoy@gmail.com" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 group w-max max-w-[90vw]">
-  <div class="px-6 py-3 rounded-full glass shadow-2xl flex items-center justify-center gap-3 font-semibold transition hover:scale-105 active:scale-95 border border-white/20 backdrop-blur-xl whitespace-nowrap" style="color:var(--text-main);">
-    <i class="ph-fill ph-paper-plane-right text-lg group-hover:-rotate-12 transition-transform"></i>
-    <span data-i18n="contactUs">Nous contacter</span>
-  </div>
-</a>
+            // Ajouter l'animation de sortie
+            container.classList.add('exit-animation');
 
-<script>
-var SUPABASE_URL = "https://wjhugpnjapsyysgsxrtp.supabase.co";
-var SUPABASE_KEY = "sb_publishable_zOYqcJMGGvqSFeR5kHT5lg_3xHXoP7s";
-var EMAILJS_SERVICE  = "service_5sgcx6a";
-var EMAILJS_TEMPLATE = "template_74cg8ho";
-var EMAILJS_KEY      = "lxg6X0FF2kADJ5DYR";
+            // Redirection après l'animation
+            setTimeout(() => {
+                window.location.href = "https://dentaire-oran.github.io/3rd-year-oradent/";
+            }, 600);
+        }
 
-// Identifiants admin (hashes SHA-256)
-var ADMIN_ID       = "admin";
-var ADMIN_MDP_HASH = "2e3c969e2e9b367ade00279743f88ea0e32f283152223e3d9aaf1c14669d7cbe";
-var ADMIN_LITE_ID       = "user";
-var ADMIN_LITE_MDP_HASH = "90d06112d5dc4274afd6ba187432cbf203586566e2ffe87b7494e9b1e1268187";
-
-var SESSION_KEY = "dg_session";
-var MODULES = [
-  {key:"oce",nom:"OCE",coef:5},{key:"odf",nom:"ODF",coef:5},
-  {key:"paro",nom:"Parodontologie",coef:5},{key:"patho",nom:"Pathologie",coef:5},
-  {key:"prothese",nom:"Prothese",coef:5},{key:"imagerie",nom:"Imagerie Medicale",coef:3},
-  {key:"anapath",nom:"Anatomie Pathologique",coef:1},{key:"anesthesio",nom:"Anesthesiologie",coef:1},
-  {key:"pharmaco",nom:"Pharmacologie",coef:1},{key:"occluso",nom:"Occlusodontie",coef:1},
-  {key:"oxyo",nom:"Oxyologie",coef:1}
-];
-var currentStudent=null, isAdmin=false, isAdminLite=false;
-var adminData=[], adminSortKey="numero", adminSortAsc=true, currentView="login";
-var currentLang = "fr";
-
-// ============================================
-// TRANSLATIONS
-// ============================================
-var TRANSLATIONS = {
-  fr: {
-    results: "Résultats",
-    year3Subtitle: "3ème Année — Dental Guide Oran",
-    invalidCredentials: "Identifiants incorrects",
-    fillAllFields: "Veuillez remplir tous les champs.",
-    connectionError: "Erreur de connexion. Réessayez.",
-    fullName: "Nom et Prénom",
-    namePlaceholder: "NOM PRENOM",
-    nameHint: "Nom et prénom en MAJUSCULES",
-    password: "Mot de passe",
-    passwordPlaceholder: "Votre numéro de liste",
-    accessResults: "Accéder à mes résultats",
-    verifying: "Vérification...",
-    myAccount: "Mon Compte",
-    average: "Moyenne",
-    ranking: "Classement",
-    students: "Étudiants",
-    detailedGrades: "Notes détaillées",
-    modules: "11 modules",
-    module: "Module",
-    coef: "Coef",
-    moyEMD: "Moy EMD",
-    moyModule: "Moy Module",
-    reportError: "Signaler une erreur",
-    concernedModule: "Module concerné",
-    chooseModule: "— Choisir un module —",
-    reportType: "Type de signalement",
-    gradeError: "Erreur de note",
-    missingGrade: "Note manquante",
-    other: "Autre",
-    commentOptional: "Commentaire (optionnel)",
-    describeProblem: "Décrivez le problème...",
-    sendReport: "Envoyer le signalement",
-    sending: "Envoi...",
-    reportSent: "Signalement envoyé !",
-    reportSaved: "Signalement enregistré.",
-    chooseModuleWarning: "Choisissez un module.",
-    back: "Retour",
-    accountHint: "Choisissez un identifiant et mot de passe mémorables.",
-    newIdentifier: "Nouvel identifiant",
-    newIdentifierPlaceholder: "Votre nouvel identifiant",
-    newPassword: "Nouveau mot de passe",
-    newPasswordPlaceholder: "Nouveau mot de passe",
-    confirmPassword: "Confirmer le mot de passe",
-    confirmPasswordPlaceholder: "Répétez le mot de passe",
-    saveChanges: "Sauvegarder les modifications",
-    saving: "Sauvegarde...",
-    accountUpdated: "Compte mis à jour !",
-    identifierEmpty: "L'identifiant ne peut pas être vide.",
-    passwordMismatch: "Les mots de passe ne correspondent pas.",
-    adminInterface: "Interface Admin",
-    readOnly: "Lecture seule",
-    year: "Année",
-    search: "Rechercher...",
-    logout: "Déconnexion",
-    studentsTab: "Étudiants",
-    reports: "Signalements",
-    accounts: "Comptes",
-    number: "N° ↕",
-    lastName: "Nom ↕",
-    firstName: "Prénom",
-    avg: "Moy ↕",
-    rank: "Rang ↕",
-    result: "Résultat",
-    actions: "Actions",
-    loading: "Chargement...",
-    noResults: "Aucun résultat",
-    noReports: "Aucun signalement reçu.",
-    noAccountChanges: "Aucun étudiant n'a modifié son compte.",
-    admitted: "Admis(e)",
-    catchup: "Rattrapage",
-    view: "Voir",
-    suggest: "Suggérer",
-    notes: "Notes",
-    close: "Fermer",
-    cancel: "Annuler",
-    save: "Sauvegarder",
-    noChanges: "Aucune modification détectée.",
-    notesSaved: "Notes sauvegardées et moyennes recalculées !",
-    saveError: "Erreur sauvegarde.",
-    calculatedMoy: "Moy Calculée",
-    autoCalculateInfo: "Les moyennes sont calculées automatiquement lors de la sauvegarde.",
-    contactUs: "Nous contacter",
-    home: "Accueil",
-    myResults: "Mes Résultats",
-    suggestion: "Suggestion de modification (Admin Lite)",
-    suggestTitle: "Suggérer —",
-    fieldToModify: "Champ à modifier",
-    suggestedValue: "Valeur suggérée",
-    suggestedValuePlaceholder: "Ex: 12.5",
-    justification: "Justification",
-    justificationPlaceholder: "Pourquoi cette modification ?",
-    send: "Envoyer",
-    suggestionSent: "Suggestion envoyée !",
-    suggestionSaved: "Suggestion enregistrée.",
-    resetAccount: "Réinitialiser le compte de N°",
-    accountReset: "Compte réinitialisé pour N°",
-    confirmReset: " ?",
-    customIdentifier: "Identifiant perso",
-    customPassword: "MDP perso",
-    reset: "Reset",
-    pageRefresh: "Rafraichissement page",
-    studentLogin: "Etudiant Login",
-    adminLogin: "Admin Login",
-    adminLiteLogin: "Connexion Admin Lite",
-    system: "Système",
-    noComment: "(aucun commentaire)",
-    connection: "Connexion",
-    accountModification: "Modification de compte",
-    suggestModule: "Suggestion: ",
-    reason: " | Raison: ",
-    noReportsYet: "Aucun signalement reçu.",
-    choose: "— Choisir —",
-    device: "Appareil"
-  },
-  en: {
-    results: "Results",
-    year3Subtitle: "3rd Year — Dental Guide Oran",
-    invalidCredentials: "Invalid credentials",
-    fillAllFields: "Please fill in all fields.",
-    connectionError: "Connection error. Please try again.",
-    fullName: "Full Name",
-    namePlaceholder: "FIRSTNAME LASTNAME",
-    nameHint: "First and last name in UPPERCASE",
-    password: "Password",
-    passwordPlaceholder: "Your list number",
-    accessResults: "Access my results",
-    verifying: "Verifying...",
-    myAccount: "My Account",
-    average: "Average",
-    ranking: "Ranking",
-    students: "Students",
-    detailedGrades: "Detailed grades",
-    modules: "11 modules",
-    module: "Module",
-    coef: "Coef",
-    moyEMD: "Avg EMD",
-    moyModule: "Avg Module",
-    reportError: "Report an error",
-    concernedModule: "Concerned module",
-    chooseModule: "— Select a module —",
-    reportType: "Report type",
-    gradeError: "Grade error",
-    missingGrade: "Missing grade",
-    other: "Other",
-    commentOptional: "Comment (optional)",
-    describeProblem: "Describe the problem...",
-    sendReport: "Send report",
-    sending: "Sending...",
-    reportSent: "Report sent!",
-    reportSaved: "Report saved.",
-    chooseModuleWarning: "Please select a module.",
-    back: "Back",
-    accountHint: "Choose a memorable username and password.",
-    newIdentifier: "New username",
-    newIdentifierPlaceholder: "Your new username",
-    newPassword: "New password",
-    newPasswordPlaceholder: "New password",
-    confirmPassword: "Confirm password",
-    confirmPasswordPlaceholder: "Repeat the password",
-    saveChanges: "Save changes",
-    saving: "Saving...",
-    accountUpdated: "Account updated!",
-    identifierEmpty: "Username cannot be empty.",
-    passwordMismatch: "Passwords do not match.",
-    adminInterface: "Admin Interface",
-    readOnly: "Read only",
-    year: "Year",
-    search: "Search...",
-    logout: "Logout",
-    studentsTab: "Students",
-    reports: "Reports",
-    accounts: "Accounts",
-    number: "No. ↕",
-    lastName: "Last Name ↕",
-    firstName: "First Name",
-    avg: "Avg ↕",
-    rank: "Rank ↕",
-    result: "Result",
-    actions: "Actions",
-    loading: "Loading...",
-    noResults: "No results",
-    noReports: "No reports received.",
-    noAccountChanges: "No student has modified their account.",
-    admitted: "Admitted",
-    catchup: "Catch-up",
-    view: "View",
-    suggest: "Suggest",
-    notes: "Notes",
-    close: "Close",
-    cancel: "Cancel",
-    save: "Save",
-    noChanges: "No changes detected.",
-    notesSaved: "Notes saved and averages recalculated!",
-    saveError: "Save error.",
-    calculatedMoy: "Calculated Avg",
-    autoCalculateInfo: "Averages are calculated automatically when saving.",
-    contactUs: "Contact us",
-    home: "Home",
-    myResults: "My Results",
-    suggestion: "Modification suggestion (Admin Lite)",
-    suggestTitle: "Suggest —",
-    fieldToModify: "Field to modify",
-    suggestedValue: "Suggested value",
-    suggestedValuePlaceholder: "Ex: 12.5",
-    justification: "Justification",
-    justificationPlaceholder: "Why this modification?",
-    send: "Send",
-    suggestionSent: "Suggestion sent!",
-    suggestionSaved: "Suggestion saved.",
-    fillAllFields: "Fill in all fields.",
-    resetAccount: "Reset account for No.",
-    accountReset: "Account reset for No.",
-    confirmReset: "?",
-    customIdentifier: "Custom username",
-    customPassword: "Custom password",
-    reset: "Reset",
-    pageRefresh: "Page refresh",
-    studentLogin: "Student Login",
-    adminLogin: "Admin Login",
-    adminLiteLogin: "Admin Lite Login",
-    system: "System",
-    noComment: "(no comment)",
-    connection: "Connection",
-    accountModification: "Account modification",
-    suggestModule: "Suggestion: ",
-    reason: " | Reason: ",
-    noReportsYet: "No reports received yet.",
-    choose: "— Select —",
-    device: "Device"
-  },
-  ar: {
-    results: "النتائج",
-    year3Subtitle: "السنة الثالثة — دليل طب الأسنان وهران",
-    invalidCredentials: "بيانات الدخول غير صحيحة",
-    fillAllFields: "يرجى ملء جميع الحقول.",
-    connectionError: "خطأ في الاتصال. حاول مرة أخرى.",
-    fullName: "الاسم الكامل",
-    namePlaceholder: "الاسم اللقب",
-    nameHint: "الاسم واللقب بأحرف كبيرة",
-    password: "كلمة المرور",
-    passwordPlaceholder: "رقم القائمة",
-    accessResults: "الوصول إلى نتائجي",
-    verifying: "جاري التحقق...",
-    myAccount: "حسابي",
-    average: "المعدل",
-    ranking: "الترتيب",
-    students: "طلاب",
-    detailedGrades: "النقاط التفصيلية",
-    modules: "11 مادة",
-    module: "المادة",
-    coef: "المعامل",
-    moyEMD: "معدل الامتحان",
-    moyModule: "معدل المادة",
-    reportError: "الإبلاغ عن خطأ",
-    concernedModule: "المادة المعنية",
-    chooseModule: "— اختر مادة —",
-    reportType: "نوع الإبلاغ",
-    gradeError: "خطأ في النقطة",
-    missingGrade: "نقطة مفقودة",
-    other: "أخرى",
-    commentOptional: "تعليق (اختياري)",
-    describeProblem: "صف المشكلة...",
-    sendReport: "إرسال الإبلاغ",
-    sending: "جاري الإرسال...",
-    reportSent: "تم إرسال الإبلاغ!",
-    reportSaved: "تم حفظ الإبلاغ.",
-    chooseModuleWarning: "اختر مادة.",
-    back: "رجوع",
-    accountHint: "اختر اسم مستخدم وكلمة مرور سهلة التذكر.",
-    newIdentifier: "اسم المستخدم الجديد",
-    newIdentifierPlaceholder: "اسم المستخدم الجديد",
-    newPassword: "كلمة المرور الجديدة",
-    newPasswordPlaceholder: "كلمة المرور الجديدة",
-    confirmPassword: "تأكيد كلمة المرور",
-    confirmPasswordPlaceholder: "أعد كتابة كلمة المرور",
-    saveChanges: "حفظ التغييرات",
-    saving: "جاري الحفظ...",
-    accountUpdated: "تم تحديث الحساب!",
-    identifierEmpty: "اسم المستخدم لا يمكن أن يكون فارغاً.",
-    passwordMismatch: "كلمات المرور غير متطابقة.",
-    adminInterface: "واجهة المشرف",
-    readOnly: "للقراءة فقط",
-    year: "سنة",
-    search: "بحث...",
-    logout: "تسجيل الخروج",
-    studentsTab: "الطلاب",
-    reports: "الإبلاغات",
-    accounts: "الحسابات",
-    number: "الرقم ↕",
-    lastName: "اللقب ↕",
-    firstName: "الاسم",
-    avg: "المعدل ↕",
-    rank: "الترتيب ↕",
-    result: "النتيجة",
-    actions: "إجراءات",
-    loading: "جاري التحميل...",
-    noResults: "لا توجد نتائج",
-    noReports: "لم يتم استلام أي إبلاغ.",
-    noAccountChanges: "لم يقم أي طالب بتعديل حسابه.",
-    admitted: "ناجح(ة)",
-    catchup: "مستدرك",
-    view: "عرض",
-    suggest: "اقتراح",
-    notes: "النقاط",
-    close: "إغلاق",
-    cancel: "إلغاء",
-    save: "حفظ",
-    noChanges: "لم يتم اكتشاف أي تغييرات.",
-    notesSaved: "تم حفظ النقاط وإعادة حساب المعدلات!",
-    saveError: "خطأ في الحفظ.",
-    calculatedMoy: "المعدل المحسوب",
-    autoCalculateInfo: "يتم حساب المعدلات تلقائياً عند الحفظ.",
-    contactUs: "اتصل بنا",
-    home: "الرئيسية",
-    myResults: "نتائجي",
-    suggestion: "اقتراح تعديل (مشرف محدود)",
-    suggestTitle: "اقتراح —",
-    fieldToModify: "الحقل المراد تعديله",
-    suggestedValue: "القيمة المقترحة",
-    suggestedValuePlaceholder: "مثال: 12.5",
-    justification: "التبرير",
-    justificationPlaceholder: "لماذا هذا التعديل؟",
-    send: "إرسال",
-    suggestionSent: "تم إرسال الاقتراح!",
-    suggestionSaved: "تم حفظ الاقتراح.",
-    fillAllFields: "املأ جميع الحقول.",
-    resetAccount: "إعادة تعيين حساب رقم",
-    accountReset: "تم إعادة تعيين حساب رقم",
-    confirmReset: "؟",
-    customIdentifier: "المعرف الشخصي",
-    customPassword: "كلمة المرور الشخصية",
-    reset: "إعادة تعيين",
-    pageRefresh: "تحديث الصفحة",
-    studentLogin: "دخول طالب",
-    adminLogin: "دخول المشرف",
-    adminLiteLogin: "دخول مشرف محدود",
-    system: "النظام",
-    noComment: "(بدون تعليق)",
-    connection: "اتصال",
-    accountModification: "تعديل الحساب",
-    suggestModule: "اقتراح: ",
-    reason: " | السبب: ",
-    noReportsYet: "لم يتم استلام أي إبلاغ بعد.",
-    choose: "— اختر —",
-    device: "الجهاز"
-  }
-};
-
-// Translate page
-function translatePage(lang) {
-  currentLang = lang;
-  
-  // Translate all elements with data-i18n attribute
-  document.querySelectorAll('[data-i18n]').forEach(function(el) {
-    var key = el.getAttribute('data-i18n');
-    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
-      el.textContent = TRANSLATIONS[lang][key];
-    }
-  });
-  
-  // Translate placeholders
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
-    var key = el.getAttribute('data-i18n-placeholder');
-    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
-      el.placeholder = TRANSLATIONS[lang][key];
-    }
-  });
-  
-  // Update select options
-  var signalModule = document.getElementById('signalModule');
-  if (signalModule && signalModule.options[0]) {
-    signalModule.options[0].textContent = TRANSLATIONS[lang].chooseModule;
-  }
-  
-  // Update sidebar navigation
-  updateSidebarNav();
-  updateBreadcrumb();
-}
-
-// ============================================
-// Device Detection
-// ============================================
-function getDeviceType() {
-  var ua = navigator.userAgent;
-  var maxTouchPoints = navigator.maxTouchPoints || 0;
-  if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && maxTouchPoints > 1)) return "tablet";
-  if (/Mobi|Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|webOS|Windows Phone/i.test(ua)) return "mobile";
-  return "pc";
-}
-
-function getDeviceModel() {
-  var ua = navigator.userAgent;
-  var screenWidth = window.screen.width;
-  var screenHeight = window.screen.height;
-  var dpr = window.devicePixelRatio || 1;
-  
-  if (/iPhone/i.test(ua)) {
-    var w = screenWidth, h = screenHeight;
-    if ((w === 430 && h === 932) || (w === 932 && h === 430)) return "iPhone 16 Pro Max / 15 Pro Max / 14 Pro Max";
-    if ((w === 393 && h === 852) || (w === 852 && h === 393)) return "iPhone 16 Pro / 15 Pro / 14 Pro";
-    if ((w === 390 && h === 844) || (w === 844 && h === 390)) return "iPhone 14 / 15 / 16 / 13 Pro / 12 Pro";
-    if ((w === 428 && h === 926) || (w === 926 && h === 428)) return "iPhone 13 Pro Max / 12 Pro Max";
-    if ((w === 360 && h === 780) || (w === 780 && h === 360)) return "iPhone 13 mini / 12 mini";
-    if ((w === 414 && h === 896) || (w === 896 && h === 414)) return dpr >= 3 ? "iPhone 11 Pro Max / XS Max" : "iPhone 11 / XR";
-    if ((w === 375 && h === 812) || (w === 812 && h === 375)) return "iPhone 11 Pro / XS";
-    if ((w === 375 && h === 667) || (w === 667 && h === 375)) return "iPhone SE / 8 / 7";
-    return "iPhone";
-  }
-  
-  if (/Android/i.test(ua)) {
-    var samsungPatterns = [
-      {pattern: /SM-S938|SM-S936|SM-S937|S25 Ultra/i, name: "Samsung Galaxy S25 Ultra"},
-      {pattern: /SM-S936|SM-S93[0-9]/i, name: "Samsung Galaxy S25+"},
-      {pattern: /SM-S931|SM-S93[0-9]B/i, name: "Samsung Galaxy S25"},
-      {pattern: /SM-S928|SM-S926|SM-S927|S24 Ultra/i, name: "Samsung Galaxy S24 Ultra"},
-      {pattern: /SM-S926|SM-S92[0-9]/i, name: "Samsung Galaxy S24+"},
-      {pattern: /SM-S921|SM-S92[0-9]B/i, name: "Samsung Galaxy S24"},
-      {pattern: /SM-S918|SM-S916|SM-S917|S23 Ultra/i, name: "Samsung Galaxy S23 Ultra"},
-      {pattern: /SM-S916/i, name: "Samsung Galaxy S23+"},
-      {pattern: /SM-S911|SM-S91[0-9]B/i, name: "Samsung Galaxy S23"},
-      {pattern: /SM-S908|S22 Ultra/i, name: "Samsung Galaxy S22 Ultra"},
-      {pattern: /SM-S906/i, name: "Samsung Galaxy S22+"},
-      {pattern: /SM-S901/i, name: "Samsung Galaxy S22"},
-      {pattern: /SM-G998|S21 Ultra/i, name: "Samsung Galaxy S21 Ultra"},
-      {pattern: /SM-G996/i, name: "Samsung Galaxy S21+"},
-      {pattern: /SM-G991/i, name: "Samsung Galaxy S21"},
-      {pattern: /SM-N986|Note 20 Ultra|Note20 Ultra/i, name: "Samsung Galaxy Note 20 Ultra"},
-      {pattern: /SM-N981|Note 20|Note20/i, name: "Samsung Galaxy Note 20"},
-      {pattern: /SM-F956|Z Fold6|Fold 6|Fold6/i, name: "Samsung Galaxy Z Fold 6"},
-      {pattern: /SM-F946|Z Fold5|Fold 5|Fold5/i, name: "Samsung Galaxy Z Fold 5"},
-      {pattern: /SM-F936|Z Fold4|Fold 4|Fold4/i, name: "Samsung Galaxy Z Fold 4"},
-      {pattern: /SM-F741|Z Flip6|Flip 6|Flip6/i, name: "Samsung Galaxy Z Flip 6"},
-      {pattern: /SM-F731|Z Flip5|Flip 5|Flip5/i, name: "Samsung Galaxy Z Flip 5"},
-      {pattern: /SM-F721|Z Flip4|Flip 4|Flip4/i, name: "Samsung Galaxy Z Flip 4"},
-      {pattern: /SM-A556|A55/i, name: "Samsung Galaxy A55"},
-      {pattern: /SM-A546|A54/i, name: "Samsung Galaxy A54"},
-      {pattern: /SM-A536|A53/i, name: "Samsung Galaxy A53"},
-    ];
-    for (var i = 0; i < samsungPatterns.length; i++) {
-      var p = samsungPatterns[i];
-      if (p.pattern.test(ua)) return p.name;
-    }
-    var genericSamsung = ua.match(/SM-([A-Z][0-9]{3,4}[A-Z]?)/i);
-    if (genericSamsung) return "Samsung Galaxy (SM-" + genericSamsung[1] + ")";
-    if (/Pixel/i.test(ua)) {
-      var pixelMatch = ua.match(/Pixel\s?([0-9]+(?:\s?(?:a|Pro|Pro XL|XL))?)/i);
-      if (pixelMatch) return "Google Pixel " + pixelMatch[1].trim();
-      return "Google Pixel";
-    }
-    if (/OnePlus|ONEPLUS/i.test(ua)) {
-      var opMatch = ua.match(/(?:OnePlus\s?)?(CPH[0-9]{4}|LE[0-9]{4})/i);
-      if (opMatch) return "OnePlus " + opMatch[1];
-      return "OnePlus Device";
-    }
-    if (/Xiaomi|Redmi|POCO/i.test(ua)) {
-      var miMatch = ua.match(/(?:Xiaomi|Redmi|POCO)[\s\-\/]?([A-Za-z0-9\s]+)/i);
-      if (miMatch) return "Xiaomi " + miMatch[1].trim();
-      return "Xiaomi Device";
-    }
-    var androidDevice = ua.match(/Android\s[0-9.]+;\s?([^;)]+?)\s?(?:Build|;|\))/i);
-    if (androidDevice && androidDevice[1] && androidDevice[1].length > 2 && androidDevice[1].length < 40) {
-      return androidDevice[1].trim();
-    }
-    return "Android Device";
-  }
-  
-  if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1)) {
-    var w = screenWidth, h = screenHeight;
-    if ((w === 1024 && h === 1366) || (w === 1366 && h === 1024)) return "iPad Pro 12.9\"";
-    if ((w === 834 && h === 1194) || (w === 1194 && h === 834)) return "iPad Pro 11\"";
-    if ((w === 820 && h === 1180) || (w === 1180 && h === 820)) return "iPad Air / iPad 10";
-    if ((w === 744 && h === 1133) || (w === 1133 && h === 744)) return "iPad Mini 6";
-    if ((w === 768 && h === 1024) || (w === 1024 && h === 768)) return "iPad";
-    return "iPad";
-  }
-  
-  if (/Windows NT/i.test(ua)) {
-    if (/Surface/i.test(ua)) return "Microsoft Surface";
-    if (/HP/i.test(ua)) return "HP PC (Windows)";
-    if (/Dell/i.test(ua)) return "Dell PC (Windows)";
-    if (/Lenovo/i.test(ua)) return "Lenovo PC (Windows)";
-    if (/ASUS/i.test(ua)) return "ASUS PC (Windows)";
-    return "Windows PC";
-  }
-  
-  if (/Macintosh|MacIntel/i.test(ua)) {
-    var w = screenWidth, h = screenHeight;
-    if (w === 1728 && h === 1117) return "MacBook Pro 16\" (M3)";
-    if (w === 1512 && h === 982) return "MacBook Pro 14\" (M3)";
-    if (w === 1440 && h === 900) return "MacBook Air 13\" (M2/M3)";
-    if (w === 2560 && h === 1600) return "MacBook Pro 13\" (Retina)";
-    if (/Apple\s*M[12]/i.test(ua)) return "Mac (Apple Silicon)";
-    return "Mac";
-  }
-  
-  if (/Linux/i.test(ua) && !/Android/i.test(ua)) return "Linux PC";
-  if (/CrOS/i.test(ua)) return "Chromebook";
-  return "Unknown Device";
-}
-
-function getBrowserInfo() {
-  var ua = navigator.userAgent;
-  if (/Edg\//i.test(ua)) { var v = ua.match(/Edg\/([0-9]+)/); return "Edge " + (v ? v[1] : ""); }
-  if (/Chrome\//i.test(ua) && !/Edg/i.test(ua)) { var v = ua.match(/Chrome\/([0-9]+)/); return "Chrome " + (v ? v[1] : ""); }
-  if (/Firefox/i.test(ua)) { var v = ua.match(/Firefox\/([0-9]+)/); return "Firefox " + (v ? v[1] : ""); }
-  if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) { var v = ua.match(/Version\/([0-9]+)/); return "Safari " + (v ? v[1] : ""); }
-  if (/SamsungBrowser/i.test(ua)) { var v = ua.match(/SamsungBrowser\/([0-9]+)/); return "Samsung Internet " + (v ? v[1] : ""); }
-  return "Browser";
-}
-
-function getOSInfo() {
-  var ua = navigator.userAgent;
-  var iOS = ua.match(/iPhone OS ([0-9_]+)|iPad.*OS ([0-9_]+)/i);
-  if (iOS) return "iOS " + (iOS[1] || iOS[2]).replace(/_/g, ".");
-  var android = ua.match(/Android ([0-9.]+)/);
-  if (android) return "Android " + android[1];
-  var windows = ua.match(/Windows NT ([0-9.]+)/);
-  if (windows) return "Windows " + ({"10.0": "10/11", "6.3": "8.1", "6.2": "8", "6.1": "7"}[windows[1]] || windows[1]);
-  var macOS = ua.match(/Mac OS X ([0-9_]+)/);
-  if (macOS) return "macOS " + macOS[1].replace(/_/g, ".");
-  if (/Linux/i.test(ua) && !/Android/i.test(ua)) return "Linux";
-  if (/CrOS/i.test(ua)) return "Chrome OS";
-  return "Unknown OS";
-}
-
-function getDeviceDisplayString() {
-  var info = { type: getDeviceType(), model: getDeviceModel(), browser: getBrowserInfo(), os: getOSInfo() };
-  var icon = info.type === "mobile" ? "📱" : info.type === "tablet" ? "📲" : "💻";
-  return icon + " " + info.model + " (" + info.os + ", " + info.browser + ")";
-}
-
-function getDeviceShortString() {
-  return getDeviceType() + ": " + getDeviceModel();
-}
-
-// ============================================
-// Core Functions
-// ============================================
-async function sha256(msg) {
-  var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(msg));
-  return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
-}
-
-function calcMoyModule(emd1, emd2, td, tp) {
-  var pts = 0, div = 0, emdVals = [];
-  if (emd1 !== null && emd1 !== undefined && emd1 !== "Abs") emdVals.push(parseFloat(emd1));
-  if (emd2 !== null && emd2 !== undefined && emd2 !== "Abs") emdVals.push(parseFloat(emd2));
-  if (emdVals.length > 0) { pts += (emdVals.reduce(function(a, b) { return a + b; }, 0) / emdVals.length) * 1; div += 1; }
-  if (td !== null && td !== undefined && td !== "Abs") { pts += parseFloat(td) * 2; div += 2; }
-  if (tp !== null && tp !== undefined && tp !== "Abs") { pts += parseFloat(tp) * 2; div += 2; }
-  if (div === 0) return null;
-  return Math.round((pts / div) * 10000) / 10000;
-}
-
-function calcMoyGenerale(et) {
-  var total = 0, coefs = 0;
-  MODULES.forEach(function(mod) {
-    var moy = et["moy_" + mod.key];
-    if (moy !== null && moy !== undefined && moy !== "Abs") {
-      var n = parseFloat(moy);
-      if (!isNaN(n)) { total += n * mod.coef; coefs += mod.coef; }
-    }
-  });
-  if (coefs === 0) return null;
-  return Math.round((total / coefs) * 10000) / 10000;
-}
-
-var SB_HEADERS = {
-  "apikey": SUPABASE_KEY,
-  "Authorization": "Bearer " + SUPABASE_KEY,
-  "Content-Type": "application/json",
-  "Prefer": "return=representation"
-};
-
-function fsGet(col, id) {
-  return fetch(SUPABASE_URL + "/rest/v1/" + col + "?numero=eq." + id + "&limit=1", { headers: SB_HEADERS })
-    .then(function(r) { return r.json(); })
-    .then(function(d) { return (Array.isArray(d) && d.length > 0) ? d[0] : null; });
-}
-
-function fsList(col) {
-  var all = [];
-  function page(offset) {
-    return fetch(SUPABASE_URL + "/rest/v1/" + col + "?select=*&limit=500&offset=" + offset, { headers: SB_HEADERS })
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        if (!Array.isArray(d)) return { documents: all };
-        all = all.concat(d);
-        if (d.length === 500) return page(offset + 500);
-        return { documents: all };
-      });
-  }
-  return page(0);
-}
-
-function fsPatch(col, id, fields) {
-  return fetch(SUPABASE_URL + "/rest/v1/" + col + "?numero=eq." + id, {
-    method: "PATCH",
-    headers: SB_HEADERS,
-    body: JSON.stringify(fields)
-  }).then(function(r) { return r.json(); });
-}
-
-function fsCreate(col, data) {
-  return fetch(SUPABASE_URL + "/rest/v1/" + col, {
-    method: "POST",
-    headers: SB_HEADERS,
-    body: JSON.stringify(data)
-  }).then(function(r) { return r.json(); });
-}
-
-function saveSession(v) { localStorage.setItem(SESSION_KEY, String(v)); }
-function clearSession() { localStorage.removeItem(SESSION_KEY); }
-
-function t(key) {
-  return TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key] ? TRANSLATIONS[currentLang][key] : key;
-}
-
-function checkSession() {
-  var s = localStorage.getItem(SESSION_KEY);
-  if (!s) return;
-  if (s === "ADMIN") {
-    isAdmin = true; isAdminLite = false;
-    showView("admin"); loadAdmin();
-    // Real admin does NOT create notifications
-    return;
-  }
-  if (s === "ADMINLITE") {
-    isAdmin = true; isAdminLite = true;
-    showView("admin"); loadAdmin();
-    logConnection("Admin Lite", "N/A", t("pageRefresh"));
-    return;
-  }
-  var num = parseInt(s);
-  if (!num) return;
-  fsGet("etudiants", String(num)).then(function(et) {
-    if (!et) { clearSession(); return; }
-    currentStudent = et; showView("student"); renderStudent(et);
-    logConnection(et.nom + " " + et.prenom, et.numero, t("pageRefresh"));
-  }).catch(function() { clearSession(); });
-}
-
-async function doLogin() {
-  var id = document.getElementById("inputNom").value.trim();
-  var mdp = document.getElementById("inputMdp").value.trim();
-  if (!id || !mdp) { showLoginError(t("fillAllFields")); return; }
-  var inputHash = await sha256(mdp);
-  
-  if (id === ADMIN_ID && inputHash === ADMIN_MDP_HASH) {
-    saveSession("ADMIN"); isAdmin = true; isAdminLite = false;
-    showView("admin"); loadAdmin();
-    // Real admin does NOT create notifications
-    return;
-  }
-  
-  if (id === ADMIN_LITE_ID && inputHash === ADMIN_LITE_MDP_HASH) {
-    saveSession("ADMINLITE"); isAdmin = true; isAdminLite = true;
-    showView("admin"); loadAdmin();
-    logConnection("Admin Lite", "N/A", t("adminLiteLogin"));
-    return;
-  }
-  
-  setLoginLoading(true); hideLoginError();
-  findEtudiant(id, mdp).then(function(et) {
-    setLoginLoading(false);
-    if (!et) { showLoginError(t("invalidCredentials")); return; }
-    currentStudent = et; saveSession(et.numero); showView("student"); renderStudent(et);
-    logConnection(et.nom + " " + et.prenom, et.numero, t("studentLogin"));
-  }).catch(function() { setLoginLoading(false); showLoginError(t("connectionError")); });
-}
-
-function logConnection(nom, numero, type) {
-  var now = new Date().toLocaleString("fr-FR");
-  var isAdminLiteConn = type.indexOf("Admin Lite") !== -1;
-  var deviceInfo = getDeviceShortString();
-  var deviceFull = getDeviceDisplayString();
-  
-  fsCreate("notifications", {
-    etudiant_nom: nom,
-    etudiant_numero: String(numero),
-    module: t("system"),
-    type: t("connection"),
-    message: type,
-    date: now,
-    lu: false,
-    admin_only: isAdminLiteConn,
-    device_info: deviceInfo,
-    device_full: deviceFull
-  });
-  
-  if (isAdminLiteConn) {
-    emailjs.init(EMAILJS_KEY);
-    emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
-      etudiant_nom: nom,
-      etudiant_numero: String(numero),
-      module: t("system"),
-      type_signalement: type,
-      message: type + " — " + now + " | " + t("device") + ": " + deviceFull,
-      date: now
-    });
-  }
-}
-
-function findEtudiant(id, mdp) {
-  return fsList("etudiants").then(function(data) {
-    if (!data.documents) return null;
-    var all = data.documents;
-    for (var i = 0; i < all.length; i++) {
-      var et = all[i];
-      if (et.custom_id && et.custom_mdp && et.custom_id === id && et.custom_mdp === mdp) return et;
-      var nom = (et.nom + " " + et.prenom).trim();
-      if (nom === id.trim() && String(et.numero) === String(mdp)) return et;
-    }
-    return null;
-  });
-}
-
-function setLoginLoading(on) {
-  var btn = document.getElementById("loginBtn");
-  btn.innerHTML = on ? '<div class="spinner"></div> ' + t("verifying") : '<i class="ph-bold ph-sign-in"></i> ' + t("accessResults");
-  btn.disabled = on;
-}
-
-function showLoginError(msg) {
-  document.getElementById("loginErrorMsg").textContent = msg;
-  document.getElementById("loginError").classList.add("show");
-}
-
-function hideLoginError() {
-  document.getElementById("loginError").classList.remove("show");
-}
-
-function renderStudent(et) {
-  document.getElementById("studentName").textContent = et.nom + " " + et.prenom;
-  document.getElementById("studentMeta").textContent = "N° " + et.numero + " | 3" + (currentLang === "ar" ? "" : "ème") + " " + t("year");
-  var moy = et.moyenne_generale;
-  document.getElementById("statMoy").textContent = moy ? parseFloat(moy).toFixed(3) : "—";
-  document.getElementById("statRank").textContent = et.classement || "—";
-  
-  var badge = document.getElementById("studentBadge");
-  var res = et.resultat || "";
-  if (res.indexOf("admis") !== -1 || res.indexOf("Félicitations") !== -1)
-    badge.innerHTML = '<span class="badge badge-success"><i class="ph-fill ph-check-circle"></i> ' + t("admitted") + '</span>';
-  else if (res.indexOf("Rattrapage") !== -1)
-    badge.innerHTML = '<span class="badge badge-warning"><i class="ph-fill ph-warning"></i> ' + t("catchup") + '</span>';
-  else
-    badge.innerHTML = '<span class="badge badge-danger"><i class="ph-fill ph-x-circle"></i> ' + (res || "—") + '</span>';
-  
-  var tbody = document.getElementById("modulesBody");
-  tbody.innerHTML = "";
-  var sel = document.getElementById("signalModule");
-  sel.innerHTML = '<option value="">' + t("chooseModule") + '</option>';
-  
-  MODULES.forEach(function(mod) {
-    var k = mod.key;
-    var e1 = et[k + "_emd1"], e2 = et[k + "_emd2"], td = et[k + "_td"], tp = et[k + "_tp"];
-    var mm = et[k + "_moy_module"] !== undefined ? et[k + "_moy_module"] : et["moy_" + k];
-    var tr = document.createElement("tr");
-    tr.innerHTML =
-      '<td><span style="font-weight:600;">' + mod.nom + '</span><span class="coef-badge">x' + mod.coef + '</span></td>' +
-      '<td class="mono">' + mod.coef + '</td>' +
-      '<td class="mono ' + nc(e1) + '">' + fn(e1) + '</td>' +
-      '<td class="mono ' + nc(e2) + '">' + fn(e2) + '</td>' +
-      '<td class="mono ' + nc(et[k + "_moy_emd"]) + '">' + fn(et[k + "_moy_emd"]) + '</td>' +
-      '<td class="mono ' + nc(td) + '">' + fn(td) + '</td>' +
-      '<td class="mono ' + nc(tp) + '">' + fn(tp) + '</td>' +
-      '<td class="mono ' + nc(mm) + '" style="font-weight:700;">' + fn(mm) + '</td>';
-    tbody.appendChild(tr);
-    
-    var opt = document.createElement("option");
-    opt.value = mod.nom;
-    opt.textContent = mod.nom;
-    sel.appendChild(opt);
-  });
-}
-
-function fn(v) {
-  if (v === null || v === undefined) return '<span class="note-abs">—</span>';
-  if (v === "Abs") return '<span class="note-abs">Abs</span>';
-  var n = parseFloat(v);
-  if (isNaN(n)) return v;
-  return n.toFixed(2);
-}
-
-function nc(v) {
-  if (v === "Abs" || v === null || v === undefined) return "note-abs";
-  var n = parseFloat(v);
-  if (isNaN(n)) return "";
-  return n < 5 ? "note-bad" : n < 10 ? "note-mid" : "note-good";
-}
-
-function showAccount() {
-  if (!currentStudent) return;
-  document.getElementById("accountSubtitle").textContent = currentStudent.nom + " " + currentStudent.prenom + " — N° " + currentStudent.numero;
-  document.getElementById("newIdentifiant").value = currentStudent.custom_id || (currentStudent.nom + " " + currentStudent.prenom);
-  document.getElementById("newMdp").value = "";
-  document.getElementById("confirmMdp").value = "";
-  showView("account");
-}
-
-function saveAccount() {
-  var newId = document.getElementById("newIdentifiant").value.trim();
-  var newMdp = document.getElementById("newMdp").value.trim();
-  var conf = document.getElementById("confirmMdp").value.trim();
-  if (!newId) { showToast(t("identifierEmpty"), "danger"); return; }
-  if (newMdp && newMdp !== conf) { showToast(t("passwordMismatch"), "danger"); return; }
-  
-  var btn = document.getElementById("saveAccountBtn");
-  btn.innerHTML = '<div class="spinner"></div> ' + t("saving"); btn.disabled = true;
-  
-  var fields = { custom_id: newId };
-  if (newMdp) fields.custom_mdp = newMdp;
-  var changes = "Identifiant: " + newId + (newMdp ? " | Mot de passe modifie" : "");
-  var now = new Date().toLocaleString("fr-FR");
-  var deviceInfo = getDeviceShortString();
-  var deviceFull = getDeviceDisplayString();
-  
-  fsPatch("etudiants", String(currentStudent.numero), fields).then(function() {
-    currentStudent.custom_id = newId;
-    if (newMdp) currentStudent.custom_mdp = newMdp;
-    return fsCreate("notifications", {
-      etudiant_nom: currentStudent.nom + " " + currentStudent.prenom,
-      etudiant_numero: currentStudent.numero,
-      module: "—",
-      type: t("accountModification"),
-      message: changes,
-      date: now,
-      lu: false,
-      admin_only: true,
-      device_info: deviceInfo,
-      device_full: deviceFull
-    });
-  }).then(function() {
-    emailjs.init(EMAILJS_KEY);
-    return emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
-      etudiant_nom: currentStudent.nom + " " + currentStudent.prenom,
-      etudiant_numero: String(currentStudent.numero),
-      module: t("myAccount"),
-      type_signalement: t("accountModification"),
-      message: changes + " | " + t("device") + ": " + deviceFull,
-      date: now
-    });
-  }).then(function() {
-    btn.innerHTML = '<i class="ph-bold ph-floppy-disk"></i> ' + t("saveChanges");
-    btn.disabled = false;
-    showToast(t("accountUpdated"), "success");
-    showView("student");
-  }).catch(function() {
-    btn.innerHTML = '<i class="ph-bold ph-floppy-disk"></i> ' + t("saveChanges");
-    btn.disabled = false;
-    showToast(t("accountUpdated"), "success");
-    showView("student");
-  });
-}
-
-function envoyerSignalement() {
-  var module = document.getElementById("signalModule").value;
-  var type = document.getElementById("signalType").value;
-  var comment = document.getElementById("signalComment").value.trim();
-  if (!module) { showToast(t("chooseModuleWarning"), "warning"); return; }
-  
-  var btn = document.getElementById("signalBtn");
-  btn.innerHTML = '<div class="spinner"></div> ' + t("sending"); btn.disabled = true;
-  
-  var now = new Date().toLocaleString("fr-FR");
-  var nom = currentStudent.nom + " " + currentStudent.prenom;
-  var deviceInfo = getDeviceShortString();
-  var deviceFull = getDeviceDisplayString();
-  
-  fsCreate("notifications", {
-    etudiant_nom: nom,
-    etudiant_numero: currentStudent.numero,
-    module: module,
-    type: type,
-    message: comment || t("noComment"),
-    date: now,
-    lu: false,
-    admin_only: false,
-    device_info: deviceInfo,
-    device_full: deviceFull
-  }).then(function() {
-    emailjs.init(EMAILJS_KEY);
-    return emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
-      etudiant_nom: nom,
-      etudiant_numero: String(currentStudent.numero),
-      module: module,
-      type_signalement: type,
-      message: (comment || t("noComment")) + " | " + t("device") + ": " + deviceFull,
-      date: now
-    });
-  }).then(function() {
-    btn.innerHTML = '<i class="ph-bold ph-paper-plane-right"></i> ' + t("sendReport");
-    btn.disabled = false;
-    document.getElementById("signalModule").value = "";
-    document.getElementById("signalComment").value = "";
-    showToast(t("reportSent"), "success");
-  }).catch(function() {
-    btn.innerHTML = '<i class="ph-bold ph-paper-plane-right"></i> ' + t("sendReport");
-    btn.disabled = false;
-    document.getElementById("signalModule").value = "";
-    document.getElementById("signalComment").value = "";
-    showToast(t("reportSaved"), "warning");
-  });
-}
-
-function loadAdmin() {
-  var badge = document.getElementById("adminLiteBadge");
-  if (isAdminLite) badge.classList.remove("hidden"); else badge.classList.add("hidden");
-  document.getElementById("adminBody").innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">' + t("loading") + '</td></tr>';
-  
-  fsList("etudiants").then(function(data) {
-    if (!data.documents) { adminData = []; renderAdminTable([]); return; }
-    adminData = data.documents.filter(Boolean);
-    adminData.sort(function(a, b) { return a.numero - b.numero; });
-    renderAdminTable(adminData);
-  });
-  loadNotifs(); loadComptes();
-}
-
-function renderAdminTable(data) {
-  var tbody = document.getElementById("adminBody");
-  if (!data.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">' + t("noResults") + '</td></tr>'; return; }
-  tbody.innerHTML = "";
-  
-  data.forEach(function(et) {
-    var moy = et.moyenne_generale ? parseFloat(et.moyenne_generale).toFixed(3) : "—";
-    var res = et.resultat || "—";
-    var resBadge = res.indexOf("admis") !== -1 || res.indexOf("Félicitations") !== -1
-      ? '<span class="badge badge-success" style="font-size:0.72rem;padding:2px 8px;">' + t("admitted") + '</span>'
-      : res.indexOf("Rattrapage") !== -1
-        ? '<span class="badge badge-warning" style="font-size:0.72rem;padding:2px 8px;">' + t("catchup") + '</span>'
-        : '<span style="color:var(--text-muted);font-size:0.85rem;">' + res + '</span>';
-    
-    var actionBtn = isAdminLite
-      ? '<button class="btn-sm btn-ghost-sm" onclick="viewNotes(' + et.numero + ')"><i class="ph-bold ph-eye"></i> ' + t("view") + '</button> <button class="btn-sm btn-ghost-sm" onclick="suggestEdit(' + et.numero + ')"><i class="ph-bold ph-pencil-simple"></i> ' + t("suggest") + '</button>'
-      : '<button class="btn-sm btn-success-sm" onclick="openEditNotes(' + et.numero + ')"><i class="ph-bold ph-pencil"></i> ' + t("notes") + '</button>';
-    
-    var tr = document.createElement("tr");
-    tr.innerHTML =
-      '<td class="mono" style="font-weight:700;">' + et.numero + '</td>' +
-      '<td style="font-weight:600;">' + et.nom + '</td>' +
-      '<td>' + et.prenom + '</td>' +
-      '<td class="mono ' + nc(et.moyenne_generale) + '" style="font-weight:700;">' + moy + '</td>' +
-      '<td class="mono">' + (et.classement || "—") + '</td>' +
-      '<td>' + resBadge + '</td>' +
-      '<td>' + actionBtn + '</td>';
-    tbody.appendChild(tr);
-  });
-}
-
-function loadNotifs() {
-  fetch(SUPABASE_URL + "/rest/v1/notifications?select=*&order=created_at.desc&limit=100", { headers: SB_HEADERS })
-    .then(function(r) { return r.json(); })
-    .then(function(notifs) {
-      if (!Array.isArray(notifs)) { renderNotifs([]); return; }
-      
-      // Admin Lite sees ONLY reports (no connections, no account modifications)
-      if (isAdminLite) {
-        notifs = notifs.filter(function(n) { 
-          // Hide admin-only notifications
-          if (n.admin_only) return false;
-          // Hide connection notifications
-          if (n.type === "Connexion" || n.type === "Connection" || n.type === "اتصال") return false;
-          // Hide account modification notifications
-          if (n.type === "Modification de compte" || n.type === "Account modification" || n.type === "تعديل الحساب") return false;
-          return true;
+        // Amélioration du ressenti avec un délai subtil avant animation
+        window.addEventListener('load', () => {
+            // Garantir que tout est chargé avant d'afficher
+            document.body.style.opacity = '1';
         });
-      }
-      
-      var unread = notifs.filter(function(n) { return !n.lu; }).length;
-      if (unread > 0) {
-        document.getElementById("notifCount").textContent = unread;
-        document.getElementById("notifCount").classList.remove("hidden");
-      }
-      renderNotifs(notifs);
-    });
-}
 
-function renderNotifs(notifs) {
-  var el = document.getElementById("notifsList");
-  if (!notifs.length) { el.innerHTML = '<p class="text-center py-8" style="color:var(--text-muted);">' + t("noReports") + '</p>'; return; }
-  el.innerHTML = "";
-  
-  notifs.forEach(function(n) {
-    var isCompte = n.type === t("accountModification") || n.type === "Modification de compte";
-    var isConnexion = n.type === t("connection") || n.type === "Connexion";
-    var typeColor = isConnexion || isCompte ? "var(--success)" : "var(--warning)";
-    
-    var deviceBadge = "";
-    if (n.device_info) {
-      var deviceType = n.device_info.split(":")[0].trim();
-      var deviceClass = deviceType === "mobile" ? "device-mobile" : deviceType === "tablet" ? "device-tablet" : "device-pc";
-      var deviceIcon = deviceType === "mobile" ? "ph-device-mobile" : deviceType === "tablet" ? "ph-device-tablet" : "ph-desktop";
-      deviceBadge = '<div class="device-badge ' + deviceClass + '"><i class="ph-bold ' + deviceIcon + '"></i> ' + n.device_info + '</div>';
-    }
-    
-    var div = document.createElement("div");
-    div.className = "notif-card " + (n.lu ? "notif-read" : "notif-unread");
-    div.innerHTML =
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;flex-wrap:wrap;">' +
-      '<div><div style="font-weight:700;">' + n.etudiant_nom + ' <span style="color:var(--text-muted);font-size:0.85rem;">N°' + n.etudiant_numero + '</span></div>' +
-      '<div style="margin-top:0.3rem;font-size:0.88rem;"><span style="color:#a5b4fc;">' + n.module + '</span> — ' +
-      '<span style="color:' + typeColor + ';">' + n.type + '</span></div>' +
-      (n.message && n.message !== t("noComment") && n.message !== "(aucun commentaire)" ? '<div style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-muted);font-style:italic;">"' + n.message + '"</div>' : '') +
-      deviceBadge +
-      '</div><div style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap;">' + n.date + '</div></div>';
-    el.appendChild(div);
-  });
-}
-
-function loadComptes() {
-  fsList("etudiants").then(function(data) {
-    if (!data.documents) { renderComptes([]); return; }
-    var modifies = data.documents.filter(function(et) { return et && (et.custom_id || et.custom_mdp); });
-    renderComptes(modifies);
-  });
-}
-
-function renderComptes(data) {
-  var el = document.getElementById("comptesList");
-  if (!data.length) { el.innerHTML = '<p class="text-center py-8" style="color:var(--text-muted);">' + t("noAccountChanges") + '</p>'; return; }
-  
-  var html = '<div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;"><table class="res-table"><thead><tr><th>' + t("number") + '</th><th>' + t("lastName") + '</th><th>' + t("firstName") + '</th><th>' + t("customIdentifier") + '</th><th>' + t("customPassword") + '</th><th>' + t("actions") + '</th></tr></thead><tbody>';
-  data.forEach(function(et) {
-    html += '<tr>' +
-      '<td class="mono" style="font-weight:700;">' + et.numero + '</td>' +
-      '<td style="font-weight:600;">' + et.nom + '</td><td>' + et.prenom + '</td>' +
-      '<td class="mono">' + (et.custom_id || "—") + '</td>' +
-      '<td class="mono">' + (isAdminLite ? (et.custom_mdp ? "••••••" : "—") : (et.custom_mdp ? et.custom_mdp : "—")) + '</td>' +
-      '<td>' + (isAdminLite ? "—" : '<button class="btn-sm btn-danger-sm" onclick="resetCompte(' + et.numero + ')"><i class="ph-bold ph-arrow-counter-clockwise"></i> ' + t("reset") + '</button>') + '</td>' +
-      '</tr>';
-  });
-  html += '</tbody></table></div></div>';
-  el.innerHTML = html;
-}
-
-function resetCompte(num) {
-  if (!confirm(t("resetAccount") + num + t("confirmReset"))) return;
-  fsPatch("etudiants", String(num), { custom_id: null, custom_mdp: null }).then(function() {
-    showToast(t("accountReset") + num, "success");
-    loadComptes();
-  }).catch(function() { showToast(t("saveError"), "danger"); });
-}
-
-function openEditNotes(num) {
-  var et = adminData.find(function(e) { return e.numero === num; });
-  if (!et) return;
-  
-  var d = document.createElement("div");
-  d.id = "editModal"; d.className = "modal-overlay";
-  var inner = document.createElement("div"); inner.className = "modal-box";
-  
-  var hdr = document.createElement("div");
-  hdr.style = "display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
-  hdr.innerHTML = '<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">' + et.nom + ' ' + et.prenom + ' — ' + t("notes") + '</div>';
-  var closeBtn = document.createElement("button"); closeBtn.className = "btn-ghost"; closeBtn.style = "padding:0.4rem 0.8rem;";
-  closeBtn.innerHTML = '<i class="ph-bold ph-x"></i>'; closeBtn.onclick = function() { d.remove(); };
-  hdr.appendChild(closeBtn); inner.appendChild(hdr);
-  
-  var info = document.createElement("div");
-  info.style = "background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);border-radius:10px;padding:0.6rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#a5b4fc;";
-  info.innerHTML = '<i class="ph-fill ph-info"></i> ' + t("autoCalculateInfo");
-  inner.appendChild(info);
-  
-  var tableWrap = document.createElement("div"); tableWrap.style = "overflow-x:auto;";
-  var table = document.createElement("table"); table.className = "res-table";
-  var thead = document.createElement("thead");
-  thead.innerHTML = '<tr><th>' + t("module") + '</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th style="color:#818cf8;">' + t("calculatedMoy") + '</th></tr>';
-  table.appendChild(thead);
-  
-  var tbody = document.createElement("tbody");
-  MODULES.forEach(function(mod) {
-    var k = mod.key;
-    var tr = document.createElement("tr");
-    var td0 = document.createElement("td"); td0.style = "font-weight:600;"; td0.textContent = mod.nom; tr.appendChild(td0);
-    
-    ["emd1", "emd2", "td", "tp"].forEach(function(sub) {
-      var fk = k + "_" + sub;
-      var v = et[fk];
-      var cell = document.createElement("td");
-      var inp = document.createElement("input");
-      inp.className = "calc-input"; inp.id = "edit_" + fk;
-      inp.value = (v !== null && v !== undefined) ? v : "";
-      inp.placeholder = "—"; inp.style = "padding:0.4rem 0.6rem;width:80px;";
-      inp.oninput = function() { updateMoyPreview(k, mod); };
-      cell.appendChild(inp); tr.appendChild(cell);
-    });
-    
-    var moyCell = document.createElement("td");
-    moyCell.id = "preview_moy_" + k;
-    moyCell.className = "mono";
-    moyCell.style = "font-weight:700;color:#818cf8;";
-    var mm = et[k + "_moy_module"] !== undefined ? et[k + "_moy_module"] : et["moy_" + k];
-    moyCell.textContent = (mm !== null && mm !== undefined) ? parseFloat(mm).toFixed(2) : "—";
-    tr.appendChild(moyCell);
-    tbody.appendChild(tr);
-  });
-  
-  table.appendChild(tbody); tableWrap.appendChild(table); inner.appendChild(tableWrap);
-  
-  var footer = document.createElement("div");
-  footer.style = "margin-top:1.25rem;display:flex;gap:0.75rem;justify-content:flex-end;";
-  var cancelBtn = document.createElement("button"); cancelBtn.className = "btn-ghost"; cancelBtn.textContent = t("cancel");
-  cancelBtn.onclick = function() { d.remove(); };
-  var saveBtn = document.createElement("button"); saveBtn.className = "btn-main";
-  saveBtn.style = "width:auto;padding:0.6rem 1.5rem;";
-  saveBtn.innerHTML = '<i class="ph-bold ph-floppy-disk"></i> ' + t("save");
-  saveBtn.onclick = function() { saveEditNotes(num, d); };
-  footer.appendChild(cancelBtn); footer.appendChild(saveBtn);
-  inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
-}
-
-function updateMoyPreview(key, mod) {
-  var getVal = function(sub) {
-    var el = document.getElementById("edit_" + key + "_" + sub);
-    if (!el || el.value.trim() === "") return null;
-    if (el.value.trim() === "Abs") return "Abs";
-    return parseFloat(el.value.replace(",", "."));
-  };
-  var e1 = getVal("emd1"), e2 = getVal("emd2"), td = getVal("td"), tp = getVal("tp");
-  var moy = calcMoyModule(e1, e2, td, tp);
-  var preview = document.getElementById("preview_moy_" + key);
-  if (preview) {
-    preview.textContent = moy !== null ? parseFloat(moy).toFixed(2) : "—";
-    preview.style.color = moy === null ? "var(--text-muted)" : moy < 5 ? "var(--danger)" : moy < 10 ? "var(--warning)" : "var(--success)";
-  }
-}
-
-function saveEditNotes(num, modal) {
-  var et = adminData.find(function(e) { return e.numero === num; });
-  if (!et) return;
-  
-  var fields = {};
-  var tempEt = Object.assign({}, et);
-  var hasChanges = false;
-  
-  MODULES.forEach(function(mod) {
-    var k = mod.key;
-    var modChanged = false;
-    
-    ["emd1", "emd2", "td", "tp"].forEach(function(sub) {
-      var fk = k + "_" + sub;
-      var el = document.getElementById("edit_" + fk);
-      if (!el) return;
-      var v = el.value.trim();
-      var val;
-      if (v === "") { val = et[fk]; }
-      else if (v === "Abs") { val = "Abs"; }
-      else { var n = parseFloat(v); val = isNaN(n) ? et[fk] : n; }
-      
-      var oldVal = et[fk];
-      if (String(val) !== String(oldVal)) {
-        fields[fk] = val;
-        hasChanges = true;
-        modChanged = true;
-      }
-      tempEt[fk] = val;
-    });
-    
-    if (modChanged) {
-      var e1 = tempEt[k + "_emd1"], e2 = tempEt[k + "_emd2"];
-      var emdVals = [];
-      if (e1 !== null && e1 !== undefined && e1 !== "Abs") emdVals.push(parseFloat(e1));
-      if (e2 !== null && e2 !== undefined && e2 !== "Abs") emdVals.push(parseFloat(e2));
-      var moyEmd = emdVals.length > 0 ? Math.round((emdVals.reduce(function(a, b) { return a + b; }, 0) / emdVals.length) * 10000) / 10000 : null;
-      fields[k + "_moy_emd"] = moyEmd;
-      tempEt[k + "_moy_emd"] = moyEmd;
-      
-      var moyMod = calcMoyModule(tempEt[k + "_emd1"], tempEt[k + "_emd2"], tempEt[k + "_td"], tempEt[k + "_tp"]);
-      fields["moy_" + k] = moyMod;
-      fields[k + "_moy_module"] = moyMod;
-      tempEt["moy_" + k] = moyMod;
-      tempEt[k + "_moy_module"] = moyMod;
-    }
-  });
-  
-  if (!hasChanges) {
-    if (modal) modal.remove();
-    showToast(t("noChanges"), "info");
-    return;
-  }
-  
-  var moyGen = calcMoyGenerale(tempEt);
-  fields["moyenne_generale"] = moyGen;
-  
-  fsPatch("etudiants", String(num), fields).then(function() {
-    for (var k in fields) et[k] = fields[k];
-    if (modal) modal.remove();
-    showToast(t("notesSaved"), "success");
-    renderAdminTable(adminData);
-  }).catch(function() { showToast(t("saveError"), "danger"); });
-}
-
-function viewNotes(num) {
-  var et = adminData.find(function(e) { return e.numero === num; });
-  if (!et) return;
-  
-  var d = document.createElement("div");
-  d.id = "viewNotesModal"; d.className = "modal-overlay";
-  var inner = document.createElement("div"); inner.className = "modal-box";
-  
-  var hdr = document.createElement("div");
-  hdr.style = "display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
-  hdr.innerHTML = '<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">' + et.nom + ' ' + et.prenom + ' — ' + t("notes") + '</div>';
-  var closeBtn = document.createElement("button"); closeBtn.className = "btn-ghost"; closeBtn.style = "padding:0.4rem 0.8rem;";
-  closeBtn.innerHTML = '<i class="ph-bold ph-x"></i>'; closeBtn.onclick = function() { d.remove(); };
-  hdr.appendChild(closeBtn); inner.appendChild(hdr);
-  
-  var tableWrap = document.createElement("div"); tableWrap.style = "overflow-x:auto;";
-  var table = document.createElement("table"); table.className = "res-table";
-  var thead = document.createElement("thead");
-  thead.innerHTML = '<tr><th>' + t("module") + '</th><th>' + t("coef") + '</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th>' + t("moyModule") + '</th></tr>';
-  table.appendChild(thead);
-  
-  var tbody = document.createElement("tbody");
-  MODULES.forEach(function(mod) {
-    var k = mod.key;
-    var tr = document.createElement("tr");
-    var vals = [et[k + "_emd1"], et[k + "_emd2"], et[k + "_td"], et[k + "_tp"], et[k + "_moy_module"] !== undefined ? et[k + "_moy_module"] : et["moy_" + k]];
-    
-    var td0 = document.createElement("td"); td0.style = "font-weight:600;"; td0.textContent = mod.nom; tr.appendChild(td0);
-    var td1 = document.createElement("td"); td1.className = "mono"; td1.textContent = mod.coef; tr.appendChild(td1);
-    vals.forEach(function(v) {
-      var cell = document.createElement("td"); cell.className = "mono " + nc(v); cell.innerHTML = fn(v); tr.appendChild(cell);
-    });
-    tbody.appendChild(tr);
-  });
-  
-  table.appendChild(tbody); tableWrap.appendChild(table); inner.appendChild(tableWrap);
-  
-  var footer = document.createElement("div"); footer.style = "margin-top:1.25rem;display:flex;justify-content:flex-end;";
-  var closeBtn2 = document.createElement("button"); closeBtn2.className = "btn-ghost"; closeBtn2.textContent = t("close");
-  closeBtn2.onclick = function() { d.remove(); };
-  footer.appendChild(closeBtn2); inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
-}
-
-function suggestEdit(num) {
-  var et = adminData.find(function(e) { return e.numero === num; });
-  if (!et) return;
-  
-  var d = document.createElement("div"); d.id = "suggestModal"; d.className = "modal-overlay";
-  var inner = document.createElement("div"); inner.className = "modal-box";
-  
-  var hdr = document.createElement("div"); hdr.style = "display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
-  hdr.innerHTML = '<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">' + t("suggestTitle") + ' ' + et.nom + ' ' + et.prenom + '</div>';
-  var closeBtn = document.createElement("button"); closeBtn.className = "btn-ghost"; closeBtn.style = "padding:0.4rem 0.8rem;";
-  closeBtn.innerHTML = '<i class="ph-bold ph-x"></i>'; closeBtn.onclick = function() { d.remove(); };
-  hdr.appendChild(closeBtn); inner.appendChild(hdr);
-  
-  var modDiv = document.createElement("div"); modDiv.className = "mb-4"; modDiv.innerHTML = '<label class="field-label">' + t("concernedModule") + '</label>';
-  var modSel = document.createElement("select"); modSel.className = "glass-select"; modSel.id = "suggestModule";
-  modSel.innerHTML = '<option value="">' + t("choose") + '</option>';
-  MODULES.forEach(function(m) { var o = document.createElement("option"); o.value = m.nom; o.textContent = m.nom; modSel.appendChild(o); });
-  modDiv.appendChild(modSel); inner.appendChild(modDiv);
-  
-  var fieldDiv = document.createElement("div"); fieldDiv.className = "mb-4"; fieldDiv.innerHTML = '<label class="field-label">' + t("fieldToModify") + '</label>';
-  var fieldSel = document.createElement("select"); fieldSel.className = "glass-select"; fieldSel.id = "suggestField";
-  fieldSel.innerHTML = '<option value="emd1">EMD 1</option><option value="emd2">EMD 2</option><option value="td">TD</option><option value="tp">TP</option><option value="moy_module">' + t("moyModule") + '</option>';
-  fieldDiv.appendChild(fieldSel); inner.appendChild(fieldDiv);
-  
-  var valDiv = document.createElement("div"); valDiv.className = "mb-4"; valDiv.innerHTML = '<label class="field-label">' + t("suggestedValue") + '</label>';
-  var valInp = document.createElement("input"); valInp.type = "text"; valInp.className = "calc-input"; valInp.id = "suggestVal"; valInp.placeholder = t("suggestedValuePlaceholder");
-  valDiv.appendChild(valInp); inner.appendChild(valDiv);
-  
-  var reasonDiv = document.createElement("div"); reasonDiv.className = "mb-5"; reasonDiv.innerHTML = '<label class="field-label">' + t("justification") + '</label>';
-  var reasonTa = document.createElement("textarea"); reasonTa.className = "calc-input"; reasonTa.id = "suggestReason"; reasonTa.placeholder = t("justificationPlaceholder"); reasonTa.style = "min-height:70px;resize:vertical;";
-  reasonDiv.appendChild(reasonTa); inner.appendChild(reasonDiv);
-  
-  var footer = document.createElement("div"); footer.style = "display:flex;gap:0.75rem;justify-content:flex-end;";
-  var cancelBtn = document.createElement("button"); cancelBtn.className = "btn-ghost"; cancelBtn.textContent = t("cancel"); cancelBtn.onclick = function() { d.remove(); };
-  var sendBtn = document.createElement("button"); sendBtn.className = "btn-main"; sendBtn.style = "width:auto;padding:0.6rem 1.5rem;";
-  sendBtn.innerHTML = '<i class="ph-bold ph-paper-plane-right"></i> ' + t("send"); sendBtn.onclick = function() { sendSuggestion(num, d); };
-  footer.appendChild(cancelBtn); footer.appendChild(sendBtn); inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
-}
-
-function sendSuggestion(num, modal) {
-  var et = adminData.find(function(e) { return e.numero === num; });
-  var module = document.getElementById("suggestModule").value;
-  var field = document.getElementById("suggestField").value;
-  var val = document.getElementById("suggestVal").value.trim();
-  var reason = document.getElementById("suggestReason").value.trim();
-  
-  if (!module || !val) { showToast(t("fillAllFields"), "warning"); return; }
-  
-  var now = new Date().toLocaleString("fr-FR");
-  var msg = t("suggestModule") + module + " / " + field + " = " + val + (reason ? t("reason") + reason : "");
-  var deviceInfo = getDeviceShortString();
-  var deviceFull = getDeviceDisplayString();
-  
-  fsCreate("notifications", {
-    etudiant_nom: et.nom + " " + et.prenom,
-    etudiant_numero: et.numero,
-    module: module,
-    type: t("suggestion"),
-    message: msg,
-    date: now,
-    lu: false,
-    admin_only: false,
-    device_info: deviceInfo,
-    device_full: deviceFull
-  }).then(function() {
-    emailjs.init(EMAILJS_KEY);
-    return emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
-      etudiant_nom: et.nom + " " + et.prenom,
-      etudiant_numero: String(et.numero),
-      module: module,
-      type_signalement: t("suggestion"),
-      message: msg + " | " + t("device") + ": " + deviceFull,
-      date: now
-    });
-  }).then(function() {
-    if (modal) modal.remove();
-    showToast(t("suggestionSent"), "success");
-  }).catch(function() {
-    if (modal) modal.remove();
-    showToast(t("suggestionSaved"), "warning");
-  });
-}
-
-function filterAdmin() {
-  var q = document.getElementById("adminSearch").value.toLowerCase();
-  renderAdminTable(adminData.filter(function(et) {
-    return (et.nom || "").toLowerCase().includes(q) || (et.prenom || "").toLowerCase().includes(q) || String(et.numero).includes(q);
-  }));
-}
-
-function sortAdmin(key) {
-  if (adminSortKey === key) adminSortAsc = !adminSortAsc;
-  else { adminSortKey = key; adminSortAsc = true; }
-  adminData.sort(function(a, b) {
-    var av = a[key], bv = b[key];
-    if (av === null || av === undefined) av = -Infinity;
-    if (bv === null || bv === undefined) bv = -Infinity;
-    if (typeof av === "string") return adminSortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
-    return adminSortAsc ? av - bv : bv - av;
-  });
-  renderAdminTable(adminData);
-}
-
-function switchTab(tab) {
-  ["etudiants", "notifs", "comptes"].forEach(function(t) {
-    var T = t.charAt(0).toUpperCase() + t.slice(1);
-    document.getElementById("tab" + T).classList.toggle("active", t === tab);
-    document.getElementById("panel" + T).classList.toggle("hidden", t !== tab);
-  });
-}
-
-function showView(v) {
-  ["Login", "Student", "Account", "Admin"].forEach(function(n) {
-    document.getElementById("view" + n).classList.add("hidden");
-  });
-  document.getElementById("view" + v.charAt(0).toUpperCase() + v.slice(1)).classList.remove("hidden");
-  currentView = v;
-  updateSidebarNav();
-  updateBreadcrumb();
-}
-
-function logout() {
-  currentStudent = null; isAdmin = false; isAdminLite = false; adminData = [];
-  clearSession();
-  document.getElementById("inputNom").value = "";
-  document.getElementById("inputMdp").value = "";
-  hideLoginError();
-  showView("login");
-}
-
-function goHome() {
-  window.location.href = "dental-guide.html#year-3";
-}
-
-function updateSidebarNav() {
-  var nav = document.getElementById("sidebarNav");
-  if (!nav) return;
-  
-  var h = '<button onclick="goHome();closeMenu();" class="nav-link glass"><i class="ph-bold ph-house text-xl"></i><span>' + t("home") + '</span></button>';
-  
-  if (currentView === "student" || currentView === "account") {
-    h += '<button onclick="showView(\'student\');closeMenu();" class="nav-link glass ' + (currentView === "student" ? "active" : "") + '"><i class="ph-bold ph-chart-bar text-xl"></i><span>' + t("myResults") + '</span></button>';
-    h += '<button onclick="showAccount();closeMenu();" class="nav-link glass ' + (currentView === "account" ? "active" : "") + '"><i class="ph-bold ph-user-circle text-xl"></i><span>' + t("myAccount") + '</span></button>';
-  }
-  if (currentView === "admin")
-    h += '<button onclick="showView(\'admin\');closeMenu();" class="nav-link glass active"><i class="ph-bold ph-shield text-xl"></i><span>' + t("adminInterface") + '</span></button>';
-  
-  h += '<div class="w-full h-px my-2" style="background:var(--glass-border);"></div>';
-  if (currentView !== "login")
-    h += '<button onclick="logout();closeMenu();" class="nav-link glass"><i class="ph-bold ph-sign-out text-xl"></i><span>' + t("logout") + '</span></button>';
-  
-  nav.innerHTML = h;
-}
-
-function updateBreadcrumb() {
-  var bc = document.getElementById("breadcrumb");
-  if (currentView === "login") { bc.style.display = "none"; bc.innerHTML = ""; return; }
-  bc.style.display = "flex";
-  
-  var p = ['<button class="breadcrumb-btn" onclick="goHome()"><i class="ph-bold ph-house" style="font-size:0.65rem;"></i> ' + t("home") + '</button>'];
-  p.push('<span class="breadcrumb-sep">›</span>');
-  
-  if (currentView === "student") p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">' + t("results") + '</span>');
-  else if (currentView === "account") {
-    p.push('<button class="breadcrumb-btn" onclick="showView(\'student\')">' + t("results") + '</button>');
-    p.push('<span class="breadcrumb-sep">›</span>');
-    p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">' + t("myAccount") + '</span>');
-  }
-  else if (currentView === "admin") p.push('<span class="breadcrumb-btn" style="color:var(--text-main);cursor:default;">' + t("adminInterface") + '</span>');
-  
-  bc.innerHTML = p.join('');
-}
-
-// Language switching
-var langPill = document.getElementById("langPill");
-var langBtns = document.querySelectorAll(".lang-btn");
-
-function getLang() { return localStorage.getItem("lang") || "fr"; }
-
-function setLangPill(lang) {
-  var idx = lang === "fr" ? 0 : lang === "en" ? 1 : 2;
-  langPill.style.transform = "translateX(" + (idx * 100) + "%)";
-  for (var i = 0; i < langBtns.length; i++) {
-    langBtns[i].classList.toggle("active", langBtns[i].getAttribute("data-lang") === lang);
-  }
-}
-
-function initLang() {
-  var lang = getLang();
-  currentLang = lang;
-  document.documentElement.setAttribute("lang", lang);
-  document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
-  setLangPill(lang);
-  translatePage(lang);
-}
-
-for (var _i = 0; _i < langBtns.length; _i++) {
-  (function(btn) {
-    btn.addEventListener("click", function() {
-      var lang = btn.getAttribute("data-lang");
-      document.body.classList.add("switching-lang");
-      setLangPill(lang);
-      setTimeout(function() {
-        document.documentElement.setAttribute("lang", lang);
-        document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
-        localStorage.setItem("lang", lang);
-        translatePage(lang);
-        requestAnimationFrame(function() { document.body.classList.remove("switching-lang"); });
-      }, 300);
-    });
-  })(langBtns[_i]);
-}
-
-// Theme switching
-function initTheme() {
-  var t = localStorage.getItem("theme") || "dark";
-  document.documentElement.setAttribute("data-theme", t);
-}
-
-document.getElementById("themeBtn").addEventListener("click", function() {
-  var cur = document.documentElement.getAttribute("data-theme");
-  var next = cur === "dark" ? "light" : "dark";
-  document.documentElement.setAttribute("data-theme", next);
-  localStorage.setItem("theme", next);
-});
-
-// Sidebar toggle
-var sidebar = document.getElementById("sidebar");
-var overlay = document.getElementById("overlay");
-var menuBtn = document.getElementById("menuBtn");
-
-menuBtn.onclick = function(e) {
-  e.stopPropagation();
-  sidebar.classList.toggle("open");
-  overlay.classList.toggle("hidden", !sidebar.classList.contains("open"));
-};
-
-window.closeMenu = function() {
-  sidebar.classList.remove("open");
-  overlay.classList.add("hidden");
-};
-
-// Toast notifications
-window.showToast = function(msg, type) {
-  type = type || "info";
-  var colors = { success: "var(--success)", danger: "var(--danger)", warning: "var(--warning)", info: "#a5b4fc" };
-  var icons = { success: "ph-check-circle", danger: "ph-x-circle", warning: "ph-warning", info: "ph-info" };
-  var c = document.getElementById("toastContainer");
-  var t = document.createElement("div");
-  t.className = "toast-item glass";
-  t.innerHTML = '<i class="ph-fill ' + icons[type] + '" style="color:' + colors[type] + ';font-size:1.1rem;"></i> ' + msg;
-  c.appendChild(t);
-  requestAnimationFrame(function() { t.classList.add("show"); });
-  setTimeout(function() { t.classList.remove("show"); setTimeout(function() { t.remove(); }, 400); }, 3500);
-};
-
-// Enter key for login
-document.getElementById("inputMdp").addEventListener("keydown", function(e) { if (e.key === "Enter") doLogin(); });
-document.getElementById("inputNom").addEventListener("keydown", function(e) { if (e.key === "Enter") doLogin(); });
-
-// Initialize
-initTheme();
-initLang();
-updateSidebarNav();
-updateBreadcrumb();
-checkSession();
-</script>
+        // Interaction au clavier
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('redirectBtn').click();
+            }
+        });
+    </script>
 </body>
 </html>
