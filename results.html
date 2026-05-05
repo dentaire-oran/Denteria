@@ -84,7 +84,6 @@
     .badge-success { background:rgba(42,212,165,0.15); color:var(--success); border:1px solid rgba(42,212,165,0.3); }
     .badge-warning { background:rgba(255,201,74,0.15); color:var(--warning); border:1px solid rgba(255,201,74,0.3); }
     .badge-danger  { background:rgba(255,100,124,0.15); color:var(--danger);  border:1px solid rgba(255,100,124,0.3); }
-    /* Nouveaux badges */
     .badge-bronze { background: rgba(205,127,50,0.2); color: #cd7f32; border:1px solid rgba(205,127,50,0.5); }
     .badge-silver { background: rgba(192,192,192,0.2); color: #c0c0c0; border:1px solid rgba(192,192,192,0.5); }
     .badge-gold   { background: rgba(255,215,0,0.2); color: #ffd700; border:1px solid rgba(255,215,0,0.5); }
@@ -355,7 +354,6 @@ var EMAILJS_SERVICE  = "service_5sgcx6a";
 var EMAILJS_TEMPLATE = "template_74cg8ho";
 var EMAILJS_KEY      = "lxg6X0FF2kADJ5DYR";
 
-// Identifiants admin (hashes SHA-256)
 var ADMIN_ID       = "admin";
 var ADMIN_MDP_HASH = "2e3c969e2e9b367ade00279743f88ea0e32f283152223e3d9aaf1c14669d7cbe";
 var ADMIN_LITE_ID       = "user";
@@ -374,9 +372,6 @@ var currentStudent=null, isAdmin=false, isAdminLite=false;
 var adminData=[], adminSortKey="numero", adminSortAsc=true, currentView="login";
 var currentLang = "fr";
 
-// ============================================
-// TRANSLATIONS
-// ============================================
 var TRANSLATIONS = {
   fr: {
     results: "Résultats",
@@ -597,7 +592,6 @@ var TRANSLATIONS = {
     send: "Send",
     suggestionSent: "Suggestion sent!",
     suggestionSaved: "Suggestion saved.",
-    fillAllFields: "Fill in all fields.",
     resetAccount: "Reset account for No.",
     accountReset: "Account reset for No.",
     confirmReset: "?",
@@ -722,7 +716,6 @@ var TRANSLATIONS = {
     send: "إرسال",
     suggestionSent: "تم إرسال الاقتراح!",
     suggestionSaved: "تم حفظ الاقتراح.",
-    fillAllFields: "املأ جميع الحقول.",
     resetAccount: "إعادة تعيين حساب رقم",
     accountReset: "تم إعادة تعيين حساب رقم",
     confirmReset: "؟",
@@ -754,36 +747,22 @@ var TRANSLATIONS = {
   }
 };
 
-// Translate page
 function translatePage(lang) {
   currentLang = lang;
-  
   document.querySelectorAll('[data-i18n]').forEach(function(el) {
     var key = el.getAttribute('data-i18n');
-    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
-      el.textContent = TRANSLATIONS[lang][key];
-    }
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) el.textContent = TRANSLATIONS[lang][key];
   });
-  
   document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
     var key = el.getAttribute('data-i18n-placeholder');
-    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
-      el.placeholder = TRANSLATIONS[lang][key];
-    }
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) el.placeholder = TRANSLATIONS[lang][key];
   });
-  
   var signalModule = document.getElementById('signalModule');
-  if (signalModule && signalModule.options[0]) {
-    signalModule.options[0].textContent = TRANSLATIONS[lang].chooseModule;
-  }
-  
+  if (signalModule && signalModule.options[0]) signalModule.options[0].textContent = TRANSLATIONS[lang].chooseModule;
   updateSidebarNav();
   updateBreadcrumb();
 }
 
-// ============================================
-// Badge helper
-// ============================================
 function getGradeBadge(value) {
   if (value === null || value === undefined || value === "Abs") return "";
   var n = parseFloat(value);
@@ -802,7 +781,6 @@ function getRankBadge(rank) {
   return "";
 }
 
-// Device & browser detection (unchanged) ...
 function getDeviceType() {
   var ua = navigator.userAgent;
   var maxTouchPoints = navigator.maxTouchPoints || 0;
@@ -956,9 +934,6 @@ function getDeviceShortString() {
   return getDeviceType() + ": " + getDeviceModel();
 }
 
-// ============================================
-// Core Functions (unchanged except badge integration)
-// ============================================
 async function sha256(msg) {
   var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(msg));
   return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
@@ -1158,12 +1133,8 @@ function renderStudent(et) {
   document.getElementById("statMoy").textContent = moy ? parseFloat(moy).toFixed(3) : "—";
   document.getElementById("statRank").textContent = et.classement || "—";
   
-  // Badges for stats
-  var moyBadge = getGradeBadge(moy);
-  document.getElementById("statMoyBadge").innerHTML = moyBadge;
-  
-  var rankBadge = getRankBadge(et.classement);
-  document.getElementById("statRankBadge").innerHTML = rankBadge;
+  document.getElementById("statMoyBadge").innerHTML = getGradeBadge(moy);
+  document.getElementById("statRankBadge").innerHTML = getRankBadge(et.classement);
   
   var badge = document.getElementById("studentBadge");
   var res = et.resultat || "";
@@ -1342,7 +1313,6 @@ function loadAdmin() {
     adminData = data.documents.filter(Boolean);
     adminData.sort(function(a, b) { return a.numero - b.numero; });
     renderAdminTable(adminData);
-    // Populate module ranking dropdown
     var sel = document.getElementById("rankModuleSelect");
     sel.innerHTML = '<option value="">—</option>';
     MODULES.forEach(function(m) {
@@ -1518,8 +1488,305 @@ function resetCompte(num) {
   }).catch(function() { showToast(t("saveError"), "danger"); });
 }
 
-// All other functions (openEditNotes, viewNotes, suggestEdit, sendSuggestion, filterAdmin, sortAdmin, switchTab, showView, logout, etc.) remain identical.
-// Ensure switchTab handles 'classement' and hides/shows the new panel.
+function openEditNotes(num) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  if (!et) return;
+  
+  var d = document.createElement("div");
+  d.id = "editModal"; d.className = "modal-overlay";
+  var inner = document.createElement("div"); inner.className = "modal-box";
+  
+  var hdr = document.createElement("div");
+  hdr.style = "display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
+  hdr.innerHTML = '<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">' + et.nom + ' ' + et.prenom + ' — ' + t("notes") + '</div>';
+  var closeBtn = document.createElement("button"); closeBtn.className = "btn-ghost"; closeBtn.style = "padding:0.4rem 0.8rem;";
+  closeBtn.innerHTML = '<i class="ph-bold ph-x"></i>'; closeBtn.onclick = function() { d.remove(); };
+  hdr.appendChild(closeBtn); inner.appendChild(hdr);
+  
+  var info = document.createElement("div");
+  info.style = "background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);border-radius:10px;padding:0.6rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:#a5b4fc;";
+  info.innerHTML = '<i class="ph-fill ph-info"></i> ' + t("autoCalculateInfo");
+  inner.appendChild(info);
+  
+  var tableWrap = document.createElement("div"); tableWrap.style = "overflow-x:auto;";
+  var table = document.createElement("table"); table.className = "res-table";
+  var thead = document.createElement("thead");
+  thead.innerHTML = '<tr><th>' + t("module") + '</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th style="color:#818cf8;">' + t("calculatedMoy") + '</th></tr>';
+  table.appendChild(thead);
+  
+  var tbody = document.createElement("tbody");
+  MODULES.forEach(function(mod) {
+    var k = mod.key;
+    var tr = document.createElement("tr");
+    var td0 = document.createElement("td"); td0.style = "font-weight:600;"; td0.textContent = mod.nom; tr.appendChild(td0);
+    
+    ["emd1", "emd2", "td", "tp"].forEach(function(sub) {
+      var fk = k + "_" + sub;
+      var v = et[fk];
+      var cell = document.createElement("td");
+      var inp = document.createElement("input");
+      inp.className = "calc-input"; inp.id = "edit_" + fk;
+      inp.value = (v !== null && v !== undefined) ? v : "";
+      inp.placeholder = "—"; inp.style = "padding:0.4rem 0.6rem;width:80px;";
+      inp.oninput = function() { updateMoyPreview(k, mod); };
+      cell.appendChild(inp); tr.appendChild(cell);
+    });
+    
+    var moyCell = document.createElement("td");
+    moyCell.id = "preview_moy_" + k;
+    moyCell.className = "mono";
+    moyCell.style = "font-weight:700;color:#818cf8;";
+    var mm = et[k + "_moy_module"] !== undefined ? et[k + "_moy_module"] : et["moy_" + k];
+    moyCell.textContent = (mm !== null && mm !== undefined) ? parseFloat(mm).toFixed(2) : "—";
+    tr.appendChild(moyCell);
+    tbody.appendChild(tr);
+  });
+  
+  table.appendChild(tbody); tableWrap.appendChild(table); inner.appendChild(tableWrap);
+  
+  var footer = document.createElement("div");
+  footer.style = "margin-top:1.25rem;display:flex;gap:0.75rem;justify-content:flex-end;";
+  var cancelBtn = document.createElement("button"); cancelBtn.className = "btn-ghost"; cancelBtn.textContent = t("cancel");
+  cancelBtn.onclick = function() { d.remove(); };
+  var saveBtn = document.createElement("button"); saveBtn.className = "btn-main";
+  saveBtn.style = "width:auto;padding:0.6rem 1.5rem;";
+  saveBtn.innerHTML = '<i class="ph-bold ph-floppy-disk"></i> ' + t("save");
+  saveBtn.onclick = function() { saveEditNotes(num, d); };
+  footer.appendChild(cancelBtn); footer.appendChild(saveBtn);
+  inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
+}
+
+function updateMoyPreview(key, mod) {
+  var getVal = function(sub) {
+    var el = document.getElementById("edit_" + key + "_" + sub);
+    if (!el || el.value.trim() === "") return null;
+    if (el.value.trim() === "Abs") return "Abs";
+    return parseFloat(el.value.replace(",", "."));
+  };
+  var e1 = getVal("emd1"), e2 = getVal("emd2"), td = getVal("td"), tp = getVal("tp");
+  var moy = calcMoyModule(e1, e2, td, tp);
+  var preview = document.getElementById("preview_moy_" + key);
+  if (preview) {
+    preview.textContent = moy !== null ? parseFloat(moy).toFixed(2) : "—";
+    preview.style.color = moy === null ? "var(--text-muted)" : moy < 5 ? "var(--danger)" : moy < 10 ? "var(--warning)" : "var(--success)";
+  }
+}
+
+function saveEditNotes(num, modal) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  if (!et) return;
+  
+  var fields = {};
+  var tempEt = Object.assign({}, et);
+  var hasChanges = false;
+  
+  MODULES.forEach(function(mod) {
+    var k = mod.key;
+    var modChanged = false;
+    
+    ["emd1", "emd2", "td", "tp"].forEach(function(sub) {
+      var fk = k + "_" + sub;
+      var el = document.getElementById("edit_" + fk);
+      if (!el) return;
+      var v = el.value.trim();
+      var val;
+      if (v === "") { val = et[fk]; }
+      else if (v === "Abs") { val = "Abs"; }
+      else { var n = parseFloat(v); val = isNaN(n) ? et[fk] : n; }
+      
+      var oldVal = et[fk];
+      if (String(val) !== String(oldVal)) {
+        fields[fk] = val;
+        hasChanges = true;
+        modChanged = true;
+      }
+      tempEt[fk] = val;
+    });
+    
+    if (modChanged) {
+      var e1 = tempEt[k + "_emd1"], e2 = tempEt[k + "_emd2"];
+      var emdVals = [];
+      if (e1 !== null && e1 !== undefined && e1 !== "Abs") emdVals.push(parseFloat(e1));
+      if (e2 !== null && e2 !== undefined && e2 !== "Abs") emdVals.push(parseFloat(e2));
+      var moyEmd = emdVals.length > 0 ? Math.round((emdVals.reduce(function(a, b) { return a + b; }, 0) / emdVals.length) * 10000) / 10000 : null;
+      fields[k + "_moy_emd"] = moyEmd;
+      tempEt[k + "_moy_emd"] = moyEmd;
+      
+      var moyMod = calcMoyModule(tempEt[k + "_emd1"], tempEt[k + "_emd2"], tempEt[k + "_td"], tempEt[k + "_tp"]);
+      fields["moy_" + k] = moyMod;
+      fields[k + "_moy_module"] = moyMod;
+      tempEt["moy_" + k] = moyMod;
+      tempEt[k + "_moy_module"] = moyMod;
+    }
+  });
+  
+  if (!hasChanges) {
+    if (modal) modal.remove();
+    showToast(t("noChanges"), "info");
+    return;
+  }
+  
+  var moyGen = calcMoyGenerale(tempEt);
+  fields["moyenne_generale"] = moyGen;
+  
+  fsPatch("etudiants", String(num), fields).then(function() {
+    for (var k in fields) et[k] = fields[k];
+    if (modal) modal.remove();
+    showToast(t("notesSaved"), "success");
+    renderAdminTable(adminData);
+  }).catch(function() { showToast(t("saveError"), "danger"); });
+}
+
+function viewNotes(num) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  if (!et) return;
+  
+  var d = document.createElement("div"); d.id = "viewNotesModal"; d.className = "modal-overlay";
+  var inner = document.createElement("div"); inner.className = "modal-box";
+  
+  var hdr = document.createElement("div");
+  hdr.style = "display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
+  hdr.innerHTML = '<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">' + et.nom + ' ' + et.prenom + ' — ' + t("notes") + '</div>';
+  var closeBtn = document.createElement("button"); closeBtn.className = "btn-ghost"; closeBtn.style = "padding:0.4rem 0.8rem;";
+  closeBtn.innerHTML = '<i class="ph-bold ph-x"></i>'; closeBtn.onclick = function() { d.remove(); };
+  hdr.appendChild(closeBtn); inner.appendChild(hdr);
+  
+  var tableWrap = document.createElement("div"); tableWrap.style = "overflow-x:auto;";
+  var table = document.createElement("table"); table.className = "res-table";
+  var thead = document.createElement("thead");
+  thead.innerHTML = '<tr><th>' + t("module") + '</th><th>' + t("coef") + '</th><th>EMD 1</th><th>EMD 2</th><th>TD</th><th>TP</th><th>' + t("moyModule") + '</th></tr>';
+  table.appendChild(thead);
+  
+  var tbody = document.createElement("tbody");
+  MODULES.forEach(function(mod) {
+    var k = mod.key;
+    var tr = document.createElement("tr");
+    var vals = [et[k + "_emd1"], et[k + "_emd2"], et[k + "_td"], et[k + "_tp"], et[k + "_moy_module"] !== undefined ? et[k + "_moy_module"] : et["moy_" + k]];
+    
+    var td0 = document.createElement("td"); td0.style = "font-weight:600;"; td0.textContent = mod.nom; tr.appendChild(td0);
+    var td1 = document.createElement("td"); td1.className = "mono"; td1.textContent = mod.coef; tr.appendChild(td1);
+    vals.forEach(function(v) {
+      var cell = document.createElement("td"); cell.className = "mono " + nc(v); cell.innerHTML = fn(v); tr.appendChild(cell);
+    });
+    tbody.appendChild(tr);
+  });
+  
+  table.appendChild(tbody); tableWrap.appendChild(table); inner.appendChild(tableWrap);
+  
+  var footer = document.createElement("div"); footer.style = "margin-top:1.25rem;display:flex;justify-content:flex-end;";
+  var closeBtn2 = document.createElement("button"); closeBtn2.className = "btn-ghost"; closeBtn2.textContent = t("close");
+  closeBtn2.onclick = function() { d.remove(); };
+  footer.appendChild(closeBtn2); inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
+}
+
+function suggestEdit(num) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  if (!et) return;
+  
+  var d = document.createElement("div"); d.id = "suggestModal"; d.className = "modal-overlay";
+  var inner = document.createElement("div"); inner.className = "modal-box";
+  
+  var hdr = document.createElement("div"); hdr.style = "display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;";
+  hdr.innerHTML = '<div style="font-weight:800;font-size:1.1rem;color:var(--text-main);">' + t("suggestTitle") + ' ' + et.nom + ' ' + et.prenom + '</div>';
+  var closeBtn = document.createElement("button"); closeBtn.className = "btn-ghost"; closeBtn.style = "padding:0.4rem 0.8rem;";
+  closeBtn.innerHTML = '<i class="ph-bold ph-x"></i>'; closeBtn.onclick = function() { d.remove(); };
+  hdr.appendChild(closeBtn); inner.appendChild(hdr);
+  
+  var modDiv = document.createElement("div"); modDiv.className = "mb-4"; modDiv.innerHTML = '<label class="field-label">' + t("concernedModule") + '</label>';
+  var modSel = document.createElement("select"); modSel.className = "glass-select"; modSel.id = "suggestModule";
+  modSel.innerHTML = '<option value="">' + t("choose") + '</option>';
+  MODULES.forEach(function(m) { var o = document.createElement("option"); o.value = m.nom; o.textContent = m.nom; modSel.appendChild(o); });
+  modDiv.appendChild(modSel); inner.appendChild(modDiv);
+  
+  var fieldDiv = document.createElement("div"); fieldDiv.className = "mb-4"; fieldDiv.innerHTML = '<label class="field-label">' + t("fieldToModify") + '</label>';
+  var fieldSel = document.createElement("select"); fieldSel.className = "glass-select"; fieldSel.id = "suggestField";
+  fieldSel.innerHTML = '<option value="emd1">EMD 1</option><option value="emd2">EMD 2</option><option value="td">TD</option><option value="tp">TP</option><option value="moy_module">' + t("moyModule") + '</option>';
+  fieldDiv.appendChild(fieldSel); inner.appendChild(fieldDiv);
+  
+  var valDiv = document.createElement("div"); valDiv.className = "mb-4"; valDiv.innerHTML = '<label class="field-label">' + t("suggestedValue") + '</label>';
+  var valInp = document.createElement("input"); valInp.type = "text"; valInp.className = "calc-input"; valInp.id = "suggestVal"; valInp.placeholder = t("suggestedValuePlaceholder");
+  valDiv.appendChild(valInp); inner.appendChild(valDiv);
+  
+  var reasonDiv = document.createElement("div"); reasonDiv.className = "mb-5"; reasonDiv.innerHTML = '<label class="field-label">' + t("justification") + '</label>';
+  var reasonTa = document.createElement("textarea"); reasonTa.className = "calc-input"; reasonTa.id = "suggestReason"; reasonTa.placeholder = t("justificationPlaceholder"); reasonTa.style = "min-height:70px;resize:vertical;";
+  reasonDiv.appendChild(reasonTa); inner.appendChild(reasonDiv);
+  
+  var footer = document.createElement("div"); footer.style = "display:flex;gap:0.75rem;justify-content:flex-end;";
+  var cancelBtn = document.createElement("button"); cancelBtn.className = "btn-ghost"; cancelBtn.textContent = t("cancel"); cancelBtn.onclick = function() { d.remove(); };
+  var sendBtn = document.createElement("button"); sendBtn.className = "btn-main"; sendBtn.style = "width:auto;padding:0.6rem 1.5rem;";
+  sendBtn.innerHTML = '<i class="ph-bold ph-paper-plane-right"></i> ' + t("send"); sendBtn.onclick = function() { sendSuggestion(num, d); };
+  footer.appendChild(cancelBtn); footer.appendChild(sendBtn); inner.appendChild(footer); d.appendChild(inner); document.body.appendChild(d);
+}
+
+function sendSuggestion(num, modal) {
+  var et = adminData.find(function(e) { return e.numero === num; });
+  var module = document.getElementById("suggestModule").value;
+  var field = document.getElementById("suggestField").value;
+  var val = document.getElementById("suggestVal").value.trim();
+  var reason = document.getElementById("suggestReason").value.trim();
+  
+  if (!module || !val) { showToast(t("fillAllFields"), "warning"); return; }
+  
+  var now = new Date().toLocaleString("fr-FR");
+  var msg = t("suggestModule") + module + " / " + field + " = " + val + (reason ? t("reason") + reason : "");
+  var deviceInfo = getDeviceShortString();
+  var deviceFull = getDeviceDisplayString();
+  
+  fsCreate("notifications", {
+    etudiant_nom: et.nom + " " + et.prenom,
+    etudiant_numero: et.numero,
+    module: module,
+    type: t("suggestion"),
+    message: msg,
+    date: now,
+    lu: false,
+    admin_only: false,
+    device_info: deviceInfo,
+    device_full: deviceFull
+  }).then(function() {
+    emailjs.init(EMAILJS_KEY);
+    return emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      etudiant_nom: et.nom + " " + et.prenom,
+      etudiant_numero: String(et.numero),
+      module: module,
+      type_signalement: t("suggestion"),
+      message: msg + " | " + t("device") + ": " + deviceFull,
+      date: now
+    });
+  }).then(function() {
+    if (modal) modal.remove();
+    showToast(t("suggestionSent"), "success");
+  }).catch(function() {
+    if (modal) modal.remove();
+    showToast(t("suggestionSaved"), "warning");
+  });
+}
+
+function filterAdmin() {
+  var q = document.getElementById("adminSearch").value.toLowerCase().trim();
+  if (!adminData.length) return;
+  var filtered = adminData.filter(function(et) {
+    var nomComplet = ((et.nom || "") + " " + (et.prenom || "")).toLowerCase();
+    return nomComplet.includes(q) ||
+           (et.nom || "").toLowerCase().includes(q) ||
+           (et.prenom || "").toLowerCase().includes(q) ||
+           String(et.numero).includes(q);
+  });
+  renderAdminTable(filtered);
+}
+
+function sortAdmin(key) {
+  if (adminSortKey === key) adminSortAsc = !adminSortAsc;
+  else { adminSortKey = key; adminSortAsc = true; }
+  adminData.sort(function(a, b) {
+    var av = a[key], bv = b[key];
+    if (av === null || av === undefined) av = -Infinity;
+    if (bv === null || bv === undefined) bv = -Infinity;
+    if (typeof av === "string") return adminSortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+    return adminSortAsc ? av - bv : bv - av;
+  });
+  renderAdminTable(adminData);
+}
 
 function switchTab(tab) {
   ["etudiants", "notifs", "comptes", "classement"].forEach(function(t) {
@@ -1592,7 +1859,6 @@ function updateBreadcrumb() {
   bc.innerHTML = p.join('');
 }
 
-// Language switching (unchanged)
 var langPill = document.getElementById("langPill");
 var langBtns = document.querySelectorAll(".lang-btn");
 
@@ -1632,7 +1898,6 @@ for (var _i = 0; _i < langBtns.length; _i++) {
   })(langBtns[_i]);
 }
 
-// Theme switching
 function initTheme() {
   var t = localStorage.getItem("theme") || "dark";
   document.documentElement.setAttribute("data-theme", t);
@@ -1645,7 +1910,6 @@ document.getElementById("themeBtn").addEventListener("click", function() {
   localStorage.setItem("theme", next);
 });
 
-// Sidebar toggle
 var sidebar = document.getElementById("sidebar");
 var overlay = document.getElementById("overlay");
 var menuBtn = document.getElementById("menuBtn");
@@ -1661,7 +1925,6 @@ window.closeMenu = function() {
   overlay.classList.add("hidden");
 };
 
-// Toast notifications
 window.showToast = function(msg, type) {
   type = type || "info";
   var colors = { success: "var(--success)", danger: "var(--danger)", warning: "var(--warning)", info: "#a5b4fc" };
@@ -1675,11 +1938,9 @@ window.showToast = function(msg, type) {
   setTimeout(function() { t.classList.remove("show"); setTimeout(function() { t.remove(); }, 400); }, 3500);
 };
 
-// Enter key for login
 document.getElementById("inputMdp").addEventListener("keydown", function(e) { if (e.key === "Enter") doLogin(); });
 document.getElementById("inputNom").addEventListener("keydown", function(e) { if (e.key === "Enter") doLogin(); });
 
-// Initialize
 initTheme();
 initLang();
 updateSidebarNav();
@@ -1687,4 +1948,4 @@ updateBreadcrumb();
 checkSession();
 </script>
 </body>
-</html>
+  </html>
