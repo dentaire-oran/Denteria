@@ -1,4 +1,21 @@
 <!DOCTYPE html>
+<!--
+=======================================================
+PROPOSITIONS MOTIVATION ÉTUDIANTS (non implémentées)
+=======================================================
+1. LEADERBOARD ANONYMISÉ : top 10/20 avec initiales
+2. OBJECTIF PERSONNEL : fixer un objectif de rang/moyenne
+3. BADGES DE PROGRESSION : amélioration entre sessions
+4. CLASSEMENT PAR GROUPE : rang dans le sous-groupe TD/TP
+5. COURBE DE PROGRESSION : évolution multi-sessions
+6. MODULE FAIBLE EN ÉVIDENCE : mise en rouge du plus faible
+=======================================================
+ACTION REQUISE SUPABASE :
+Ajouter colonne "peer_view" (type: text, nullable: true)
+dans la table "etudiants".
+Sans cette colonne, la sauvegarde des autorisations échoue.
+=======================================================
+-->
 <html lang="fr" data-theme="dark" dir="ltr">
 <head>
   <meta charset="UTF-8"/>
@@ -136,11 +153,15 @@
     .hidden { display:none !important; }
     .modal-overlay { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(4px); }
     .modal-box { background:var(--glass-bg); backdrop-filter:blur(20px); border:1px solid var(--glass-border); border-radius:24px; padding:1.75rem; width:100%; max-width:700px; max-height:90vh; overflow-y:auto; }
+    /* Progress bar */
     .progress-bar-wrap { width:100%; height:5px; background:rgba(255,255,255,0.1); border-radius:99px; margin-top:0.5rem; overflow:hidden; }
     .progress-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#818cf8,#c084fc,#f472b6); transition:width 1s cubic-bezier(0.4,0,0.2,1); }
     [data-theme="light"] .progress-bar-wrap { background:rgba(0,0,0,0.08); }
+    /* Motivational banner */
     .motiv-banner { border-radius:14px; padding:0.65rem 1rem; font-size:0.83rem; font-weight:600; display:flex; align-items:center; gap:0.6rem; margin-bottom:1.5rem; }
+    /* Peer chip */
     .peer-chip { display:inline-flex; align-items:center; gap:0.5rem; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:99px; padding:0.3rem 0.75rem; font-size:0.82rem; margin:0.2rem; }
+    /* Toggle switch */
     .toggle-wrap { display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1rem; border-radius:12px; cursor:pointer; border:1px solid var(--glass-border); background:var(--glass-bg); transition:all 0.2s; user-select:none; }
     .toggle-wrap:hover { border-color:#818cf8; }
     .toggle-wrap.active-all { border-color:rgba(255,201,74,0.5); background:rgba(255,201,74,0.08); }
@@ -213,11 +234,6 @@
       </div>
       <div class="flex flex-col items-end gap-3">
         <div id="studentBadge"></div>
-        <div id="studentAllAccessBtn" class="hidden">
-          <button id="btnAdminLite" class="btn-main" style="width:auto;padding:0.6rem 1.2rem;" onclick="openAdminLite()">
-            <i class="ph-bold ph-eye"></i> <span data-i18n="seeAllLabel">Voir tous les résultats</span>
-          </button>
-        </div>
         <button class="btn-ghost" onclick="showView('account')">
           <i class="ph-bold ph-user-circle"></i> <span data-i18n="myAccount">Mon Compte</span>
         </button>
@@ -344,7 +360,6 @@
     <button class="tab" id="tabNotifs" onclick="switchTab('notifs')"><i class="ph-bold ph-bell"></i> <span data-i18n="reports">Signalements</span> <span class="notif-badge hidden" id="notifCount">0</span></button>
     <button class="tab" id="tabComptes" onclick="switchTab('comptes')"><i class="ph-bold ph-key"></i> <span data-i18n="accounts">Comptes</span></button>
     <button class="tab" id="tabClassement" onclick="switchTab('classement')"><i class="ph-bold ph-trophy"></i> <span data-i18n="moduleRanking">Classement par module</span></button>
-    <button class="tab" id="tabParams" onclick="switchTab('params')"><i class="ph-bold ph-gear"></i> <span>Paramètres</span></button>
   </div>
   <div id="panelEtudiants">
     <div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;">
@@ -381,30 +396,6 @@
     </div>
     <div class="glass rounded-3xl overflow-hidden"><div style="overflow-x:auto;" id="moduleRankingTable"></div></div>
   </div>
-  <div id="panelParams" class="hidden">
-    <div class="glass rounded-3xl p-6 mb-4">
-      <h3 class="font-bold text-lg mb-4">Identifiants Admin</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="mb-3">
-          <label class="field-label">Identifiant Admin principal</label>
-          <input type="text" class="calc-input" id="adminIdInput" placeholder="admin">
-        </div>
-        <div class="mb-3">
-          <label class="field-label">Nouveau mot de passe Admin (laisser vide pour ne pas changer)</label>
-          <input type="password" class="calc-input" id="adminPwInput" placeholder="Nouveau mot de passe">
-        </div>
-        <div class="mb-3">
-          <label class="field-label">Identifiant Admin Lite</label>
-          <input type="text" class="calc-input" id="adminLiteIdInput" placeholder="user">
-        </div>
-        <div class="mb-3">
-          <label class="field-label">Nouveau mot de passe Admin Lite (laisser vide pour ne pas changer)</label>
-          <input type="password" class="calc-input" id="adminLitePwInput" placeholder="Nouveau mot de passe">
-        </div>
-      </div>
-      <button class="btn-main" id="saveAdminSettingsBtn" onclick="saveAdminSettings()"><i class="ph-bold ph-floppy-disk"></i> Sauvegarder</button>
-    </div>
-  </div>
 </div>
 
 <a href="mailto:dentaireoranmoy@gmail.com" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 group w-max max-w-[90vw]">
@@ -421,7 +412,6 @@ var EMAILJS_SERVICE  = "service_5sgcx6a";
 var EMAILJS_TEMPLATE = "template_74cg8ho";
 var EMAILJS_KEY      = "lxg6X0FF2kADJ5DYR";
 
-// Valeurs par défaut (seront écrasées par admin_settings si la table existe)
 var ADMIN_ID       = "admin";
 var ADMIN_MDP_HASH = "2e3c969e2e9b367ade00279743f88ea0e32f283152223e3d9aaf1c14669d7cbe";
 var ADMIN_LITE_ID       = "user";
@@ -506,13 +496,11 @@ var TRANSLATIONS = {
     peerRemoved:"Étudiant retiré.", searchStudent:"Rechercher un étudiant",
     authorizedPeers:"Étudiants autorisés", peerSaved:"Autorisations mises à jour !",
     comparisonWith:"Comparaison avec", topPercent:"Top",
-    seeAllLabel:"Voir tous les résultats",
-    seeAllDesc:"Cet étudiant pourra cliquer sur ce bouton pour voir les résultats de tous les étudiants.",
+    seeAllLabel:"Accès Admin Lite — voir tous les étudiants",
+    seeAllDesc:"Cet étudiant pourra se connecter à l'interface Admin Lite et consulter les notes de tous les étudiants.",
     accessAll:"TOUT", accessNone:"—", accessCount:"voit",
     peerColumnHint:"Étudiants que cet étudiant peut voir",
-    peerViewColMissing:"⚠️ Créez la colonne 'peer_view' (text) dans Supabase !",
-    deleteConfirm:"Supprimer cette notification ?",
-    deletedNotif:"Notification supprimée"
+    peerViewColMissing:"⚠️ Créez la colonne 'peer_view' (text) dans Supabase !"
   },
   en: {
     results:"Results", year3Subtitle:"3rd Year — Dental Guide Oran",
@@ -568,13 +556,11 @@ var TRANSLATIONS = {
     peerRemoved:"Student removed.", searchStudent:"Search a student",
     authorizedPeers:"Authorized students", peerSaved:"Authorizations updated!",
     comparisonWith:"Comparison with", topPercent:"Top",
-    seeAllLabel:"See all results",
-    seeAllDesc:"This student can click this button to view all students' results.",
+    seeAllLabel:"Admin Lite Access — see all students",
+    seeAllDesc:"This student will be able to log into Admin Lite and view all students' grades.",
     accessAll:"ALL", accessNone:"—", accessCount:"sees",
     peerColumnHint:"Students this student can view",
-    peerViewColMissing:"⚠️ Create the 'peer_view' column (text) in Supabase!",
-    deleteConfirm:"Delete this notification?",
-    deletedNotif:"Notification deleted"
+    peerViewColMissing:"⚠️ Create the 'peer_view' column (text) in Supabase!"
   },
   ar: {
     results:"النتائج", year3Subtitle:"السنة الثالثة — دليل طب الأسنان وهران",
@@ -630,13 +616,11 @@ var TRANSLATIONS = {
     peerRemoved:"تمت الإزالة.", searchStudent:"البحث عن طالب",
     authorizedPeers:"الطلاب المُصرَّح بهم", peerSaved:"تم تحديث الصلاحيات!",
     comparisonWith:"مقارنة مع", topPercent:"أفضل",
-    seeAllLabel:"رؤية جميع النتائج",
-    seeAllDesc:"يمكن لهذا الطالب النقر على هذا الزر لرؤية نتائج جميع الطلاب.",
+    seeAllLabel:"وصول مشرف محدود — رؤية جميع الطلاب",
+    seeAllDesc:"سيتمكن هذا الطالب من تسجيل الدخول إلى واجهة المشرف المحدود ورؤية نقاط جميع الطلاب.",
     accessAll:"الكل", accessNone:"—", accessCount:"يرى",
     peerColumnHint:"الطلاب الذين يمكن لهذا الطالب رؤيتهم",
-    peerViewColMissing:"⚠️ أضف العمود 'peer_view' (نوع text) في Supabase!",
-    deleteConfirm:"حذف هذا الإشعار؟",
-    deletedNotif:"تم حذف الإشعار"
+    peerViewColMissing:"⚠️ أضف العمود 'peer_view' (نوع text) في Supabase!"
   }
 };
 
@@ -694,34 +678,65 @@ function getDeviceType() {
 function getDeviceModel() {
   var ua = navigator.userAgent;
   if (/iPhone/i.test(ua)) {
-    var w = window.screen.width, h = window.screen.height;
+    var w = window.screen.width, h = window.screen.height, dpr = window.devicePixelRatio || 1;
     if ((w===430&&h===932)||(w===932&&h===430)) return "iPhone 16/15/14 Pro Max";
     if ((w===393&&h===852)||(w===852&&h===393)) return "iPhone 16/15/14 Pro";
+    if ((w===390&&h===844)||(w===844&&h===390)) return "iPhone 14/15/16/13 Pro";
+    if ((w===375&&h===812)||(w===812&&h===375)) return "iPhone 11 Pro/XS";
+    if ((w===375&&h===667)||(w===667&&h===375)) return "iPhone SE/8/7";
     return "iPhone";
   }
   if (/Android/i.test(ua)) {
+    var patterns = [
+      {p:/SM-S938|S25 Ultra/i,n:"Samsung Galaxy S25 Ultra"},{p:/SM-S931/i,n:"Samsung Galaxy S25"},
+      {p:/SM-S928|S24 Ultra/i,n:"Samsung Galaxy S24 Ultra"},{p:/SM-S921/i,n:"Samsung Galaxy S24"},
+      {p:/SM-S918|S23 Ultra/i,n:"Samsung Galaxy S23 Ultra"},{p:/SM-S911/i,n:"Samsung Galaxy S23"},
+      {p:/SM-F956|Z Fold6/i,n:"Samsung Z Fold 6"},{p:/SM-F741|Z Flip6/i,n:"Samsung Z Flip 6"},
+      {p:/SM-A556|A55/i,n:"Samsung Galaxy A55"},{p:/SM-A546|A54/i,n:"Samsung Galaxy A54"},
+    ];
+    for (var i=0;i<patterns.length;i++) if (patterns[i].p.test(ua)) return patterns[i].n;
+    var gs = ua.match(/SM-([A-Z][0-9]{3,4}[A-Z]?)/i);
+    if (gs) return "Samsung Galaxy (SM-"+gs[1]+")";
+    if (/Pixel/i.test(ua)) { var pm=ua.match(/Pixel\s?([0-9]+[a-zA-Z\s]*)/i); return pm?"Google Pixel "+pm[1].trim():"Google Pixel"; }
+    var ad = ua.match(/Android\s[0-9.]+;\s?([^;)]+?)\s?(?:Build|;|\))/i);
+    if (ad&&ad[1]&&ad[1].length>2&&ad[1].length<40) return ad[1].trim();
     return "Android Device";
   }
-  return "Desktop";
+  if (/Windows NT/i.test(ua)) return "Windows PC";
+  if (/Macintosh/i.test(ua)) return "Mac";
+  if (/Linux/i.test(ua)) return "Linux PC";
+  return "Unknown Device";
 }
 
 function getBrowserInfo() {
   var ua = navigator.userAgent;
-  if (/Edg\//i.test(ua)) return "Edge";
-  if (/Chrome\//i.test(ua)&&!/Edg/i.test(ua)) return "Chrome";
-  if (/Firefox/i.test(ua)) return "Firefox";
-  if (/Safari/i.test(ua)&&!/Chrome/i.test(ua)) return "Safari";
+  if (/Edg\//i.test(ua)) { var v=ua.match(/Edg\/([0-9]+)/); return "Edge "+(v?v[1]:""); }
+  if (/Chrome\//i.test(ua)&&!/Edg/i.test(ua)) { var v=ua.match(/Chrome\/([0-9]+)/); return "Chrome "+(v?v[1]:""); }
+  if (/Firefox/i.test(ua)) { var v=ua.match(/Firefox\/([0-9]+)/); return "Firefox "+(v?v[1]:""); }
+  if (/Safari/i.test(ua)&&!/Chrome/i.test(ua)) { var v=ua.match(/Version\/([0-9]+)/); return "Safari "+(v?v[1]:""); }
+  if (/SamsungBrowser/i.test(ua)) { var v=ua.match(/SamsungBrowser\/([0-9]+)/); return "Samsung Internet "+(v?v[1]:""); }
   return "Browser";
 }
 
 function getOSInfo() {
   var ua = navigator.userAgent;
-  if (/iPhone OS/i.test(ua)) return "iOS";
-  if (/Android/i.test(ua)) return "Android";
-  if (/Windows NT/i.test(ua)) return "Windows";
-  if (/Mac OS X/i.test(ua)) return "macOS";
+  var iOS = ua.match(/iPhone OS ([0-9_]+)|iPad.*OS ([0-9_]+)/i);
+  if (iOS) return "iOS "+(iOS[1]||iOS[2]).replace(/_/g,".");
+  var android = ua.match(/Android ([0-9.]+)/);
+  if (android) return "Android "+android[1];
+  var windows = ua.match(/Windows NT ([0-9.]+)/);
+  if (windows) return "Windows "+( {"10.0":"10/11","6.3":"8.1","6.1":"7"}[windows[1]]||windows[1] );
+  var macOS = ua.match(/Mac OS X ([0-9_]+)/);
+  if (macOS) return "macOS "+macOS[1].replace(/_/g,".");
   return "Unknown OS";
 }
+
+function getDeviceDisplayString() {
+  var t2 = getDeviceType(), m = getDeviceModel(), b = getBrowserInfo(), o = getOSInfo();
+  var icon = t2==="mobile"?"📱":t2==="tablet"?"📲":"💻";
+  return icon+" "+m+" ("+o+", "+b+")";
+}
+function getDeviceShortString() { return getDeviceType()+": "+getDeviceModel(); }
 
 async function sha256(msg) {
   var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(msg));
@@ -756,6 +771,7 @@ var SB_HEADERS = {
   "Prefer": "return=representation"
 };
 
+// Fixed fsPatch — properly throws on HTTP error so saves don't silently fail
 function fsGet(col, id) {
   return fetch(SUPABASE_URL+"/rest/v1/"+col+"?numero=eq."+id+"&limit=1", {headers:SB_HEADERS})
     .then(function(r){return r.json();})
@@ -781,6 +797,7 @@ function fsPatch(col, id, fields) {
   return fetch(SUPABASE_URL+"/rest/v1/"+col+"?numero=eq."+id, {
     method:"PATCH", headers:SB_HEADERS, body:JSON.stringify(fields)
   }).then(function(r) {
+    // Properly detect errors — HTTP 4xx/5xx
     if (!r.ok) {
       return r.json().then(function(err) {
         throw new Error((err&&err.message)||("HTTP "+r.status));
@@ -803,38 +820,9 @@ function t(key) {
   return TRANSLATIONS[currentLang]&&TRANSLATIONS[currentLang][key] ? TRANSLATIONS[currentLang][key] : key;
 }
 
+// Check if student has admin lite access (peer_view === "ALL")
 function studentHasAllAccess(et) {
   return et && et.peer_view === "ALL";
-}
-
-// Chargement des paramètres admin depuis la table admin_settings
-async function loadAdminSettings() {
-  try {
-    var res = await fetch(SUPABASE_URL+'/rest/v1/admin_settings?select=key,value', {headers:SB_HEADERS});
-    if (!res.ok) return;
-    var rows = await res.json();
-    if (!Array.isArray(rows)) return;
-    rows.forEach(function(s) {
-      if (s.key === 'admin_id') ADMIN_ID = s.value;
-      else if (s.key === 'admin_mdp') ADMIN_MDP_HASH = s.value;
-      else if (s.key === 'admin_lite_id') ADMIN_LITE_ID = s.value;
-      else if (s.key === 'admin_lite_mdp') ADMIN_LITE_MDP_HASH = s.value;
-    });
-  } catch(e) {
-    // Table absente, on garde les valeurs par défaut
-  }
-}
-
-// Upsert dans admin_settings
-function fsCreateOrUpdateSetting(key, value) {
-  return fetch(SUPABASE_URL+'/rest/v1/admin_settings', {method:'POST', headers:SB_HEADERS, body:JSON.stringify({key,value})})
-    .then(function(r) {
-      if (r.ok) return r.json();
-      if (r.status === 409) {
-        return fetch(SUPABASE_URL+'/rest/v1/admin_settings?key=eq.'+key, {method:'PATCH', headers:SB_HEADERS, body:JSON.stringify({value})});
-      }
-      throw new Error('Erreur');
-    });
 }
 
 function checkSession() {
@@ -844,14 +832,23 @@ function checkSession() {
     isAdmin=true; isAdminLite=false; showView("admin"); loadAdmin(); return;
   }
   if (s === "ADMINLITE") {
-    isAdmin=true; isAdminLite=true; showView("admin"); loadAdmin(); return;
+    isAdmin=true; isAdminLite=true; showView("admin"); loadAdmin();
+    logConnection("Admin Lite","N/A",t("pageRefresh")); return;
   }
   var num = parseInt(s);
   if (!num) return;
   fsGet("etudiants", String(num)).then(function(et) {
     if (!et) { clearSession(); return; }
     currentStudent = et;
-    showView("student"); renderStudent(et);
+    if (studentHasAllAccess(et)) {
+      // Student with "voir tout" → Admin Lite
+      isAdmin=true; isAdminLite=true;
+      showView("admin"); loadAdmin();
+      logConnection(et.nom+" "+et.prenom, et.numero, t("pageRefresh")+" (Admin Lite)");
+    } else {
+      showView("student"); renderStudent(et);
+      logConnection(et.nom+" "+et.prenom, et.numero, t("pageRefresh"));
+    }
   }).catch(function(){clearSession();});
 }
 
@@ -865,7 +862,8 @@ async function doLogin() {
     saveSession("ADMIN"); isAdmin=true; isAdminLite=false; showView("admin"); loadAdmin(); return;
   }
   if (id===ADMIN_LITE_ID&&inputHash===ADMIN_LITE_MDP_HASH) {
-    saveSession("ADMINLITE"); isAdmin=true; isAdminLite=true; showView("admin"); loadAdmin(); return;
+    saveSession("ADMINLITE"); isAdmin=true; isAdminLite=true; showView("admin"); loadAdmin();
+    logConnection("Admin Lite","N/A",t("adminLiteLogin")); return;
   }
 
   setLoginLoading(true); hideLoginError();
@@ -873,19 +871,35 @@ async function doLogin() {
     setLoginLoading(false);
     if (!et) { showLoginError(t("invalidCredentials")); return; }
     currentStudent = et; saveSession(et.numero);
-    showView("student"); renderStudent(et);
+    if (studentHasAllAccess(et)) {
+      // Student authorized to see all → Admin Lite view
+      isAdmin=true; isAdminLite=true;
+      showView("admin"); loadAdmin();
+      logConnection(et.nom+" "+et.prenom, et.numero, t("studentLogin")+" → Admin Lite");
+    } else {
+      showView("student"); renderStudent(et);
+      logConnection(et.nom+" "+et.prenom, et.numero, t("studentLogin"));
+    }
   }).catch(function(){setLoginLoading(false); showLoginError(t("connectionError"));});
 }
 
 function logConnection(nom, numero, type) {
   var now = new Date().toLocaleString("fr-FR");
-  var deviceInfo = getDeviceType()+": "+getDeviceModel();
-  var deviceFull = getDeviceType()+" | "+getDeviceModel()+" | "+getBrowserInfo()+" | "+getOSInfo();
+  var isAL = type.indexOf("Admin Lite")!==-1;
+  var deviceInfo = getDeviceShortString(), deviceFull = getDeviceDisplayString();
   fsCreate("notifications",{
     etudiant_nom:nom, etudiant_numero:String(numero),
     module:t("system"), type:t("connection"), message:type,
-    date:now, lu:false, admin_only:(type.indexOf("Admin Lite")!==-1||type.indexOf("admin")!==-1), device_info:deviceInfo, device_full:deviceFull
+    date:now, lu:false, admin_only:isAL, device_info:deviceInfo, device_full:deviceFull
   });
+  if (isAL) {
+    emailjs.init(EMAILJS_KEY);
+    emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      etudiant_nom:nom, etudiant_numero:String(numero),
+      module:t("system"), type_signalement:type,
+      message:type+" — "+now+" | "+t("device")+": "+deviceFull, date:now
+    });
+  }
 }
 
 function findEtudiant(id, mdp) {
@@ -912,7 +926,7 @@ function hideLoginError() { document.getElementById("loginError").classList.remo
 
 function renderStudent(et) {
   document.getElementById("studentName").textContent = et.nom+" "+et.prenom;
-  document.getElementById("studentMeta").textContent = "N° "+et.numero+" | 3ème "+t("year");
+  document.getElementById("studentMeta").textContent = "N° "+et.numero+" | 3"+(currentLang==="ar"?"":"ème")+" "+t("year");
 
   var moy = et.moyenne_generale;
   var moyNum = moy ? parseFloat(moy) : null;
@@ -939,7 +953,11 @@ function renderStudent(et) {
   if (motivDiv && moyNum !== null) {
     var msgs = MOTIV_MSGS[currentLang]||MOTIV_MSGS.fr;
     var msg = moyNum>=16?msgs.ex:moyNum>=14?msgs.gr:moyNum>=12?msgs.gd:moyNum>=10?msgs.ok:moyNum>=8?msgs.ef:msgs.lo;
+    var bgColor = moyNum>=12?"rgba(42,212,165,0.08)":moyNum>=10?"rgba(255,201,74,0.08)":"rgba(255,100,124,0.08)";
+    var bColor  = moyNum>=12?"rgba(42,212,165,0.25)":moyNum>=10?"rgba(255,201,74,0.25)":"rgba(255,100,124,0.25)";
+    var tColor  = moyNum>=12?"var(--success)":moyNum>=10?"var(--warning)":"var(--danger)";
     motivDiv.className = "motiv-banner";
+    motivDiv.style.cssText = "background:"+bgColor+";border:1px solid "+bColor+";color:"+tColor+";";
     motivDiv.innerHTML = '<i class="ph-fill ph-shooting-star" style="font-size:1.1rem;flex-shrink:0;"></i><span>'+msg+'</span>';
     motivDiv.classList.remove("hidden");
   } else if (motivDiv) { motivDiv.classList.add("hidden"); }
@@ -952,14 +970,6 @@ function renderStudent(et) {
     badge.innerHTML = '<span class="badge badge-warning"><i class="ph-fill ph-warning"></i> '+t("catchup")+'</span>';
   else
     badge.innerHTML = '<span class="badge badge-danger"><i class="ph-fill ph-x-circle"></i> '+(res||"—")+'</span>';
-
-  // Bouton Admin Lite
-  var btnContainer = document.getElementById("studentAllAccessBtn");
-  if (studentHasAllAccess(et)) {
-    btnContainer.classList.remove("hidden");
-  } else {
-    btnContainer.classList.add("hidden");
-  }
 
   var tbody = document.getElementById("modulesBody");
   tbody.innerHTML = "";
@@ -987,14 +997,6 @@ function renderStudent(et) {
   initPeerComparison(et);
 }
 
-function openAdminLite() {
-  if (!currentStudent || !studentHasAllAccess(currentStudent)) return;
-  isAdmin = true;
-  isAdminLite = true;
-  showView("admin");
-  loadAdmin();
-}
-
 function fn(v) {
   if (v===null||v===undefined) return '<span class="note-abs">—</span>';
   if (v==="Abs") return '<span class="note-abs">Abs</span>';
@@ -1007,8 +1009,10 @@ function nc(v) {
   return n<5?"note-bad":n<10?"note-mid":"note-good";
 }
 
-// PEER COMPARISON
+// ===== PEER COMPARISON — STUDENT SIDE =====
+
 function initPeerComparison(et) {
+  // If "ALL" → student goes to admin lite, not here. But just in case:
   if (studentHasAllAccess(et)) {
     document.getElementById("peerComparisonSection").classList.add("hidden");
     return;
@@ -1030,6 +1034,7 @@ function initPeerComparison(et) {
   tableEl.innerHTML = "";
   selEl.innerHTML = '<option value="">'+t("selectPeerPrompt")+'</option>';
 
+  // Batch fetch peer names for the dropdown labels
   fetch(SUPABASE_URL+"/rest/v1/etudiants?numero=in.("+peers.join(",")+")&select=numero,nom,prenom", {headers:SB_HEADERS})
     .then(function(r){return r.json();})
     .then(function(peerData) {
@@ -1069,6 +1074,7 @@ function renderPeerComparisonTable(peer, container) {
   var peerRank = parseInt(peer.classement)||null;
 
   var html = '';
+  // Summary bar
   html += '<div class="glass rounded-2xl p-4 mb-3" style="display:flex;gap:1.25rem;flex-wrap:wrap;align-items:center;justify-content:space-between;">';
   html += '<div style="font-weight:700;">'+t("comparisonWith")+' : '+peer.nom+' '+peer.prenom+' <span style="color:var(--text-muted);font-size:0.82rem;">N°'+peer.numero+'</span></div>';
   html += '<div style="display:flex;gap:1.5rem;">';
@@ -1115,7 +1121,209 @@ function renderPeerComparisonTable(peer, container) {
   container.innerHTML = html;
 }
 
-// ADMIN FUNCTIONS
+// ===== PEER MANAGEMENT — ADMIN SIDE =====
+
+function openManagePeers(num) {
+  var et = adminData.find(function(e){return e.numero===num;});
+  if (!et) return;
+
+  var isAll = (et.peer_view === "ALL");
+  var currentPeers = [];
+  if (!isAll) {
+    try { currentPeers = JSON.parse(et.peer_view||"[]"); } catch(e) { currentPeers=[]; }
+    if (!Array.isArray(currentPeers)) currentPeers=[];
+  }
+  window._editingPeers = { num:num, peers:currentPeers.map(Number), isAll:isAll };
+
+  var d = document.createElement("div");
+  d.id = "peersModal"; d.className = "modal-overlay";
+  var inner = document.createElement("div"); inner.className = "modal-box";
+
+  // Header
+  inner.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">'+
+    '<div><div style="font-weight:800;font-size:1.1rem;">'+t("managePeers")+'</div>'+
+    '<div style="font-size:0.85rem;color:var(--text-muted);">'+et.nom+' '+et.prenom+' — N°'+num+'</div></div>'+
+    '<button class="btn-ghost" style="padding:0.4rem 0.8rem;" onclick="document.getElementById(\'peersModal\').remove()"><i class="ph-bold ph-x"></i></button>'+
+    '</div>'+
+    // ALL access toggle
+    '<div style="margin-bottom:1rem;">'+
+    '<div class="toggle-wrap '+(isAll?"active-all":"")+'" id="allAccessWrap" onclick="toggleAllAccess()">'+
+    '<div class="toggle-knob-track '+(isAll?"on":"")+'" id="allAccessTrack"><div class="toggle-knob"></div></div>'+
+    '<div>'+
+    '<div style="font-weight:700;font-size:0.88rem;">'+(isAll?'⭐ ':'')+t("seeAllLabel")+'</div>'+
+    '<div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;" id="allAccessSubtext">'+(isAll?t("seeAllDesc"):"")+'</div>'+
+    '</div></div></div>'+
+    // Specific peers section
+    '<div id="peerSpecificSection" class="'+(isAll?"hidden":"")+'">'+
+    '<div style="margin-bottom:0.5rem;font-size:0.8rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">'+t("authorizedPeers")+'</div>'+
+    '<div id="peerChipsArea" style="min-height:40px;display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem;"></div>'+
+    '<div style="margin-bottom:0.5rem;"><label class="field-label">'+t("searchStudent")+'</label>'+
+    '<input type="text" class="calc-input" id="peerSearchInput" placeholder="Nom ou N°..." oninput="searchPeersToAdd('+num+')"></div>'+
+    '<div id="peerSearchResults" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;min-height:32px;"></div>'+
+    '</div>'+
+    '<div style="display:flex;gap:0.75rem;justify-content:flex-end;">'+
+    '<button class="btn-ghost" onclick="document.getElementById(\'peersModal\').remove()">'+t("cancel")+'</button>'+
+    '<button class="btn-main" style="width:auto;padding:0.6rem 1.5rem;" onclick="savePeerView()"><i class="ph-bold ph-floppy-disk"></i> '+t("saveChanges")+'</button>'+
+    '</div>';
+
+  d.appendChild(inner); document.body.appendChild(d);
+  renderPeerChips();
+}
+
+function toggleAllAccess() {
+  window._editingPeers.isAll = !window._editingPeers.isAll;
+  var isAll = window._editingPeers.isAll;
+  var wrap  = document.getElementById("allAccessWrap");
+  var track = document.getElementById("allAccessTrack");
+  var sub   = document.getElementById("allAccessSubtext");
+  var spec  = document.getElementById("peerSpecificSection");
+  if (wrap)  wrap.classList.toggle("active-all", isAll);
+  if (track) track.classList.toggle("on", isAll);
+  if (sub)   sub.textContent = isAll ? t("seeAllDesc") : "";
+  if (spec)  spec.classList.toggle("hidden", isAll);
+}
+
+function renderPeerChips() {
+  var el = document.getElementById("peerChipsArea");
+  if (!el) return;
+  var peers = window._editingPeers.peers;
+  if (!peers.length) {
+    el.innerHTML = '<span style="font-size:0.82rem;color:var(--text-muted);font-style:italic;">'+t("noPeers")+'</span>';
+    return;
+  }
+  el.innerHTML = "";
+  peers.forEach(function(pNum) {
+    var peer = adminData.find(function(e){return Number(e.numero)===Number(pNum);});
+    var name = peer ? peer.nom+" "+peer.prenom+" (N°"+pNum+")" : "N°"+pNum;
+    var chip = document.createElement("div"); chip.className = "peer-chip";
+    chip.innerHTML = '<span style="font-size:0.82rem;">'+name+'</span>'+
+      '<button onclick="removePeerChip('+pNum+')" style="background:none;border:none;cursor:pointer;color:var(--danger);padding:0 2px;"><i class="ph-bold ph-x" style="font-size:0.75rem;"></i></button>';
+    el.appendChild(chip);
+  });
+}
+
+function searchPeersToAdd(excludeNum) {
+  var q = document.getElementById("peerSearchInput").value.toLowerCase().trim();
+  var el = document.getElementById("peerSearchResults");
+  if (!el) return;
+  if (!q) { el.innerHTML=""; return; }
+  var peers = window._editingPeers.peers;
+  var results = adminData.filter(function(et) {
+    if (Number(et.numero)===Number(excludeNum)) return false;
+    if (peers.indexOf(Number(et.numero))!==-1) return false;
+    return (et.nom+" "+et.prenom).toLowerCase().includes(q)||String(et.numero).includes(q);
+  }).slice(0,8);
+  el.innerHTML = "";
+  if (!results.length) { el.innerHTML='<span style="font-size:0.82rem;color:var(--text-muted);">'+t("noResults")+'</span>'; return; }
+  results.forEach(function(et) {
+    var btn = document.createElement("button"); btn.className = "btn-sm btn-info-sm";
+    btn.innerHTML = '<i class="ph-bold ph-plus"></i> '+et.nom+' '+et.prenom+' <span style="opacity:0.6;">N°'+et.numero+'</span>';
+    btn.onclick = function() {
+      window._editingPeers.peers.push(Number(et.numero));
+      document.getElementById("peerSearchInput").value = "";
+      document.getElementById("peerSearchResults").innerHTML = "";
+      renderPeerChips(); showToast(t("peerAdded"),"success");
+    };
+    el.appendChild(btn);
+  });
+}
+
+function removePeerChip(pNum) {
+  var idx = window._editingPeers.peers.indexOf(Number(pNum));
+  if (idx!==-1) window._editingPeers.peers.splice(idx,1);
+  renderPeerChips();
+}
+
+function savePeerView() {
+  var num   = window._editingPeers.num;
+  var peers = window._editingPeers.peers;
+  var isAll = window._editingPeers.isAll;
+  var val   = isAll ? "ALL" : (peers.length>0 ? JSON.stringify(peers) : null);
+
+  fsPatch("etudiants", String(num), {peer_view:val}).then(function() {
+    var et = adminData.find(function(e){return e.numero===num;});
+    if (et) et.peer_view = val;
+    showToast(t("peerSaved"),"success");
+    renderAdminTable(adminData); // refresh to update access column
+    var modal = document.getElementById("peersModal");
+    if (modal) modal.remove();
+  }).catch(function(err) {
+    var msg = String(err&&err.message ? err.message : err);
+    // Give a helpful message if the column doesn't exist yet
+    if (msg.indexOf("does not exist")!==-1||msg.indexOf("column")!==-1||msg.indexOf("204")!==-1||msg.indexOf("PGRST")!==-1) {
+      showToast(t("peerViewColMissing"),"danger");
+    } else {
+      showToast(t("saveError")+" ("+msg.slice(0,60)+")","danger");
+    }
+  });
+}
+
+// ===== ACCOUNT =====
+
+function showAccount() {
+  if (!currentStudent) return;
+  document.getElementById("accountSubtitle").textContent = currentStudent.nom+" "+currentStudent.prenom+" — N° "+currentStudent.numero;
+  document.getElementById("newIdentifiant").value = currentStudent.custom_id||(currentStudent.nom+" "+currentStudent.prenom);
+  document.getElementById("newMdp").value = "";
+  document.getElementById("confirmMdp").value = "";
+  showView("account");
+}
+
+function saveAccount() {
+  var newId  = document.getElementById("newIdentifiant").value.trim();
+  var newMdp = document.getElementById("newMdp").value.trim();
+  var conf   = document.getElementById("confirmMdp").value.trim();
+  if (!newId) { showToast(t("identifierEmpty"),"danger"); return; }
+  if (newMdp&&newMdp!==conf) { showToast(t("passwordMismatch"),"danger"); return; }
+  var btn = document.getElementById("saveAccountBtn");
+  btn.innerHTML='<div class="spinner"></div> '+t("saving"); btn.disabled=true;
+  var fields={custom_id:newId};
+  if (newMdp) fields.custom_mdp=newMdp;
+  var changes="Identifiant: "+newId+(newMdp?" | Mot de passe modifie":"");
+  var now=new Date().toLocaleString("fr-FR");
+  var deviceInfo=getDeviceShortString(), deviceFull=getDeviceDisplayString();
+  fsPatch("etudiants",String(currentStudent.numero),fields).then(function(){
+    currentStudent.custom_id=newId; if(newMdp) currentStudent.custom_mdp=newMdp;
+    return fsCreate("notifications",{etudiant_nom:currentStudent.nom+" "+currentStudent.prenom,etudiant_numero:currentStudent.numero,module:"—",type:t("accountModification"),message:changes,date:now,lu:false,admin_only:true,device_info:deviceInfo,device_full:deviceFull});
+  }).then(function(){
+    emailjs.init(EMAILJS_KEY);
+    return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{etudiant_nom:currentStudent.nom+" "+currentStudent.prenom,etudiant_numero:String(currentStudent.numero),module:t("myAccount"),type_signalement:t("accountModification"),message:changes+" | "+t("device")+": "+deviceFull,date:now});
+  }).then(function(){
+    btn.innerHTML='<i class="ph-bold ph-floppy-disk"></i> '+t("saveChanges"); btn.disabled=false;
+    showToast(t("accountUpdated"),"success"); showView("student");
+  }).catch(function(){
+    btn.innerHTML='<i class="ph-bold ph-floppy-disk"></i> '+t("saveChanges"); btn.disabled=false;
+    showToast(t("accountUpdated"),"success"); showView("student");
+  });
+}
+
+function envoyerSignalement() {
+  var module  = document.getElementById("signalModule").value;
+  var type    = document.getElementById("signalType").value;
+  var comment = document.getElementById("signalComment").value.trim();
+  if (!module) { showToast(t("chooseModuleWarning"),"warning"); return; }
+  var btn = document.getElementById("signalBtn");
+  btn.innerHTML='<div class="spinner"></div> '+t("sending"); btn.disabled=true;
+  var now=new Date().toLocaleString("fr-FR"), nom=currentStudent.nom+" "+currentStudent.prenom;
+  var deviceInfo=getDeviceShortString(), deviceFull=getDeviceDisplayString();
+  fsCreate("notifications",{etudiant_nom:nom,etudiant_numero:currentStudent.numero,module:module,type:type,message:comment||t("noComment"),date:now,lu:false,admin_only:false,device_info:deviceInfo,device_full:deviceFull})
+  .then(function(){
+    emailjs.init(EMAILJS_KEY);
+    return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{etudiant_nom:nom,etudiant_numero:String(currentStudent.numero),module:module,type_signalement:type,message:(comment||t("noComment"))+" | "+t("device")+": "+deviceFull,date:now});
+  }).then(function(){
+    btn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> '+t("sendReport"); btn.disabled=false;
+    document.getElementById("signalModule").value=""; document.getElementById("signalComment").value="";
+    showToast(t("reportSent"),"success");
+  }).catch(function(){
+    btn.innerHTML='<i class="ph-bold ph-paper-plane-right"></i> '+t("sendReport"); btn.disabled=false;
+    document.getElementById("signalModule").value=""; document.getElementById("signalComment").value="";
+    showToast(t("reportSaved"),"warning");
+  });
+}
+
+// ===== ADMIN =====
+
 function loadAdmin() {
   var badge = document.getElementById("adminLiteBadge");
   if (isAdminLite) badge.classList.remove("hidden"); else badge.classList.add("hidden");
@@ -1130,8 +1338,6 @@ function loadAdmin() {
     MODULES.forEach(function(m){var opt=document.createElement("option");opt.value=m.key;opt.textContent=m.nom;sel.appendChild(opt);});
   });
   loadNotifs(); loadComptes();
-  document.getElementById("adminIdInput").value = ADMIN_ID;
-  document.getElementById("adminLiteIdInput").value = ADMIN_LITE_ID;
 }
 
 function renderAdminTable(data) {
@@ -1150,6 +1356,7 @@ function renderAdminTable(data) {
         ? '<span class="badge badge-warning" style="font-size:0.72rem;padding:2px 8px;">'+t("catchup")+'</span>'
         : '<span style="color:var(--text-muted);font-size:0.85rem;">'+res+'</span>';
 
+    // Access column — only admin (not lite) can see manage button, but count visible to all
     var accessInfo = getPeerAccessInfo(et);
     var accessCell = accessInfo.html;
 
@@ -1192,6 +1399,7 @@ function renderModuleRanking() {
   var mod = MODULES.find(function(m){return m.key===moduleKey;});
   if (!mod) return;
 
+  // Build globally ranked list first
   var allRanked = adminData.map(function(et) {
     var mm = et["moy_"+moduleKey];
     if (mm!==null&&mm!==undefined&&mm!=="Abs") return {numero:et.numero,nom:et.nom,prenom:et.prenom,moy:parseFloat(mm)};
@@ -1199,6 +1407,7 @@ function renderModuleRanking() {
   }).filter(Boolean).sort(function(a,b){return b.moy-a.moy;});
   allRanked.forEach(function(r,i){r.globalRank=i+1;});
 
+  // Apply search filter
   var results = searchQ ? allRanked.filter(function(r){
     return (r.nom+" "+r.prenom).toLowerCase().includes(searchQ)||String(r.numero).includes(searchQ);
   }) : allRanked;
@@ -1270,20 +1479,8 @@ function renderNotifs(notifs) {
       '<span style="color:'+typeColor+';">'+n.type+'</span></div>'+
       (n.message&&n.message!==t("noComment")&&n.message!=="(aucun commentaire)"?'<div style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-muted);font-style:italic;">"'+n.message+'"</div>':'')+
       deviceBadge+'</div>'+
-      '<div style="display:flex;align-items:center;gap:0.5rem;">'+
-        '<div style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap;">'+n.date+'</div>'+
-        (!isAdminLite ? '<button class="btn-sm btn-danger-sm" style="padding:0.25rem 0.5rem;" onclick="deleteNotification('+n.id+')"><i class="ph-bold ph-trash"></i></button>' : '') +
-      '</div></div>';
+      '<div style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap;">'+n.date+'</div></div>';
     el.appendChild(div);
-  });
-}
-
-function deleteNotification(id) {
-  if (!confirm(t("deleteConfirm"))) return;
-  fetch(SUPABASE_URL+'/rest/v1/notifications?id=eq.'+id, {method:'DELETE', headers:SB_HEADERS})
-  .then(function(r){
-    if (r.ok) { showToast(t("deletedNotif"), 'success'); loadNotifs(); }
-    else showToast('Erreur suppression', 'danger');
   });
 }
 
@@ -1464,8 +1661,9 @@ function sendSuggestion(num, modal) {
   if(!module||!val){showToast(t("fillAllFields"),"warning");return;}
   var now=new Date().toLocaleString("fr-FR");
   var msg=t("suggestModule")+module+" / "+field+" = "+val+(reason?t("reason")+reason:"");
-  var deviceInfo=getDeviceType()+": "+getDeviceModel();
-  fsCreate("notifications",{etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:et.numero,module:module,type:t("suggestion"),message:msg,date:now,lu:false,admin_only:false,device_info:deviceInfo,device_full:deviceInfo})
+  var deviceInfo=getDeviceShortString(), deviceFull=getDeviceDisplayString();
+  fsCreate("notifications",{etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:et.numero,module:module,type:t("suggestion"),message:msg,date:now,lu:false,admin_only:false,device_info:deviceInfo,device_full:deviceFull})
+  .then(function(){emailjs.init(EMAILJS_KEY);return emailjs.send(EMAILJS_SERVICE,EMAILJS_TEMPLATE,{etudiant_nom:et.nom+" "+et.prenom,etudiant_numero:String(et.numero),module:module,type_signalement:t("suggestion"),message:msg+" | "+t("device")+": "+deviceFull,date:now});})
   .then(function(){if(modal)modal.remove();showToast(t("suggestionSent"),"success");})
   .catch(function(){if(modal)modal.remove();showToast(t("suggestionSaved"),"warning");});
 }
@@ -1491,7 +1689,7 @@ function sortAdmin(key) {
 }
 
 function switchTab(tabName) {
-  ["etudiants","notifs","comptes","classement","params"].forEach(function(tabId){
+  ["etudiants","notifs","comptes","classement"].forEach(function(tabId){
     var cap=tabId.charAt(0).toUpperCase()+tabId.slice(1);
     document.getElementById("tab"+cap).classList.toggle("active",tabId===tabName);
     document.getElementById("panel"+cap).classList.toggle("hidden",tabId!==tabName);
@@ -1539,154 +1737,62 @@ function updateBreadcrumb() {
   bc.innerHTML=p.join('');
 }
 
-// SETTINGS
-async function saveAdminSettings() {
-  var newAdminId = document.getElementById("adminIdInput").value.trim();
-  var newAdminPw = document.getElementById("adminPwInput").value.trim();
-  var newLiteId  = document.getElementById("adminLiteIdInput").value.trim();
-  var newLitePw  = document.getElementById("adminLitePwInput").value.trim();
-
-  var promises = [];
-  if (newAdminId) promises.push(fsCreateOrUpdateSetting('admin_id', newAdminId));
-  if (newAdminPw) {
-    var adminHash = await sha256(newAdminPw);
-    promises.push(fsCreateOrUpdateSetting('admin_mdp', adminHash));
-  }
-  if (newLiteId) promises.push(fsCreateOrUpdateSetting('admin_lite_id', newLiteId));
-  if (newLitePw) {
-    var liteHash = await sha256(newLitePw);
-    promises.push(fsCreateOrUpdateSetting('admin_lite_mdp', liteHash));
-  }
-
-  try {
-    await Promise.all(promises);
-    showToast("Paramètres mis à jour. Nouveaux identifiants actifs.", "success");
-    if (newAdminId) ADMIN_ID = newAdminId;
-    if (newAdminPw) ADMIN_MDP_HASH = adminHash;
-    if (newLiteId) ADMIN_LITE_ID = newLiteId;
-    if (newLitePw) ADMIN_LITE_MDP_HASH = liteHash;
-    document.getElementById("adminPwInput").value = "";
-    document.getElementById("adminLitePwInput").value = "";
-  } catch(e) {
-    showToast("Erreur lors de l'enregistrement", "danger");
-  }
+var langPill=document.getElementById("langPill");
+var langBtns=document.querySelectorAll(".lang-btn");
+function getLang(){return localStorage.getItem("lang")||"fr";}
+function setLangPill(lang){
+  var idx=lang==="fr"?0:lang==="en"?1:2;
+  langPill.style.transform="translateX("+(idx*100)+"%)";
+  for(var i=0;i<langBtns.length;i++) langBtns[i].classList.toggle("active",langBtns[i].getAttribute("data-lang")===lang);
+}
+function initLang(){
+  var lang=getLang(); currentLang=lang;
+  document.documentElement.setAttribute("lang",lang);
+  document.documentElement.setAttribute("dir",lang==="ar"?"rtl":"ltr");
+  setLangPill(lang); translatePage(lang);
+}
+for(var _i=0;_i<langBtns.length;_i++){
+  (function(btn){
+    btn.addEventListener("click",function(){
+      var lang=btn.getAttribute("data-lang");
+      document.body.classList.add("switching-lang"); setLangPill(lang);
+      setTimeout(function(){
+        document.documentElement.setAttribute("lang",lang);
+        document.documentElement.setAttribute("dir",lang==="ar"?"rtl":"ltr");
+        localStorage.setItem("lang",lang); translatePage(lang);
+        requestAnimationFrame(function(){document.body.classList.remove("switching-lang");});
+      },300);
+    });
+  })(langBtns[_i]);
 }
 
-// PEER MANAGEMENT (admin side) - simplified but functional
-function openManagePeers(num) {
-  var et = adminData.find(function(e){return e.numero===num;});
-  if (!et) return;
-
-  var peers = [];
-  if (et.peer_view && et.peer_view !== "ALL") {
-    try { peers = JSON.parse(et.peer_view); } catch(e) { peers = []; }
-  }
-  var isAll = et.peer_view === "ALL";
-  window._editingPeers = { num, peers: peers.map(Number), isAll };
-
-  var d = document.createElement("div"); d.className="modal-overlay";
-  var inner = document.createElement("div"); inner.className="modal-box";
-  inner.innerHTML = '<h3>'+t("managePeers")+' ('+et.nom+' '+et.prenom+')</h3>'+
-    '<div class="toggle-wrap" onclick="window._editingPeers.isAll=!window._editingPeers.isAll; this.classList.toggle(\'active-all\', window._editingPeers.isAll)">'+
-    '<div class="toggle-knob-track '+(isAll?"on":"")+'"><div class="toggle-knob"></div></div> Voir tous les étudiants</div>'+
-    '<div id="adminPeerList" style="max-height:300px;overflow-y:auto;">'+
-    (peers.length?peers.map(p=>'<div>N°'+p+' <button onclick="removePeer('+p+')">×</button></div>').join(''):'Aucun pair')+
-    '</div>'+
-    '<input type="text" class="calc-input" id="adminPeerAddInput" placeholder="N° étudiant à ajouter">'+
-    '<button class="btn-main" onclick="addPeer()">Ajouter</button>'+
-    '<button class="btn-ghost" onclick="savePeerViewAdmin()">Sauvegarder</button>';
-  d.appendChild(inner); document.body.appendChild(d);
-}
-// Ces fonctions simplifiées sont fournies, mais vous pouvez les enrichir.
-window.removePeer = function(num) {
-  window._editingPeers.peers = window._editingPeers.peers.filter(function(p){return p!==num;});
-};
-window.addPeer = function() {
-  var val = document.getElementById("adminPeerAddInput").value.trim();
-  var num = parseInt(val);
-  if (!isNaN(num) && window._editingPeers.peers.indexOf(num)===-1) {
-    window._editingPeers.peers.push(num);
-    document.getElementById("adminPeerAddInput").value = '';
-  }
-};
-window.savePeerViewAdmin = function() {
-  var val = window._editingPeers.isAll ? "ALL" : JSON.stringify(window._editingPeers.peers);
-  fsPatch("etudiants", String(window._editingPeers.num), {peer_view: val});
-};
-
-// LANG / THEME
-function initLang() {
-  var lang = localStorage.getItem("lang")||"fr";
-  currentLang = lang;
-  document.documentElement.setAttribute("lang", lang);
-  document.documentElement.setAttribute("dir", lang==="ar"?"rtl":"ltr");
-  setLangPill(lang);
-  translatePage(lang);
-}
-function setLangPill(lang) {
-  var pill = document.getElementById("langPill");
-  if (!pill) return;
-  var idx = lang==="fr"?0:lang==="en"?1:2;
-  pill.style.transform = "translateX(" + (idx*100) + "%)";
-  document.querySelectorAll('.lang-btn').forEach(function(btn){
-    btn.classList.toggle('active', btn.getAttribute('data-lang')===lang);
-  });
-}
-document.querySelectorAll('.lang-btn').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    var lang = btn.getAttribute('data-lang');
-    document.body.classList.add('switching-lang');
-    setLangPill(lang);
-    setTimeout(function(){
-      document.documentElement.setAttribute('lang', lang);
-      document.documentElement.setAttribute('dir', lang==="ar"?"rtl":"ltr");
-      localStorage.setItem('lang', lang);
-      translatePage(lang);
-      document.body.classList.remove('switching-lang');
-    }, 300);
-  });
+function initTheme(){var th=localStorage.getItem("theme")||"dark";document.documentElement.setAttribute("data-theme",th);}
+document.getElementById("themeBtn").addEventListener("click",function(){
+  var cur=document.documentElement.getAttribute("data-theme");
+  var next=cur==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",next); localStorage.setItem("theme",next);
 });
 
-function initTheme() {
-  var theme = localStorage.getItem("theme")||"dark";
-  document.documentElement.setAttribute("data-theme", theme);
-}
-document.getElementById("themeBtn").addEventListener("click", function(){
-  var cur = document.documentElement.getAttribute("data-theme");
-  var next = cur==="dark"?"light":"dark";
-  document.documentElement.setAttribute("data-theme", next);
-  localStorage.setItem("theme", next);
-});
+var sidebar=document.getElementById("sidebar"), overlay=document.getElementById("overlay"), menuBtn=document.getElementById("menuBtn");
+menuBtn.onclick=function(e){e.stopPropagation();sidebar.classList.toggle("open");overlay.classList.toggle("hidden",!sidebar.classList.contains("open"));};
+window.closeMenu=function(){sidebar.classList.remove("open");overlay.classList.add("hidden");};
 
-// MENU
-var sidebar = document.getElementById("sidebar");
-var overlay = document.getElementById("overlay");
-var menuBtn = document.getElementById("menuBtn");
-menuBtn.onclick = function(e){ e.stopPropagation(); sidebar.classList.toggle("open"); overlay.classList.toggle("hidden", !sidebar.classList.contains("open")); };
-window.closeMenu = function(){ sidebar.classList.remove("open"); overlay.classList.add("hidden"); };
-
-// TOAST
-window.showToast = function(msg, type){
-  var colors = {success:"var(--success)", danger:"var(--danger)", warning:"var(--warning)", info:"#a5b4fc"};
-  var icons = {success:"ph-check-circle", danger:"ph-x-circle", warning:"ph-warning", info:"ph-info"};
-  var c = document.getElementById("toastContainer");
-  var toastEl = document.createElement("div"); toastEl.className = "toast-item glass";
-  toastEl.innerHTML = '<i class="ph-fill '+icons[type]+'" style="color:'+colors[type]+';"></i> '+msg;
+window.showToast=function(msg,type){
+  type=type||"info";
+  var colors={success:"var(--success)",danger:"var(--danger)",warning:"var(--warning)",info:"#a5b4fc"};
+  var icons={success:"ph-check-circle",danger:"ph-x-circle",warning:"ph-warning",info:"ph-info"};
+  var c=document.getElementById("toastContainer");
+  var toastEl=document.createElement("div"); toastEl.className="toast-item glass";
+  toastEl.innerHTML='<i class="ph-fill '+icons[type]+'" style="color:'+colors[type]+';font-size:1.1rem;"></i> '+msg;
   c.appendChild(toastEl);
-  requestAnimationFrame(function(){ toastEl.classList.add("show"); });
-  setTimeout(function(){ toastEl.classList.remove("show"); setTimeout(function(){ toastEl.remove(); }, 400); }, 3500);
+  requestAnimationFrame(function(){toastEl.classList.add("show");});
+  setTimeout(function(){toastEl.classList.remove("show");setTimeout(function(){toastEl.remove();},400);},3500);
 };
 
-// AUTO-SUBMIT ON ENTER
-document.getElementById("inputMdp").addEventListener("keydown", function(e){ if(e.key==="Enter") doLogin(); });
-document.getElementById("inputNom").addEventListener("keydown", function(e){ if(e.key==="Enter") doLogin(); });
+document.getElementById("inputMdp").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+document.getElementById("inputNom").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
 
-// INIT
-(async function(){
-  await loadAdminSettings();
-  initTheme(); initLang(); updateSidebarNav(); updateBreadcrumb();
-  checkSession();
-})();
+initTheme(); initLang(); updateSidebarNav(); updateBreadcrumb(); checkSession();
 </script>
 </body>
 </html>
